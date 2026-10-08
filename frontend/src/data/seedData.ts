@@ -1,4 +1,4 @@
-import type { ModuleInfo, Skill, Scenario, Achievement, UserGoal } from '../types';
+import type { ModuleInfo, Skill, Scenario, Achievement, UserGoal, MentorExperience, BusinessIdea } from '../types';
 
 export const SEED_GOALS: UserGoal[] = [
   {
@@ -539,3 +539,130 @@ export const SEED_ACHIEVEMENTS: Achievement[] = [
     xpReward: 120,
   },
 ];
+
+export const SEED_EXPERIENCES: MentorExperience[] = [
+  {
+    id: 'exp-1',
+    authorName: 'Tariq Rehman',
+    authorRole: 'Founder, UrbanCart ($350k Annual Revenue)',
+    authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+    businessType: 'E-Commerce & Direct-to-Consumer',
+    title: 'The $8,000 Inventory Blunder: How I Over-Ordered Before Validating Demand',
+    category: 'costly_mistake',
+    summary: 'At age 21, I saved up $8,000 and spent 100% of it ordering custom backpacks from a factory before getting a single customer. Here is what happened and the hard lesson that saved my career.',
+    fullStory: 'When you are young and spend hours scrolling on social feeds, everyone makes building a brand look effortless. I designed a custom travel backpack, found an overseas supplier, and invested every single rupee/dollar I had saved ($8,000) on a minimum order of 500 units. The boxes arrived, filling my bedroom from floor to ceiling. Then reality hit: nobody was waiting to buy them. I had zero audience, no distribution channel, and digital ads cost twice as much as my margins. It took 14 grueling months of cold-pitching university students to sell off the inventory at break-even. That failure taught me the golden rule of entrepreneurship: Always sell before you build or buy.',
+    lessonLearned: 'Validation beats passion. Never commit capital to inventory until at least 10 people outside your family have attempted to swipe their card or pre-order.',
+    keyTakeaways: [
+      'Pre-sell with a simple landing page or sample before manufacturing at scale.',
+      'Customer acquisition cost (CAC) will always be higher than your initial optimistic guess.',
+      'Cash tied in unsold inventory is dead capital that induces immense mental stress.'
+    ],
+    relatedScenarioId: 'scen-career-crossroads',
+    likes: 142,
+    readMinutes: 4,
+    date: '2 days ago',
+    verifiedMentor: true,
+  },
+  {
+    id: 'exp-2',
+    authorName: 'Sarah Malik',
+    authorRole: 'Managing Director, Shift Digital Agency',
+    authorAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80',
+    businessType: 'B2B Client Services',
+    title: 'Closing a $4,500 Client at 20 With Zero Capital & No Portfolio',
+    category: 'sales_negotiation',
+    summary: 'I didn\'t have money, an office, or fancy credentials. Instead of scrolling Reels all night, I spent 2 weeks auditing local businesses that had terrible websites and zero Google Maps optimization.',
+    fullStory: 'Most young people wait around endlessly for "the perfect startup idea". Businesses don\'t pay for ideas; they pay for relief from headaches. I found an established dental clinic whose website took 11 seconds to load and had broken booking forms. Instead of sending a generic spam email, I recorded a 3-minute video showing the clinic owner the exact line of code causing the bug and calculating how they were losing 30+ appointment bookings every single month. The clinic owner called me the next morning. I didn\'t ask for a job; I proposed a $4,500 turnkey redesign and CRM integration. That single contract proved that specific, proactive observation creates value out of thin air.',
+    lessonLearned: 'High-income skills combined with free value upfront opens doors faster than any degree or capital.',
+    keyTakeaways: [
+      'Audit before pitching: point out revenue leaks with mathematical proof.',
+      'Loom/video audits convert 5x better than copy-pasted text templates.',
+      'Charge on the value of the problem you solve, not the hours you clock in.'
+    ],
+    relatedScenarioId: 'scen-freerider-teammate',
+    likes: 218,
+    readMinutes: 3,
+    date: '4 days ago',
+    verifiedMentor: true,
+  },
+  {
+    id: 'exp-3',
+    authorName: 'Bilal Ahmed',
+    authorRole: 'Micro-SaaS Builder & Ex-Freelancer',
+    authorAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80',
+    businessType: 'Digital Products & Focus',
+    title: 'How I Broke the 7-Hour Phone Scrolling Trap to Ship My First Product',
+    category: 'mindset_shift',
+    summary: 'I checked my Screen Time analytics and was horrified: 7 hours and 14 minutes a day. My brain felt fried, uncreative, and anxious. Here is the exact dopamine protocol I used to build my first digital asset.',
+    fullStory: 'Algorithms are engineered by thousands of PhDs to harvest your mental energy and turn you into a passive spectator of other people\'s lives. I noticed that every time I had a moment of boredom or friction, my thumb automatically reached for Instagram and short videos. I realized: if I spend 7 hours consuming, I will never have the cognitive surplus to create. I put my phone in black-and-white grayscale mode, uninstalled feed apps between 9 AM and 6 PM, and replaced doom-scrolling with reading founder case studies and writing 200 lines of code daily. Within 3 months, I built a micro-tool generating $1,200/month recurring income.',
+    lessonLearned: 'Your attention span is your only real competitive moat in the 21st century. Guard it aggressively.',
+    keyTakeaways: [
+      'Turn your phone display to Grayscale — it instantly neutralizes visual dopamine hooks.',
+      'Track Creation Hours vs Consumption Hours daily.',
+      'Boredom is the catalyst of creative business insight — don\'t numb it with algorithmic feeds.'
+    ],
+    relatedScenarioId: 'scen-assignment-dilemma',
+    likes: 389,
+    readMinutes: 5,
+    date: '1 week ago',
+    verifiedMentor: true,
+  },
+];
+
+export const SEED_BUSINESS_IDEAS: BusinessIdea[] = [
+  {
+    id: 'idea-1',
+    title: 'Hyper-Local Short-Form Content Agency',
+    category: 'zero_capital',
+    tagline: 'Turn local restaurant & salon owners\' daily operations into viral TikTok/Reels content',
+    description: 'Local dentists, gyms, cafe owners, and lawyers know they need short-form video but don\'t have the time or youth culture knowledge to edit and post daily.',
+    startingBudget: '$0 (Phone + Free CapCut/DaVinci)',
+    difficulty: 'beginner',
+    targetAudience: 'Local brick-and-mortar storefronts with active customer traffic',
+    potentialRevenue: '$1,500 - $4,000 / month (3-5 clients at $500/mo retainer)',
+    executionSteps: [
+      'Pick 10 local businesses with great food/services but dead Instagram/TikTok accounts.',
+      'Visit in person or film a 30-second free viral sample clip during off-peak hours.',
+      'Offer 12 edited reels per month with sound design and scheduling for a flat monthly fee.'
+    ],
+    mentorAdvice: 'Don\'t sell "video editing". Sell "bringing 50 new paying customers through their door this month".',
+    skillsNeeded: ['Short-form video pacing', 'Hook writing', 'Client communication'],
+  },
+  {
+    id: 'idea-2',
+    title: 'Equipment & Tool Rental Brokerage',
+    category: 'local_arbitrage',
+    tagline: 'Monetize unused pressure washers, cameras, and trailers without owning them',
+    description: 'Many homeowners and older workers own heavy-duty tools ($800 pressure washers, carpet cleaners, lawn aerators) sitting in garages 350 days a year. Connect them with weekend DIYers and take a 30% booking commission.',
+    startingBudget: '$20 - $50 (Local flyers & booking coordination)',
+    difficulty: 'intermediate',
+    targetAudience: 'Weekend DIY homeowners and independent landscapers',
+    potentialRevenue: '$800 - $2,500 / month',
+    executionSteps: [
+      'Inventory 5 neighbors or family friends with unused tools.',
+      'Create polished local rental listings on Facebook Marketplace & Olx.',
+      'Manage delivery/pickup and security deposit, retaining 30-40% profit margin.'
+    ],
+    mentorAdvice: 'Arbitrage is the purest form of business: zero inventory risk, pure coordination value.',
+    skillsNeeded: ['Logistics', 'Customer trust', 'Contract agreement basics'],
+  },
+  {
+    id: 'idea-3',
+    title: 'High-Yield Curated Course Revision Vaults',
+    category: 'digital_service',
+    tagline: 'Transform dense university & college textbooks into high-impact digital study systems',
+    description: 'Students spend hours stressed reading 400-page textbooks. Create distilled, Notion/PDF-based cheatsheets, formula breakdowns, and practice question banks for specific university courses.',
+    startingBudget: '$0 (Notion / Google Docs + Canva)',
+    difficulty: 'beginner',
+    targetAudience: 'University & college students in high-attrition courses',
+    potentialRevenue: '$500 - $2,000 / month (Passive digital downloads)',
+    executionSteps: [
+      'Focus on high-enrollment prerequisite classes (Calculus, Accounting, Intro to CS).',
+      'Synthesize past 5 years of exams into bulletproof 15-page master guides.',
+      'Distribute via university WhatsApp groups and Gumroad with student discounts.'
+    ],
+    mentorAdvice: 'Information is cheap, but structured synthesis that saves 20 hours of study time is priceless.',
+    skillsNeeded: ['Structured writing', 'Design clarity', 'Peer networking'],
+  },
+];
+

@@ -10,12 +10,16 @@ import type {
   NavigationTab,
   AIEvaluationResult,
   ModuleInfo,
+  MentorExperience,
+  BusinessIdea,
 } from '../types';
 import {
   SEED_MODULES,
   SEED_SKILLS,
   SEED_SCENARIOS,
   SEED_ACHIEVEMENTS,
+  SEED_EXPERIENCES,
+  SEED_BUSINESS_IDEAS,
 } from '../data/seedData';
 import {
   evaluateOpenTextResponse,
@@ -32,6 +36,9 @@ interface AppContextType {
   modules: ModuleInfo[];
   achievements: Achievement[];
   attempts: Attempt[];
+  experiences: MentorExperience[];
+  businessIdeas: BusinessIdea[];
+  activeExperience: MentorExperience | null;
   activeScenario: Scenario | null;
   activeTab: NavigationTab;
   deviceViewMode: 'desktop' | 'mobile';
@@ -43,6 +50,9 @@ interface AppContextType {
 
   // Actions
   setActiveTab: (tab: NavigationTab) => void;
+  setActiveExperience: (exp: MentorExperience | null) => void;
+  createExperience: (exp: Omit<MentorExperience, 'id' | 'likes' | 'date' | 'verifiedMentor'>) => void;
+  likeExperience: (id: string) => void;
   setDeviceViewMode: (mode: 'desktop' | 'mobile') => void;
   startScenario: (scenarioId: string) => void;
   submitChoiceResponse: (scenario: Scenario, optionId: string) => Promise<Attempt>;
@@ -99,6 +109,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [experiences, setExperiences] = useState<MentorExperience[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}experiences`);
+    return saved ? JSON.parse(saved) : SEED_EXPERIENCES;
+  });
+
+  const [businessIdeas] = useState<BusinessIdea[]>(SEED_BUSINESS_IDEAS);
+  const [activeExperience, setActiveExperience] = useState<MentorExperience | null>(null);
+
   const [activeTab, setActiveTab] = useState<NavigationTab>('home');
   const [activeScenario, setActiveScenario] = useState<Scenario | null>(null);
   const [deviceViewMode, setDeviceViewMode] = useState<'desktop' | 'mobile'>('desktop');
@@ -127,6 +145,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY_PREFIX}attempts`, JSON.stringify(attempts));
   }, [attempts]);
+
+  useEffect(() => {
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}experiences`, JSON.stringify(experiences));
+  }, [experiences]);
 
   // Initial backend health check
   useEffect(() => {
@@ -377,6 +399,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const createExperience = (newExpData: Omit<MentorExperience, 'id' | 'likes' | 'date' | 'verifiedMentor'>) => {
+    const created: MentorExperience = {
+      ...newExpData,
+      id: `exp-${Date.now()}`,
+      likes: 1,
+      date: 'Just now',
+      verifiedMentor: false,
+    };
+    setExperiences([created, ...experiences]);
+    triggerCelebration();
+  };
+
+  const likeExperience = (id: string) => {
+    setExperiences(experiences.map(e => e.id === id ? { ...e, likes: e.likes + 1 } : e));
+  };
+
   const updateUser = (updates: Partial<User>) => {
     setUser(prev => ({ ...prev, ...updates }));
   };
@@ -394,6 +432,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         modules,
         achievements,
         attempts,
+        experiences,
+        businessIdeas,
+        activeExperience,
         activeScenario,
         activeTab,
         deviceViewMode,
@@ -403,6 +444,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         latestAttempt,
         showUnlockToast,
         setActiveTab,
+        setActiveExperience,
+        createExperience,
+        likeExperience,
         setDeviceViewMode,
         startScenario,
         submitChoiceResponse,

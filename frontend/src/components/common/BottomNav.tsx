@@ -1,17 +1,18 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import type { NavigationTab } from '../../types';
-import { Compass, Layers, BarChart3, Award, User as UserIcon } from 'lucide-react';
+import { Compass, BookOpen, Lightbulb, Layers, BarChart3, User as UserIcon } from 'lucide-react';
 
 export const BottomNav: React.FC = () => {
   const { activeTab, setActiveTab } = useApp();
 
   const navItems: { tab: NavigationTab; label: string; icon: React.ReactNode }[] = [
-    { tab: 'home', label: 'Home', icon: <Compass size={20} /> },
-    { tab: 'challenges', label: 'Explore', icon: <Layers size={20} /> },
-    { tab: 'skills', label: 'Skills', icon: <BarChart3 size={20} /> },
-    { tab: 'progress', label: 'Progress', icon: <Award size={20} /> },
-    { tab: 'profile', label: 'Profile', icon: <UserIcon size={20} /> },
+    { tab: 'home', label: 'Home', icon: <Compass size={19} /> },
+    { tab: 'feed', label: 'Stories', icon: <BookOpen size={19} /> },
+    { tab: 'ideas', label: 'Ideas', icon: <Lightbulb size={19} /> },
+    { tab: 'challenges', label: 'Cases', icon: <Layers size={19} /> },
+    { tab: 'skills', label: 'Skills', icon: <BarChart3 size={19} /> },
+    { tab: 'profile', label: 'Profile', icon: <UserIcon size={19} /> },
   ];
 
   return (

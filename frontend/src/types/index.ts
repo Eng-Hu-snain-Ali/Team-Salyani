@@ -127,6 +127,40 @@ export interface Achievement {
   xpReward: number;
 }
 
+export interface MentorExperience {
+  id: string;
+  authorName: string;
+  authorRole: string; // e.g. "Founder, Logistics Co ($500k ARR)"
+  authorAvatar: string;
+  businessType: string;
+  title: string;
+  category: 'business_launch' | 'costly_mistake' | 'sales_negotiation' | 'mindset_shift' | 'growth_hack';
+  summary: string;
+  fullStory: string;
+  lessonLearned: string;
+  keyTakeaways: string[];
+  relatedScenarioId?: string;
+  likes: number;
+  readMinutes: number;
+  date: string;
+  verifiedMentor: boolean;
+}
+
+export interface BusinessIdea {
+  id: string;
+  title: string;
+  category: 'zero_capital' | 'digital_service' | 'local_arbitrage' | 'high_margin';
+  tagline: string;
+  description: string;
+  targetAudience: string;
+  startingBudget: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  potentialRevenue: string;
+  executionSteps: string[];
+  mentorAdvice: string;
+  skillsNeeded: string[];
+}
+
 export interface NotificationItem {
   id: string;
   title: string;
@@ -138,6 +172,8 @@ export interface NotificationItem {
 
 export type NavigationTab = 
   | 'home' 
+  | 'feed'
+  | 'ideas'
   | 'challenges' 
   | 'scenario' 
   | 'skills' 

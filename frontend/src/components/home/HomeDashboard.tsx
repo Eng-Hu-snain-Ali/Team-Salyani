@@ -13,7 +13,9 @@ import {
   Wallet,
   MessageSquare,
   Wrench,
-  Target
+  Target,
+  BookOpen,
+  Lightbulb
 } from 'lucide-react';
 import type { ModuleKey } from '../../types';
 
@@ -24,6 +26,8 @@ export const HomeDashboard: React.FC = () => {
     modules, 
     skills, 
     attempts, 
+    experiences,
+    businessIdeas,
     startScenario, 
     setActiveTab 
   } = useApp();
@@ -76,7 +80,7 @@ export const HomeDashboard: React.FC = () => {
             Welcome back, {user.name} 👋
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginTop: 4 }}>
-            Practice today's scenario to build real decision muscle and extend your streak.
+            Learn from real founder experiences, explore actionable business ideas, and build practical life decision muscle.
           </p>
         </div>
 
@@ -224,6 +228,169 @@ export const HomeDashboard: React.FC = () => {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* NEW: Founder Experience & Business Idea Dual Spotlight */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+        gap: 20,
+      }}>
+        {/* Spotlight 1: Real Founder Experience */}
+        {experiences.length > 0 && (
+          <div 
+            className="glass-card"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 14,
+              borderLeft: '4px solid #F59E0B',
+              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.06) 0%, rgba(23, 30, 46, 0.8) 100%)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#FBBF24', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <BookOpen size={13} /> Featured Mentor Breakdown
+              </span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                {experiences[0].readMinutes}m read
+              </span>
+            </div>
+
+            <div>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#FFFFFF', lineHeight: 1.4 }}>
+                {experiences[0].title}
+              </h3>
+              <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', marginTop: 4 }}>
+                By <strong>{experiences[0].authorName}</strong> ({experiences[0].authorRole})
+              </p>
+            </div>
+
+            <div style={{
+              padding: '10px 14px',
+              borderRadius: 'var(--radius-md)',
+              background: 'rgba(245, 158, 11, 0.08)',
+              border: '1px solid rgba(245, 158, 11, 0.2)',
+              fontSize: '0.82rem',
+              color: '#FEF3C7',
+              lineHeight: 1.4,
+            }}>
+              <strong>#1 Takeaway:</strong> "{experiences[0].lessonLearned}"
+            </div>
+
+            <div style={{
+              marginTop: 'auto',
+              paddingTop: 10,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+            }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                ❤️ {experiences[0].likes} learned from this
+              </span>
+              <button
+                onClick={() => setActiveTab('feed')}
+                style={{
+                  fontSize: '0.84rem',
+                  fontWeight: 700,
+                  color: '#818CF8',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 4,
+                }}
+              >
+                <span>Read Full Story</span>
+                <ArrowRight size={14} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Spotlight 2: Business Idea of the Day */}
+        {businessIdeas.length > 0 && (
+          <div 
+            className="glass-card"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 14,
+              borderLeft: '4px solid #10B981',
+              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.06) 0%, rgba(23, 30, 46, 0.8) 100%)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#34D399', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Lightbulb size={13} /> Idea of the Day
+              </span>
+              <span style={{
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                color: '#34D399',
+                background: 'rgba(16, 185, 129, 0.15)',
+                padding: '2px 8px',
+                borderRadius: 'var(--radius-full)',
+              }}>
+                Budget: {businessIdeas[0].startingBudget}
+              </span>
+            </div>
+
+            <div>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#FFFFFF', lineHeight: 1.4 }}>
+                {businessIdeas[0].title}
+              </h3>
+              <p style={{ fontSize: '0.84rem', color: '#94A3B8', marginTop: 4, fontStyle: 'italic' }}>
+                "{businessIdeas[0].tagline}"
+              </p>
+            </div>
+
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              padding: '10px 14px',
+              borderRadius: 'var(--radius-md)',
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid var(--glass-border)',
+              fontSize: '0.82rem',
+            }}>
+              <div>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem', display: 'block' }}>Monthly Potential</span>
+                <strong style={{ color: '#34D399' }}>{businessIdeas[0].potentialRevenue}</strong>
+              </div>
+              <div>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem', display: 'block' }}>Difficulty</span>
+                <strong style={{ color: '#FFFFFF', textTransform: 'capitalize' }}>{businessIdeas[0].difficulty}</strong>
+              </div>
+            </div>
+
+            <div style={{
+              marginTop: 'auto',
+              paddingTop: 10,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+            }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                Break the phone scrolling cycle
+              </span>
+              <button
+                onClick={() => setActiveTab('ideas')}
+                style={{
+                  fontSize: '0.84rem',
+                  fontWeight: 700,
+                  color: '#34D399',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 4,
+                }}
+              >
+                <span>Explore Playbook</span>
+                <ArrowRight size={14} />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Two Column Layout: Weekly Snapshot & XP Level Progress */}

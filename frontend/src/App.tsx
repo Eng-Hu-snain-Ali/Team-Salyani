@@ -10,6 +10,8 @@ import { SkillsAnalytics } from './components/skills/SkillsAnalytics';
 import { ProgressView } from './components/progress/ProgressView';
 import { ProfileSettings } from './components/profile/ProfileSettings';
 import { OnboardingFlow } from './components/onboarding/OnboardingFlow';
+import { ExperienceFeed } from './components/feed/ExperienceFeed';
+import { IdeaVault } from './components/ideas/IdeaVault';
 
 const MainAppLayout: React.FC = () => {
   const { user, activeTab } = useApp();
@@ -31,6 +33,10 @@ const MainAppLayout: React.FC = () => {
     switch (activeTab) {
       case 'home':
         return <HomeDashboard />;
+      case 'feed':
+        return <ExperienceFeed />;
+      case 'ideas':
+        return <IdeaVault />;
       case 'challenges':
         return <ChallengesExplorer />;
       case 'scenario':

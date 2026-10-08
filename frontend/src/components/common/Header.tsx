@@ -9,7 +9,9 @@ import {
   Compass,
   BarChart3,
   User as UserIcon,
-  Server
+  Server,
+  BookOpen,
+  Lightbulb
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -21,11 +23,13 @@ export const Header: React.FC = () => {
   } = useApp();
 
   const navItems: { tab: NavigationTab; label: string; icon: React.ReactNode }[] = [
-    { tab: 'home', label: 'Home', icon: <Compass size={18} /> },
-    { tab: 'challenges', label: 'Challenges', icon: <Layers size={18} /> },
-    { tab: 'skills', label: 'Skills', icon: <BarChart3 size={18} /> },
-    { tab: 'progress', label: 'Progress', icon: <Award size={18} /> },
-    { tab: 'profile', label: 'Profile', icon: <UserIcon size={18} /> },
+    { tab: 'home', label: 'Home', icon: <Compass size={17} /> },
+    { tab: 'feed', label: 'Stories', icon: <BookOpen size={17} /> },
+    { tab: 'ideas', label: 'Ideas', icon: <Lightbulb size={17} /> },
+    { tab: 'challenges', label: 'Challenges', icon: <Layers size={17} /> },
+    { tab: 'skills', label: 'Skills', icon: <BarChart3 size={17} /> },
+    { tab: 'progress', label: 'Progress', icon: <Award size={17} /> },
+    { tab: 'profile', label: 'Profile', icon: <UserIcon size={17} /> },
   ];
 
   return (
