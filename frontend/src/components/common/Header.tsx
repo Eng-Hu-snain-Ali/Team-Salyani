@@ -11,6 +11,8 @@ export const Header: React.FC = () => {
     unreadNotifsCount,
     setIsNotificationsOpen,
     user,
+    isAuthenticated,
+    openAuthModal,
   } = useApp();
 
   return (
@@ -67,15 +69,25 @@ export const Header: React.FC = () => {
             )}
           </button>
 
-          <button
-            type="button"
-            className="header-avatar-btn"
-            onClick={() => setActiveTab('profile')}
-            title="My Profile"
-            aria-label="Profile"
-          >
-            <img src={user.avatar} alt={user.name} className="header-avatar-img" />
-          </button>
+          {!isAuthenticated ? (
+            <button
+              type="button"
+              className="header-auth-btn"
+              onClick={() => openAuthModal('welcome')}
+            >
+              Sign In
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="header-avatar-btn"
+              onClick={() => setActiveTab('profile')}
+              title="Profile"
+              aria-label="Profile"
+            >
+              <img src={user.avatar} alt={user.name} className="header-avatar-img" />
+            </button>
+          )}
         </div>
       </div>
     </header>

@@ -13,6 +13,9 @@ import { VideoExperienceView } from './features/experiences/VideoExperienceView'
 import { NotificationDrawer } from './features/notifications/NotificationDrawer';
 import { AuthModal } from './features/auth/AuthModal';
 import { OnboardingModal } from './features/auth/OnboardingModal';
+import { SplashScreen } from './features/auth/SplashScreen';
+import { VideoDetailModal } from './features/experiences/VideoDetailModal';
+import { IdeaDetailModal } from './features/explore/IdeaDetailModal';
 
 const MainAppContent: React.FC = () => {
   const { activeTab } = useApp();
@@ -54,9 +57,12 @@ const MainAppContent: React.FC = () => {
       <BottomNav />
 
       {/* Global Drawers & Modals */}
+      <SplashScreen />
       <NotificationDrawer />
       <AuthModal />
       <OnboardingModal />
+      <VideoDetailModal />
+      <IdeaDetailModal />
       <ToastContainer />
     </div>
   );

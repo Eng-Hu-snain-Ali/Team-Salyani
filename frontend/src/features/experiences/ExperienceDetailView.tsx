@@ -111,13 +111,25 @@ export const ExperienceDetailView: React.FC = () => {
         </button>
       </div>
 
-      {/* Header Block: Title, Author, Category */}
+      {/* Header Block: Content Type, Title, Author, Category */}
       <header className="clean-reading-header">
         <div className="clean-meta-tags">
+          <span className="clean-type-badge">
+            {experience.contentType === 'video'
+              ? 'VIDEO • External Source: YouTube'
+              : experience.contentType === 'pdf'
+              ? 'PDF GUIDE'
+              : experience.contentType === 'guide'
+              ? 'ACTIONABLE GUIDE'
+              : 'WRITTEN EXPERIENCE'}
+          </span>
           <span className="clean-category-tag">{experience.category}</span>
           <span className="clean-readtime-tag">
             <Clock size={12} />
-            <span>{experience.readTimeMinutes} min read</span>
+            <span>
+              {experience.readTimeMinutes}{' '}
+              {experience.contentType === 'video' ? 'min watch' : 'min read'}
+            </span>
           </span>
         </div>
 

@@ -16,6 +16,11 @@ class UserService {
     };
   }
 
+  // Alias for backend route: GET /users/{id}
+  async getUserById(userId: string): Promise<ApiResponse<User>> {
+    return this.getUserProfile(userId);
+  }
+
   async updateProfile(
     userId: string,
     updates: Partial<Omit<User, 'id' | 'createdAt'>>
@@ -34,6 +39,14 @@ class UserService {
       data: this.localUser,
       message: 'Profile updated successfully',
     };
+  }
+
+  // Alias for backend route: PATCH /users/{id}
+  async updateUser(
+    userId: string,
+    updates: Partial<Omit<User, 'id' | 'createdAt'>>
+  ): Promise<ApiResponse<User>> {
+    return this.updateProfile(userId, updates);
   }
 
   async saveOnboarding(

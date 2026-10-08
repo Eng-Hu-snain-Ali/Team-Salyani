@@ -5,6 +5,11 @@ import type {
   Notification,
   ExperienceCategory,
   CreateExperiencePayload,
+  ExploreVideo,
+  ExploreIdea,
+  LoginPayload,
+  RegisterPayload,
+  ResetPasswordPayload,
 } from '../types';
 import {
   authService,
@@ -12,9 +17,12 @@ import {
   notificationService,
   userService,
 } from '../services/api';
+import { TEAM_PROFILE } from '../data/mockData';
 import confetti from 'canvas-confetti';
 
 export type NavigationTab = 'home' | 'explore' | 'create' | 'saved' | 'profile' | 'detail' | 'video';
+
+export type AuthModalMode = 'welcome' | 'login' | 'register' | 'forgot' | 'reset';
 
 interface ToastState {
   id: string;
@@ -34,16 +42,44 @@ interface AppContextType {
   openExperience: (id: string) => void;
   goBack: () => void;
 
-  // Exploration filters passed from Home
+  // Exploration filters passed from Home & Explore
   exploreSearchQuery: string;
   setExploreSearchQuery: (q: string) => void;
   exploreSelectedCategory: ExperienceCategory | 'All';
   setExploreSelectedCategory: (cat: ExperienceCategory | 'All') => void;
 
-  // User State
+  // User & Authentication State
   user: User;
+  isAuthenticated: boolean;
+  profileViewMode: 'team' | 'user';
+  setProfileViewMode: (mode: 'team' | 'user') => void;
   updateUser: (updates: Partial<User>) => Promise<void>;
   completeOnboarding: (interests: ExperienceCategory[], goal?: string) => Promise<void>;
+  loginUser: (payload: LoginPayload) => Promise<boolean>;
+  registerUser: (payload: RegisterPayload) => Promise<boolean>;
+  forgotPassword: (email: string) => Promise<boolean>;
+  resetPassword: (payload: ResetPasswordPayload) => Promise<boolean>;
+  logoutUser: () => Promise<void>;
+
+  // Splash Screen State
+  isSplashOpen: boolean;
+  setIsSplashOpen: (open: boolean) => void;
+
+  // Modals & Auth Mode
+  isAuthModalOpen: boolean;
+  setIsAuthModalOpen: (open: boolean) => void;
+  authModalMode: AuthModalMode;
+  openAuthModal: (mode?: AuthModalMode) => void;
+  isOnboardingModalOpen: boolean;
+  setIsOnboardingModalOpen: (open: boolean) => void;
+
+  // Video & Idea Detail Modals
+  selectedVideo: ExploreVideo | null;
+  openVideoDetail: (video: ExploreVideo) => void;
+  closeVideoDetail: () => void;
+  selectedIdea: ExploreIdea | null;
+  openIdeaDetail: (idea: ExploreIdea) => void;
+  closeIdeaDetail: () => void;
 
   // Experiences & Engagement
   experiences: Experience[];
@@ -63,12 +99,6 @@ interface AppContextType {
   markNotificationRead: (id: string) => Promise<void>;
   markAllNotificationsRead: () => Promise<void>;
 
-  // Modals
-  isAuthModalOpen: boolean;
-  setIsAuthModalOpen: (open: boolean) => void;
-  isOnboardingModalOpen: boolean;
-  setIsOnboardingModalOpen: (open: boolean) => void;
-
   // Toast
   toasts: ToastState[];
   showToast: (message: string, type?: 'success' | 'info' | 'error') => void;
@@ -78,7 +108,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // 1. Theme State (defaults to dark or saved preference)
+  // 1. Theme State
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     try {
       const saved = localStorage.getItem('lived_theme');
@@ -101,27 +131,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 
-  // 2. User State
-  const [user, setUser] = useState<User>({
-    id: 'usr_me_01',
-    name: 'Alex Chen',
-    username: 'alexchen_dev',
-    email: 'alex.chen@example.com',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    bio: 'Software engineer & curious learner. Sharing what university never taught me about career transitions and saving money.',
-    location: 'San Francisco, CA',
-    role: 'Frontend Engineer',
-    interests: ['Career', 'Technology', 'Money', 'Personal Growth'],
-    currentGoal: 'Land my first senior engineering role & invest consistently without burnout.',
-    followersCount: 342,
-    followingCount: 189,
-    experiencesCount: 4,
-    helpfulCount: 890,
-    onboardingCompleted: true,
-    createdAt: '2026-01-15T08:00:00Z',
-  });
+  // 2. User & Auth State (The default/demo profile is The Team)
+  const [user, setUser] = useState<User>({ ...TEAM_PROFILE });
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [profileViewMode, setProfileViewMode] = useState<'team' | 'user'>('team');
 
-  // 3. Navigation State
+  // 3. Splash Screen state
+  const [isSplashOpen, setIsSplashOpen] = useState(false);
+
+  // 4. Navigation State
   const [activeTab, setActiveTabState] = useState<NavigationTab>('home');
   const [historyStack, setHistoryStack] = useState<NavigationTab[]>(['home']);
   const [selectedExperienceId, setSelectedExperienceId] = useState<string | null>(null);
@@ -135,7 +153,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const goBack = () => {
     if (historyStack.length > 1) {
       const newStack = [...historyStack];
-      newStack.pop(); // Remove current
+      newStack.pop();
       const previous = newStack[newStack.length - 1] || 'home';
       setHistoryStack(newStack);
       setActiveTabState(previous);
@@ -154,24 +172,39 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  // 4. Explore Filters passing
+  // 5. Explore Filters
   const [exploreSearchQuery, setExploreSearchQuery] = useState('');
   const [exploreSelectedCategory, setExploreSelectedCategory] = useState<ExperienceCategory | 'All'>('All');
 
-  // 5. Experiences State
+  // 6. Experiences State
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [savedExperiences, setSavedExperiences] = useState<Experience[]>([]);
   const [isLoadingExperiences, setIsLoadingExperiences] = useState(true);
 
-  // 6. Notifications State
+  // 7. Curated Video & Idea Details
+  const [selectedVideo, setSelectedVideo] = useState<ExploreVideo | null>(null);
+  const openVideoDetail = (video: ExploreVideo) => setSelectedVideo(video);
+  const closeVideoDetail = () => setSelectedVideo(null);
+
+  const [selectedIdea, setSelectedIdea] = useState<ExploreIdea | null>(null);
+  const openIdeaDetail = (idea: ExploreIdea) => setSelectedIdea(idea);
+  const closeIdeaDetail = () => setSelectedIdea(null);
+
+  // 8. Notifications State
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
-  // 7. Modals
+  // 9. Modals State
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<AuthModalMode>('welcome');
   const [isOnboardingModalOpen, setIsOnboardingModalOpen] = useState(false);
 
-  // 8. Toasts
+  const openAuthModal = (mode: AuthModalMode = 'welcome') => {
+    setAuthModalMode(mode);
+    setIsAuthModalOpen(true);
+  };
+
+  // 10. Toasts
   const [toasts, setToasts] = useState<ToastState[]>([]);
 
   const showToast = useCallback((message: string, type: 'success' | 'info' | 'error' = 'info') => {
@@ -186,23 +219,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Initialize data from API services
+  // Sync initial data from services
   const refreshExperiences = useCallback(async () => {
     try {
       setIsLoadingExperiences(true);
-      const [expRes, savedRes, notifRes, userRes] = await Promise.all([
+      const [expRes, savedRes, notifRes] = await Promise.all([
         experienceService.getExperiences({}),
         experienceService.getSavedExperiences(),
         notificationService.getNotifications(),
-        authService.getMe(),
       ]);
 
       if (expRes.data) setExperiences(expRes.data);
       if (savedRes.data) setSavedExperiences(savedRes.data);
       if (notifRes.data) setNotifications(notifRes.data);
-      if (userRes.data) setUser(userRes.data);
     } catch {
-      showToast('Error syncing with data service', 'error');
+      showToast('Error syncing with experience service', 'error');
     } finally {
       setIsLoadingExperiences(false);
     }
@@ -211,6 +242,77 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     refreshExperiences();
   }, [refreshExperiences]);
+
+  // Auth Operations
+  const loginUser = async (payload: LoginPayload): Promise<boolean> => {
+    try {
+      const res = await authService.login(payload);
+      if (res.success && res.data?.user) {
+        setUser(res.data.user);
+        setIsAuthenticated(true);
+        setProfileViewMode('user');
+        setIsAuthModalOpen(false);
+        showToast(`Welcome back, ${res.data.user.name}!`, 'success');
+        return true;
+      }
+      showToast(res.message || 'Login failed. Please check credentials.', 'error');
+      return false;
+    } catch {
+      showToast('Authentication service error.', 'error');
+      return false;
+    }
+  };
+
+  const registerUser = async (payload: RegisterPayload): Promise<boolean> => {
+    try {
+      const res = await authService.register(payload);
+      if (res.success && res.data?.user) {
+        setUser(res.data.user);
+        setIsAuthenticated(true);
+        setProfileViewMode('user');
+        setIsAuthModalOpen(false);
+        setIsOnboardingModalOpen(true);
+        showToast('Registration successful! Customize your learning interests.', 'success');
+        return true;
+      }
+      showToast(res.message || 'Registration failed.', 'error');
+      return false;
+    } catch {
+      showToast('Registration service error.', 'error');
+      return false;
+    }
+  };
+
+  const forgotPassword = async (email: string): Promise<boolean> => {
+    try {
+      const res = await authService.forgotPassword(email);
+      showToast(res.message || 'Reset link sent.', 'success');
+      return true;
+    } catch {
+      showToast('Could not process password reset.', 'error');
+      return false;
+    }
+  };
+
+  const resetPassword = async (payload: ResetPasswordPayload): Promise<boolean> => {
+    try {
+      const res = await authService.resetPassword(payload);
+      showToast(res.message || 'Password reset successfully.', 'success');
+      setAuthModalMode('login');
+      return true;
+    } catch {
+      showToast('Could not reset password.', 'error');
+      return false;
+    }
+  };
+
+  const logoutUser = async (): Promise<void> => {
+    await authService.logout();
+    setIsAuthenticated(false);
+    setUser({ ...TEAM_PROFILE });
+    setProfileViewMode('team');
+    showToast('Logged out. Viewing The Team profile.', 'info');
+  };
 
   // Engagement Actions
   const toggleLike = async (id: string) => {
@@ -237,7 +339,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (savedRes.data) setSavedExperiences(savedRes.data);
 
       showToast(
-        res.data.isSaved ? 'Saved to your reading vault' : 'Removed from saved experiences',
+        res.data.isSaved ? 'Saved to reading vault' : 'Removed from saved experiences',
         'success'
       );
     } catch {
@@ -277,7 +379,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const publishExperience = async (payload: CreateExperiencePayload): Promise<Experience> => {
-    const res = await experienceService.createExperience(payload);
+    const authorData = isAuthenticated
+      ? {
+          id: user.id,
+          name: user.name,
+          username: user.username,
+          avatar: user.avatar,
+          role: user.role || 'Community Contributor',
+        }
+      : {
+          id: TEAM_PROFILE.id,
+          name: TEAM_PROFILE.name,
+          username: TEAM_PROFILE.username,
+          avatar: TEAM_PROFILE.avatar,
+          role: TEAM_PROFILE.role,
+        };
+
+    const res = await experienceService.createExperience(payload, authorData);
     await refreshExperiences();
 
     confetti({
@@ -342,8 +460,30 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         exploreSelectedCategory,
         setExploreSelectedCategory,
         user,
+        isAuthenticated,
+        profileViewMode,
+        setProfileViewMode,
         updateUser,
         completeOnboarding,
+        loginUser,
+        registerUser,
+        forgotPassword,
+        resetPassword,
+        logoutUser,
+        isSplashOpen,
+        setIsSplashOpen,
+        isAuthModalOpen,
+        setIsAuthModalOpen,
+        authModalMode,
+        openAuthModal,
+        isOnboardingModalOpen,
+        setIsOnboardingModalOpen,
+        selectedVideo,
+        openVideoDetail,
+        closeVideoDetail,
+        selectedIdea,
+        openIdeaDetail,
+        closeIdeaDetail,
         experiences,
         savedExperiences,
         isLoadingExperiences,
@@ -358,10 +498,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setIsNotificationsOpen,
         markNotificationRead,
         markAllNotificationsRead,
-        isAuthModalOpen,
-        setIsAuthModalOpen,
-        isOnboardingModalOpen,
-        setIsOnboardingModalOpen,
         toasts,
         showToast,
         dismissToast,

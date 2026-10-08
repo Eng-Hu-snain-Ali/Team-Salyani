@@ -154,9 +154,73 @@ class ExperienceService {
   }
 
   /**
+   * Fetch featured experiences
+   */
+  async getFeaturedExperiences(): Promise<ApiResponse<Experience[]>> {
+    if (apiClient.isRemoteConfigured()) {
+      return apiClient.get<ApiResponse<Experience[]>>('/experiences/featured');
+    }
+    // Return the curated high-yield experiences
+    return {
+      success: true,
+      data: this.localExperiences.slice(0, 5),
+    };
+  }
+
+  /**
+   * Fetch recently shared experiences
+   */
+  async getRecentExperiences(limit = 6): Promise<ApiResponse<Experience[]>> {
+    if (apiClient.isRemoteConfigured()) {
+      return apiClient.get<ApiResponse<Experience[]>>('/experiences/recent', { limit });
+    }
+    const sorted = [...this.localExperiences].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+    return {
+      success: true,
+      data: sorted.slice(0, limit),
+    };
+  }
+
+  /**
+   * Update existing experience
+   */
+  async updateExperience(id: string, updates: Partial<Experience>): Promise<ApiResponse<Experience>> {
+    if (apiClient.isRemoteConfigured()) {
+      return apiClient.patch<ApiResponse<Experience>>(`/experiences/${id}`, updates);
+    }
+    const index = this.localExperiences.findIndex((e) => e.id === id);
+    if (index === -1) throw new Error('Experience not found');
+    this.localExperiences[index] = {
+      ...this.localExperiences[index],
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
+    return {
+      success: true,
+      data: this.localExperiences[index],
+    };
+  }
+
+  /**
+   * Delete experience
+   */
+  async deleteExperience(id: string): Promise<ApiResponse<{ deleted: boolean }>> {
+    if (apiClient.isRemoteConfigured()) {
+      return apiClient.delete(`/experiences/${id}`);
+    }
+    this.localExperiences = this.localExperiences.filter((e) => e.id !== id);
+    return {
+      success: true,
+      data: { deleted: true },
+    };
+  }
+
+  /**
    * Create & Publish a new experience
    */
-  async createExperience(payload: CreateExperiencePayload): Promise<ApiResponse<Experience>> {
+  async createExperience(payload: CreateExperiencePayload, authorUser?: { id: string; name: string; username: string; avatar: string; role?: string }): Promise<ApiResponse<Experience>> {
     if (apiClient.isRemoteConfigured()) {
       return apiClient.post<ApiResponse<Experience>>('/experiences', payload);
     }
@@ -168,13 +232,13 @@ class ExperienceService {
         payload.description ||
         (payload.story.content ? payload.story.content.slice(0, 140) + '...' : '') ||
         'Real experience shared on Lived.',
-      author: {
-        id: 'usr_me_01',
-        name: 'Alex Chen',
-        username: 'alexchen_dev',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-        role: 'Community Member',
-        bio: 'Learning from real human experiences on Lived.',
+      author: authorUser || {
+        id: 'usr_team_lived',
+        name: 'The Team',
+        username: 'the_team',
+        avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80',
+        role: 'Lived — Team Project',
+        bio: 'Shared on Lived collaborative platform.',
       },
       category: payload.category || 'Personal Growth',
       tags: payload.tags && payload.tags.length > 0 ? payload.tags : ['Experience'],

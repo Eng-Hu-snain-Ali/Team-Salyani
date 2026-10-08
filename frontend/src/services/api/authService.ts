@@ -1,20 +1,16 @@
 import { apiClient } from './apiClient';
-import type { User, ApiResponse, AuthTokens } from '../../types';
-import { CURRENT_USER } from '../../data/mockData';
-
-export interface LoginPayload {
-  email: string;
-  password?: string;
-}
-
-export interface RegisterPayload {
-  name: string;
-  email: string;
-  password?: string;
-}
+import type {
+  User,
+  ApiResponse,
+  AuthTokens,
+  LoginPayload,
+  RegisterPayload,
+  ResetPasswordPayload,
+} from '../../types';
+import { TEAM_PROFILE } from '../../data/mockData';
 
 class AuthService {
-  private currentUser: User = { ...CURRENT_USER };
+  private currentUser: User = { ...TEAM_PROFILE };
 
   async login(payload: LoginPayload): Promise<ApiResponse<{ user: User; tokens: AuthTokens }>> {
     if (apiClient.isRemoteConfigured()) {
@@ -25,15 +21,32 @@ class AuthService {
       return response;
     }
 
-    // Mock login
-    apiClient.setToken('mock_jwt_token_alexchen');
+    // Standard client demo authorization (never stores raw password)
+    const authenticatedUser: User = {
+      id: `usr_auth_${Date.now()}`,
+      name: payload.email.split('@')[0].replace('.', ' '),
+      username: payload.email.split('@')[0],
+      email: payload.email,
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+      bio: 'Lifelong learner discovering real lessons on Lived.',
+      interests: ['Career', 'Technology', 'Personal Growth'],
+      followersCount: 1,
+      followingCount: 3,
+      experiencesCount: 0,
+      helpfulCount: 0,
+      onboardingCompleted: true,
+      createdAt: new Date().toISOString(),
+    };
+    this.currentUser = authenticatedUser;
+    apiClient.setToken('lived_mock_jwt_session_token');
+
     return {
       success: true,
       data: {
-        user: this.currentUser,
+        user: authenticatedUser,
         tokens: {
-          accessToken: 'mock_jwt_token_alexchen',
-          refreshToken: 'mock_refresh_token_alexchen',
+          accessToken: 'lived_mock_jwt_session_token',
+          refreshToken: 'lived_mock_refresh_token',
         },
       },
     };
@@ -51,27 +64,28 @@ class AuthService {
     const newUser: User = {
       id: `usr_${Date.now()}`,
       name: payload.name,
-      username: payload.email.split('@')[0],
+      username: payload.username || payload.email.split('@')[0],
       email: payload.email,
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+      avatar: payload.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
       bio: 'Lifelong learner on Lived.',
-      interests: [],
+      interests: payload.interests || [],
       followersCount: 0,
-      followingCount: 0,
+      followingCount: 1,
       experiencesCount: 0,
       helpfulCount: 0,
       onboardingCompleted: false,
       createdAt: new Date().toISOString(),
     };
     this.currentUser = newUser;
-    apiClient.setToken('mock_jwt_token_new_user');
+    apiClient.setToken('lived_mock_jwt_session_token');
 
     return {
       success: true,
       data: {
         user: newUser,
         tokens: {
-          accessToken: 'mock_jwt_token_new_user',
+          accessToken: 'lived_mock_jwt_session_token',
+          refreshToken: 'lived_mock_refresh_token',
         },
       },
     };
@@ -85,7 +99,19 @@ class AuthService {
     return {
       success: true,
       data: { sent: true },
-      message: 'Password reset link sent to your email.',
+      message: 'Password reset link has been dispatched to your email address.',
+    };
+  }
+
+  async resetPassword(payload: ResetPasswordPayload): Promise<ApiResponse<{ reset: boolean }>> {
+    if (apiClient.isRemoteConfigured()) {
+      return apiClient.post('/auth/reset-password', payload);
+    }
+
+    return {
+      success: true,
+      data: { reset: true },
+      message: 'Your password has been successfully reset. You may now log in.',
     };
   }
 
@@ -105,10 +131,11 @@ class AuthService {
       try {
         await apiClient.post('/auth/logout');
       } catch {
-        // Continue cleanup
+        // Fallback cleanup
       }
     }
     apiClient.clearToken();
+    this.currentUser = { ...TEAM_PROFILE };
   }
 }
 

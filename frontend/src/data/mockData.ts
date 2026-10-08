@@ -1,356 +1,638 @@
-import type { Experience, Notification, User } from '../types';
+import type {
+  Experience,
+  Notification,
+  User,
+  TeamMember,
+  ExploreVideo,
+  ExploreIdea,
+} from '../types';
 
-export const CURRENT_USER: User = {
-  id: 'usr_me_01',
-  name: 'Alex Chen',
-  username: 'alexchen_dev',
-  email: 'alex.chen@example.com',
-  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-  bio: 'Software engineer & curious learner. Sharing what university never taught me about career transitions and saving money.',
-  location: 'San Francisco, CA',
-  role: 'Frontend Engineer',
-  interests: ['Career', 'Technology', 'Money', 'Personal Growth'],
-  currentGoal: 'Land my first senior engineering role & invest consistently without burnout.',
-  followersCount: 342,
-  followingCount: 189,
-  experiencesCount: 4,
-  helpfulCount: 890,
+// ============================================================================
+// 1. THE TEAM PROFILE (Default / Core Identity)
+// "This is a TEAM PROJECT created by multiple team members."
+// ============================================================================
+export const TEAM_PROFILE: User = {
+  id: 'usr_team_lived',
+  name: 'The Team',
+  username: 'the_team',
+  email: 'team@lived.app',
+  avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=300&auto=format&fit=crop&q=80',
+  bio: 'A collaborative platform where people share real experiences, practical lessons and ideas to help others learn and grow.',
+  location: 'Collaborative Project',
+  role: 'Lived — Team Project',
+  interests: [
+    'Career',
+    'Education',
+    'Technology',
+    'Programming',
+    'Freelancing',
+    'Personal Growth',
+    'Productivity',
+  ],
+  currentGoal: 'Empowering genuine peer-to-peer learning from lived experiences.',
+  followersCount: 1540,
+  followingCount: 5,
+  experiencesCount: 5,
+  helpfulCount: 4210,
   onboardingCompleted: true,
-  createdAt: '2026-01-15T08:00:00Z',
+  createdAt: '2026-01-01T00:00:00Z',
 };
 
+// Aliased as default for compatibility with existing imports
+export const CURRENT_USER: User = TEAM_PROFILE;
+
+// ============================================================================
+// 2. TEAM MEMBERS (Clean placeholder member cards ready for actual members)
+// ============================================================================
+export const TEAM_MEMBERS: TeamMember[] = [
+  {
+    id: 'tm_01',
+    name: 'Team Member 01',
+    role: 'Lead Developer & Product Engineering',
+    bio: 'Responsible for core web infrastructure, application shell, and component orchestration.',
+    initials: '01',
+  },
+  {
+    id: 'tm_02',
+    name: 'Team Member 02',
+    role: 'UI/UX Design & System Architecture',
+    bio: 'Focused on minimal editorial layout, typography scale, responsive viewports and design tokens.',
+    initials: '02',
+  },
+  {
+    id: 'tm_03',
+    name: 'Team Member 03',
+    role: 'Frontend Architecture & API Contracts',
+    bio: 'Created clean service abstractions, typed models, and authentication state ready for backend sync.',
+    initials: '03',
+  },
+  {
+    id: 'tm_04',
+    name: 'Team Member 04',
+    role: 'Discovery Engine & Video Learning',
+    bio: 'Designed the comprehensive Explorer, YouTube video learning integration, and curated ideas.',
+    initials: '04',
+  },
+  {
+    id: 'tm_05',
+    name: 'Team Member 05',
+    role: 'Quality Assurance & State Polish',
+    bio: 'Guaranteed 1-minute simple publishing flow, bookmarking workflows, and cross-browser resilience.',
+    initials: '05',
+  },
+];
+
+// ============================================================================
+// 3. CURATED WATCH & LEARN VIDEOS (Public YouTube embeds/links)
+// Clearly identified as "From YouTube" / "External Resource"
+// ============================================================================
+export const CURATED_VIDEOS: ExploreVideo[] = [
+  {
+    id: 'vid_01',
+    title: 'How to Live Before You Die (Stanford Commencement Address)',
+    description: 'Connecting the dots, love and loss, and how the awareness of mortality clarifies what truly matters.',
+    creator: 'Steve Jobs / Stanford University',
+    source: 'YouTube',
+    category: 'Motivation',
+    duration: '15:04',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&auto=format&fit=crop&q=80',
+    youtubeVideoId: 'UF8uR6Z6KLc',
+    youtubeUrl: 'https://www.youtube.com/watch?v=UF8uR6Z6KLc',
+    whyWatchThis: 'One of the most honest reflections on failure, resilience, and following genuine curiosity rather than safe expectations.',
+    keyTakeaways: [
+      'You cannot connect the dots looking forward; you can only connect them looking backwards.',
+      'Getting fired was the best thing that could have happened to me: lightness replaced heaviness.',
+      'Your time is limited, so don\'t waste it living someone else\'s life.',
+    ],
+    viewsCount: '42M views',
+  },
+  {
+    id: 'vid_02',
+    title: 'How I Manage My Time - 10 Practical Productivity Systems',
+    description: 'Evidence-based frameworks for time management, avoiding procrastination, and building consistent output without burnout.',
+    creator: 'Ali Abdaal',
+    source: 'YouTube',
+    category: 'Productivity',
+    duration: '18:22',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=600&auto=format&fit=crop&q=80',
+    youtubeVideoId: 'iONDebHX9qk',
+    youtubeUrl: 'https://www.youtube.com/watch?v=iONDebHX9qk',
+    whyWatchThis: 'Breaks down actionable calendar and task management rules for students, founders, and knowledge workers.',
+    keyTakeaways: [
+      'Calendar blocking outperforms open-ended to-do lists by 3x.',
+      'The daily highlight rule: choose exactly one non-negotiable accomplishment per day.',
+      'Energy management matters more than raw hours spent sitting at a desk.',
+    ],
+    viewsCount: '3.8M views',
+  },
+  {
+    id: 'vid_03',
+    title: 'How to Think Like a Programmer (CS50 Lecture 0)',
+    description: 'Computational thinking, problem decomposition, and foundational algorithms explained from absolute zero.',
+    creator: 'David J. Malan / Harvard CS50',
+    source: 'YouTube',
+    category: 'Programming',
+    duration: '24:45',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&auto=format&fit=crop&q=80',
+    youtubeVideoId: 'zOjov-2OZ0E',
+    youtubeUrl: 'https://www.youtube.com/watch?v=zOjov-2OZ0E',
+    whyWatchThis: 'Demystifies computer science and programming fundamentals with crystal clarity for beginners.',
+    keyTakeaways: [
+      'Programming is simply expressing precise problem-solving instructions step by step.',
+      'Binary search illustrates logarithmic efficiency: divide and conquer.',
+      'Focus on concepts and problem-solving before memorizing language syntax.',
+    ],
+    viewsCount: '8.4M views',
+  },
+  {
+    id: 'vid_04',
+    title: 'How to Talk to Customers & Validate Real Problems',
+    description: 'The Mom Test framework: how to ask questions about people\'s real life without biasing their answers.',
+    creator: 'Y Combinator Startup School',
+    source: 'YouTube',
+    category: 'Business',
+    duration: '16:10',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&auto=format&fit=crop&q=80',
+    youtubeVideoId: 'MT4TgT002DA',
+    youtubeUrl: 'https://www.youtube.com/watch?v=MT4TgT002DA',
+    whyWatchThis: 'Essential lesson on avoiding building things nobody wants by asking about past behaviors instead of hypothetical opinions.',
+    keyTakeaways: [
+      'Never ask: "Would you buy this?" Ask: "How did you solve this problem last week?"',
+      'Look for active workarounds: if people aren\'t already trying to solve the problem, it\'s not urgent.',
+      'Talk about their specific past life experiences, not future promises.',
+    ],
+    viewsCount: '1.2M views',
+  },
+  {
+    id: 'vid_05',
+    title: 'Getting Your First Freelance Client in 30 Days',
+    description: 'Cold outreach, personal portfolio proofs of work, and pricing transparency for first-time freelancers.',
+    creator: 'Traversy Media & Freelance Devs',
+    source: 'YouTube',
+    category: 'Freelancing',
+    duration: '21:30',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=80',
+    youtubeVideoId: 'e8d1GkWwL6c',
+    youtubeUrl: 'https://www.youtube.com/watch?v=e8d1GkWwL6c',
+    whyWatchThis: 'Candid advice on landing paying clients without years of prior reputation or expensive agency tools.',
+    keyTakeaways: [
+      'Build 2 specific sample projects for the exact industry you are targeting before sending cold pitches.',
+      'Focus your pitch on the client\'s revenue or speed, not just your tech stack.',
+      'Follow up politely 3 to 5 times; 70% of responses happen on follow-ups.',
+    ],
+    viewsCount: '950K views',
+  },
+];
+
+// ============================================================================
+// 4. IDEAS WORTH EXPLORING (High-yield conceptual frameworks)
+// ============================================================================
+export const IDEAS_WORTH_EXPLORING: ExploreIdea[] = [
+  {
+    id: 'idea_01',
+    title: 'How to Build Better Habits',
+    summary: 'Make behaviors tiny, obvious, and immediate to remove reliance on fragile willpower.',
+    category: 'Personal Growth',
+    readTimeMinutes: 4,
+    coreInsight: 'You do not rise to the level of your goals; you fall to the level of your systems. Reduce friction for good habits and increase friction for bad ones.',
+    actionSteps: [
+      'Anchor the new habit to an existing routine (e.g. "After I pour morning coffee, I will write 5 lines").',
+      'The 2-Minute Rule: Scale down the initial effort until it is impossible to procrastinate.',
+      'Never miss twice: If life interrupts your routine once, treat the second consecutive day as mandatory.',
+    ],
+  },
+  {
+    id: 'idea_02',
+    title: 'How to Start Freelancing',
+    summary: 'Shift from generic skill selling to solving one concrete, painful bottleneck for local or online clients.',
+    category: 'Freelancing',
+    readTimeMinutes: 5,
+    coreInsight: 'Clients do not buy programming languages or design software; they buy speed, saved time, and extra revenue.',
+    actionSteps: [
+      'Pick one tight niche (e.g. Shopify page speed for independent coffee brands).',
+      'Build one public case study demonstrating the before-and-after outcome.',
+      'Send 5 personalized video audits weekly highlighting immediate fixes they can implement.',
+    ],
+  },
+  {
+    id: 'idea_03',
+    title: 'How to Improve Your Communication',
+    summary: 'Speak simply, listen without formulating your retort, and state the headline before the background context.',
+    category: 'Communication',
+    readTimeMinutes: 4,
+    coreInsight: 'Clear writing and speaking reflect clear thinking. Remove conversational padding and lead with the bottom line (BLUF).',
+    actionSteps: [
+      'Use the BLUF technique: Bottom Line Up Front in emails and slack messages.',
+      'Summarize what the other person said before offering your counterpoint.',
+      'Replace filler phrases ("I think", "kind of") with grounded observations.',
+    ],
+  },
+  {
+    id: 'idea_04',
+    title: 'How to Manage Your Time',
+    summary: 'Protect morning blocks for deep cognitively demanding tasks; bundle reactive meetings into the afternoon.',
+    category: 'Productivity',
+    readTimeMinutes: 4,
+    coreInsight: 'Time cannot be managed without ruthless prioritization. Deciding what NOT to do is the essence of high leverage.',
+    actionSteps: [
+      'Identify your 1 high-leverage task the night before and place it on your morning calendar.',
+      'Turn off non-essential notifications during 90-minute focus blocks.',
+      'Perform a weekly retrospective to eliminate recurring low-value commitments.',
+    ],
+  },
+  {
+    id: 'idea_05',
+    title: 'How to Learn a New Skill',
+    summary: 'Deconstruct the skill into sub-components, obtain immediate feedback, and practice under realistic conditions.',
+    category: 'Education',
+    readTimeMinutes: 5,
+    coreInsight: 'Passive consumption (reading, watching tutorials) creates the illusion of competence. Only active retrieval and building build neural pathways.',
+    actionSteps: [
+      'Identify the critical 20% of sub-skills that produce 80% of real outcomes.',
+      'Commit to 20 hours of focused, self-directed practice before switching tutorials.',
+      'Teach or write a breakdown of the concept for someone with zero background knowledge.',
+    ],
+  },
+  {
+    id: 'idea_06',
+    title: 'How to Deal With Failure',
+    summary: 'Separate your personal identity from project outcomes. Treat setbacks as diagnostic feedback.',
+    category: 'Motivation',
+    readTimeMinutes: 4,
+    coreInsight: 'Failure is not the opposite of success; it is information about the constraints of reality. A failure without reflection is wasted pain.',
+    actionSteps: [
+      'Write a post-mortem within 48 hours focusing on controllable inputs vs external luck.',
+      'Ask: "What assumption was proven false, and what data do I now possess that others don\'t?"',
+      'Re-engage with small, immediate action to prevent psychological paralysis.',
+    ],
+  },
+  {
+    id: 'idea_07',
+    title: 'How to Build Confidence',
+    summary: 'Confidence is not a feeling you conjure up; it is the natural byproduct of keeping small promises to yourself.',
+    category: 'Personal Growth',
+    readTimeMinutes: 3,
+    coreInsight: 'Self-trust is earned through consistent execution over time, especially when no one is watching.',
+    actionSteps: [
+      'Set and achieve 3 micro-commitments every single day.',
+      'Collect a "Proof Folder" of past obstacles you solved and milestones reached.',
+      'Adopt physical posture and vocal pacing that convey calm presence.',
+    ],
+  },
+];
+
+// ============================================================================
+// 5. INITIAL & FEATURED EXPERIENCES
+// Includes the 5 core requested topics:
+// - "How I Got My First Freelance Client"
+// - "What I Learned After Failing My First Business"
+// - "How I Learned Programming From Zero"
+// - "My University Experience"
+// - "Things I Wish I Knew Before Starting Freelancing"
+// ============================================================================
 export const INITIAL_EXPERIENCES: Experience[] = [
   {
     id: 'exp_01',
-    title: 'How I Lost $8,000 on My First E-Commerce Venture (And What Actually Saved My Career)',
-    description: 'I thought buying bulk inventory was how real entrepreneurs start. Here is the painful mistake that wiped my savings, and how pre-validation changed everything.',
+    title: 'How I Got My First Freelance Client',
+    description: 'After 3 months of applying on generic job boards with zero responses, I changed my entire strategy to sending 2-minute Loom video audits.',
     author: {
-      id: 'usr_02',
-      name: 'Tariq Rehman',
-      username: 'tariq_builds',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-      role: 'E-Com Founder & Angel Investor',
-      bio: 'Built two 7-figure digital retail brands after losing my life savings at 22.'
+      id: 'usr_team_lived',
+      name: 'The Team',
+      username: 'the_team',
+      avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80',
+      role: 'Lived — Team Project',
+      bio: 'Curated team case study on client acquisition.',
     },
-    category: 'Business',
-    tags: ['E-Commerce', 'Bootstrapping', 'Validation', 'Financial Mistakes'],
+    category: 'Freelancing',
+    tags: ['Freelancing', 'Client Acquisition', 'Cold Outreach', 'Career'],
     contentType: 'story',
-    readTimeMinutes: 7,
-    coverImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80',
+    readTimeMinutes: 5,
+    coverImage: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=80',
     story: {
-      whereIStarted: 'In 2022, right out of college, I wanted financial independence. I saved $8,000 working double shifts at a café. I was obsessed with "getting rich before 25".',
-      theProblem: 'I found what I assumed was a revolutionary ergonomic laptop stand on Alibaba. Without talking to a single customer, I wired my entire $8,000 life savings to a manufacturer for 1,200 units.',
-      whatITried: 'I rented a storage unit, built a Shopify store with stock photos, and launched Facebook ads. I expected sales to roll in within 48 hours.',
-      whatFailed: 'Zero orders the first week. By week four, after spending an additional $1,200 on credit card ads, I had sold exactly 9 units—6 of which were to supportive relatives. The boxes sat in storage gathering dust while monthly fees ate my remaining cash.',
-      whatWorked: 'Desperate to recover, I stopped hiding behind Facebook Ads Manager. I took 10 units in my backpack to local co-working spaces and universities. I asked freelancers: "Try this stand for one hour for free, then tell me why you wouldn\'t buy it." I discovered the stand was 200g too heavy for commuters. Once I pivoted to custom ultra-light travel stands with pre-orders, the concept finally took off.',
-      whatILearned: 'Product validation must ALWAYS precede production. Never confuse an idea you love with customer demand that already exists.',
-      whatIWouldDoDifferently: 'I would set up a simple landing page with a "Pre-order with $5 deposit" button and run $50 worth of traffic. If 10 strangers won\'t put down $5, do not produce 1,200 units.'
+      content: `In early 2024, I decided to transition into freelance frontend development. I spent weeks polishing my resume, setting up Upwork and Fiverr accounts, and bidding on whatever job postings popped up.
+
+Result: 84 proposals sent, 3 replies, 0 contracts. I was burning through my savings and wondering if I had made a terrible mistake.
+
+### The Breakthrough Shift
+I realized that clients on freelance boards receive 50+ identical cover letters within 10 minutes of posting. To win, I needed to show value before asking for money.
+
+Instead of applying to public postings, I searched for local e-commerce stores and small service businesses whose websites had obvious performance issues or broken mobile layouts.
+
+### What Worked: The 2-Minute Video Audit
+1. I recorded a quick screen video showing their homepage loading on mobile.
+2. I pointed out 2 specific things hurting their conversion rate (e.g. uncompressed 5MB hero banner, checkout button cut off on iPhone SE).
+3. I built a quick mock-up showing the fixed version.
+4. I sent a 3-sentence email: "Hi [Name], I noticed your mobile site is losing customers because the CTA gets clipped on mobile. Here is a 90-second video explaining the fix. No pressure at all—hope this helps!"
+
+On my 7th email, the founder replied: "Can you fix this for us this Thursday?" That single email turned into an $850 initial contract and a ongoing monthly retainer.`,
+      whatILearned: 'Give value upfront without asking for anything. Demonstrating competence visually cuts through noise faster than any resume.',
     },
     lessons: [
       {
         id: 'les_01_1',
         number: 1,
-        title: 'Validate demand before touching inventory',
-        description: 'Never manufacture or buy bulk products based on intuition. Secure 10 committed customers with cash or deposits first.',
-        actionableStep: 'Create a 1-page pre-order form before spending more than $100.'
+        title: 'Provide immediate visual proof',
+        description: 'Showing a client their exact problem solved is 10x more persuasive than promising you have the skills.',
+        actionableStep: 'Record a 2-minute loom pointing out 1 high-value improvement before pitching.',
       },
       {
         id: 'les_01_2',
         number: 2,
-        title: 'Face-to-face feedback beats algorithmic ad spend',
-        description: 'If strangers won\'t buy from you in person after trying your product, paying Mark Zuckerberg for ads won\'t fix the flaw.',
-        actionableStep: 'Interview 10 target users in person before scaling advertising.'
+        title: 'Target clients outside crowded marketplaces',
+        description: 'Direct outreach eliminates bidding wars and lets you charge value-based rates.',
+        actionableStep: 'Look for businesses with dated websites that are already actively spending money on advertising.',
       },
-      {
-        id: 'les_01_3',
-        number: 3,
-        title: 'Protect your downside capital',
-        description: 'Never risk 100% of your available liquidity on a single unproven hypothesis.',
-        actionableStep: 'Cap your early test budget at a maximum of 15% of your total savings.'
-      }
     ],
-    likesCount: 524,
-    commentsCount: 68,
-    helpfulCount: 489,
-    notHelpfulCount: 12,
+    likesCount: 342,
+    commentsCount: 45,
+    helpfulCount: 289,
+    notHelpfulCount: 4,
     isLiked: false,
-    isSaved: true,
+    isSaved: false,
     userHelpfulVote: null,
-    createdAt: '2026-09-28T14:32:00Z',
-    updatedAt: '2026-09-28T14:32:00Z'
+    createdAt: '2026-10-05T08:00:00Z',
+    updatedAt: '2026-10-05T08:00:00Z',
   },
   {
     id: 'exp_02',
-    title: 'From Self-Taught to $110k Developer Without a CS Degree in 14 Months',
-    description: 'A realistic, no-hype breakdown of what tutorials never tell you: navigating tutorial hell, building production proof, and cold outreach that actually converts.',
+    title: 'What I Learned After Failing My First Business',
+    description: 'We raised angel capital, spent 8 months perfecting software features in secrecy, and launched to complete silence. Here is what that painful mistake taught us.',
     author: {
-      id: 'usr_03',
-      name: 'Maya Lin',
-      username: 'mayacodes',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-      role: 'Staff Frontend Engineer at Fintech',
-      bio: 'Former hospitality manager turned software engineer. Mentoring first-gen techies.'
+      id: 'usr_team_lived',
+      name: 'The Team',
+      username: 'the_team',
+      avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80',
+      role: 'Lived — Team Project',
+      bio: 'Team retrospective on startup validation and lean development.',
     },
-    category: 'Technology',
-    tags: ['WebDev', 'Career Transition', 'React', 'Self Taught'],
-    contentType: 'video',
-    readTimeMinutes: 12,
-    coverImage: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=80',
-    media: {
-      type: 'video',
-      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=80',
-      durationSeconds: 745
-    },
+    category: 'Business',
+    tags: ['Business', 'Startups', 'Failure', 'Validation', 'Lessons'],
+    contentType: 'story',
+    readTimeMinutes: 6,
+    coverImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80',
     story: {
-      whereIStarted: 'I worked 50-hour weeks managing a restaurant. At 25, I was burned out, living paycheck to paycheck, with zero coding background.',
-      theProblem: 'I spent 4 months watching Udemy courses on 2x speed, copying the instructors line-by-line. The moment I opened a blank VS Code editor, my mind went completely blank. I had fallen into classic "Tutorial Hell".',
-      whatITried: 'I tried building clone apps (Netflix clone, Spotify clone). But recruiters immediately recognized generic clones and rejected my applications automatically.',
-      whatFailed: 'Submitting 300 generic applications through LinkedIn "Easy Apply" with a clone portfolio yielded zero interviews and shattered my confidence.',
-      whatWorked: 'I stopped building clones. I walked into my friend\'s local bakery and built them an interactive order management and inventory dashboard that they used daily. Now I had real user metrics, real bug fixes, and a production URL to show in interviews.',
-      whatILearned: 'Hiring managers don\'t care how many tutorials you completed. They care if you can take an ambiguous real-world requirement and deliver working software.',
-      whatIWouldDoDifferently: 'I would stop doing beginner tutorials after month 2 and contribute directly to open source or build one single project used by a real human being.'
+      content: `Our first venture was an inventory tracking tool for independent retail boutiques. We were convinced that existing tools were too ugly, and that beautiful UI would naturally attract thousands of shop owners.
+
+We spent $18,000 and 8 months coding in isolation. We added dark mode, custom dashboards, exports, and automations.
+
+### The Launch Disaster
+On launch day, we posted on Product Hunt, Hacker News, and Twitter. We got 1,200 upvotes and plenty of praise from developer friends. But exactly two boutique owners signed up, and both stopped logging in after 4 days.
+
+When we finally visited retail store owners in person, we uncovered the brutal truth: their real bottleneck wasn't ugly software—it was supplier delays and physical barcode scanning hardware compatibility. Our cloud app solved a problem they didn't care about.
+
+### What We Should Have Done
+If we had spent 2 weeks shadowing 5 shop owners before writing a single line of code, we would have saved 8 months of our lives and thousands of dollars.`,
+      whatILearned: 'Never fall in love with your solution. Fall in love with the customer\'s daily friction.',
     },
     lessons: [
       {
         id: 'les_02_1',
         number: 1,
-        title: 'Escape tutorial hell through original pain',
-        description: 'You only truly learn programming when you stare at a red console error you haven\'t seen before and debug it yourself.',
-        actionableStep: 'Build a project that does not have an accompanying YouTube video or course.'
+        title: 'Talk to real users before building anything',
+        description: 'No code should be written until you observe potential users trying to solve the problem manually.',
+        actionableStep: 'Interview 10 people experiencing the friction before creating a prototype.',
       },
       {
         id: 'les_02_2',
         number: 2,
-        title: 'One real user beats ten fake clones',
-        description: 'A simple CRUD tool with 5 active weekly users is 100x more impressive to hiring directors than a cloned social feed.',
-        actionableStep: 'Solve a real problem for a friend, charity, or local business.'
+        title: 'Validation requires committed skin in the game',
+        description: 'Polite verbal compliments mean zero. Pre-orders, deposits, or signed letters of intent are real validation.',
+        actionableStep: 'Ask for a paid pre-order or formal pilot agreement before full feature build.',
       },
-      {
-        id: 'les_02_3',
-        number: 3,
-        title: 'Direct technical outreach beats cold apply',
-        description: 'Send a 2-minute Loom video walking through an engineering suggestion for the company instead of sending a dry PDF resume.',
-        actionableStep: 'Record a Loom audit for 5 target startups weekly.'
-      }
     ],
-    likesCount: 892,
-    commentsCount: 142,
-    helpfulCount: 840,
-    notHelpfulCount: 19,
-    isLiked: true,
+    likesCount: 512,
+    commentsCount: 68,
+    helpfulCount: 478,
+    notHelpfulCount: 6,
+    isLiked: false,
     isSaved: true,
-    userHelpfulVote: 'yes',
-    createdAt: '2026-10-02T10:15:00Z',
-    updatedAt: '2026-10-02T10:15:00Z'
+    userHelpfulVote: null,
+    createdAt: '2026-10-06T10:15:00Z',
+    updatedAt: '2026-10-06T10:15:00Z',
   },
   {
     id: 'exp_03',
-    title: 'How I Cleared My Medical Licensing Exam While Working 30-Hour Hospital Shifts',
-    description: 'My high-yield cognitive framework: why passive re-reading fails, how active recall transformed my retention, and managing chronic sleep debt.',
+    title: 'How I Learned Programming From Zero',
+    description: 'I went from a complete non-technical background to building web applications in 9 months. The exact roadmap that avoided tutorial purgatory.',
     author: {
-      id: 'usr_04',
-      name: 'Dr. Zainab Qureshi',
-      username: 'dr_zainab',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-      role: 'Internal Medicine Resident',
-      bio: 'Medical educator focusing on neuroplasticity, memory protocols, and evidence-based learning.'
+      id: 'usr_team_lived',
+      name: 'The Team',
+      username: 'the_team',
+      avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80',
+      role: 'Lived — Team Project',
+      bio: 'Practical guide to self-taught coding.',
     },
-    category: 'Education',
-    tags: ['Exam Prep', 'Anki', 'Active Recall', 'Productivity'],
-    contentType: 'guide',
-    readTimeMinutes: 9,
-    coverImage: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&auto=format&fit=crop&q=80',
+    category: 'Programming',
+    tags: ['Programming', 'Technology', 'Self-Taught', 'Education', 'Roadmap'],
+    contentType: 'story',
+    readTimeMinutes: 7,
+    coverImage: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80',
     story: {
-      whereIStarted: 'Preparing for Step 2 while managing night shifts in the emergency department. I had roughly 2.5 hours of usable daily energy outside the hospital.',
-      theProblem: 'I highlighted textbooks and re-read medical notes. On practice exams, my score plateaued at the 45th percentile. I felt like information was leaking out of my brain like a sieve.',
-      whatITried: 'Drinking 4 cups of coffee, sleeping 4 hours, and grinding 1,000 flashcards mindlessly in bed.',
-      whatFailed: 'Severe memory fatigue. I couldn\'t recall differential diagnoses under timed pressure because my flashcards tested passive recognition, not clinical application.',
-      whatWorked: 'I switched to "Desirable Difficulty" active retrieval. Instead of flipping cards, I forced myself to write the diagnostic pathway on a blank whiteboard before looking at the answer. My retention skyrocketed to 92%.',
-      whatILearned: 'If studying feels comfortable and easy, your brain is not forming durable neural pathways. Effective learning feels slightly difficult and mentally exhausting.',
-      whatIWouldDoDifferently: 'I would prioritize 7 hours of non-negotiable sleep over an extra 2 hours of exhausted late-night reading.'
+      content: `For the first 3 months of my coding journey, I fell directly into the "tutorial trap". I watched 60+ hours of video courses, followed every keystroke, and felt like a genius.
+
+Then I opened a blank VS Code editor to build a simple habit tracker and couldn't write 5 lines without getting stuck.
+
+### The Shift to Project-Based Struggle
+Everything changed when I switched from following tutorials to building projects with intentional constraints:
+
+1. **HTML & CSS Foundations (Weeks 1-4)**: Built 3 clone pages from scratch using only DevTools inspection.
+2. **Vanilla JavaScript (Weeks 5-12)**: Focused on DOM manipulation, API fetching, and array transformations before touching any framework.
+3. **TypeScript & React (Weeks 13-24)**: Built one full-featured application and refactored it 3 times.
+
+### The Secret: Reading Errors Carefully
+Beginners fear error messages in the console. The breakthrough moment was learning that the compiler is not an enemy—it is a free diagnostic tool telling you the exact line number and variable name that went wrong.`,
+      whatILearned: 'You only learn programming when you break things and debug them without a tutorial holding your hand.',
     },
     lessons: [
       {
         id: 'les_03_1',
         number: 1,
-        title: 'Recognition is not retention',
-        description: 'Re-reading highlighters tricks your brain into thinking you understand when you merely recognize familiar shapes.',
-        actionableStep: 'Close your notes and teach the concept aloud to an empty chair.'
+        title: 'Break tutorial addiction early',
+        description: 'After watching a concept, close the video and implement it from scratch on your own machine.',
+        actionableStep: 'Spend 2x more time coding than watching video lectures.',
       },
       {
         id: 'les_03_2',
         number: 2,
-        title: 'Sleep is the consolidation engine',
-        description: 'Memory consolidation happens during slow-wave and REM sleep. Studying on 4 hours sleep literally flushes information down the drain.',
-        actionableStep: 'Protect a mandatory 7-hour sleep window as an academic duty.'
-      }
+        title: 'Master one ecosystem deeply first',
+        description: 'Jumping between Python, Rust, and JavaScript creates cognitive overload. Pick one stack and stick to it.',
+        actionableStep: 'Build 3 functional portfolio projects in one stack before exploring another language.',
+      },
     ],
-    likesCount: 673,
-    commentsCount: 94,
-    helpfulCount: 615,
+    likesCount: 680,
+    commentsCount: 92,
+    helpfulCount: 610,
     notHelpfulCount: 8,
-    isLiked: false,
+    isLiked: true,
     isSaved: false,
-    userHelpfulVote: null,
-    createdAt: '2026-10-04T16:40:00Z',
-    updatedAt: '2026-10-04T16:40:00Z'
+    userHelpfulVote: 'yes',
+    createdAt: '2026-10-07T14:00:00Z',
+    updatedAt: '2026-10-07T14:00:00Z',
   },
   {
     id: 'exp_04',
-    title: 'Moving to Berlin Alone at 21 with €1,500: The Bureaucracy, Loneliness & Housing Survival Guide',
-    description: 'An honest breakdown of moving abroad: dealing with the Anmeldung, escaping shared-apartment scams, and making lifelong friends when you speak zero German.',
+    title: 'My University Experience',
+    description: 'What high school never prepares you for: managing independence, finding study systems that actually work, and building relationships outside the classroom.',
     author: {
-      id: 'usr_05',
-      name: 'Julian Vance',
-      username: 'julian_vance',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-      role: 'UX Designer & Nomad',
-      bio: 'Lived across 5 countries. Writing candid guides on relocation reality.'
+      id: 'usr_team_lived',
+      name: 'The Team',
+      username: 'the_team',
+      avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80',
+      role: 'Lived — Team Project',
+      bio: 'Real student survival insights.',
     },
-    category: 'Travel',
-    tags: ['Moving Abroad', 'Berlin', 'Solo Travel', 'Culture Shock'],
-    contentType: 'pdf',
-    readTimeMinutes: 10,
-    coverImage: 'https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&auto=format&fit=crop&q=80',
-    media: {
-      type: 'pdf',
-      url: '/assets/berlin-relocation-survival-kit.pdf',
-      fileName: 'berlin-relocation-survival-kit.pdf',
-      fileSizeBytes: 2450000
-    },
+    category: 'Student Life',
+    tags: ['Student Life', 'Education', 'College', 'Personal Growth', 'University'],
+    contentType: 'story',
+    readTimeMinutes: 5,
+    coverImage: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80',
     story: {
-      whereIStarted: 'Left London with one suitcase, €1,500 in my checking account, and an Airbnb booked for 10 days.',
-      theProblem: 'In Berlin, you cannot rent an apartment without an Anmeldung (residence registration), and you cannot get an Anmeldung without having an apartment. It is a notorious bureaucratic catch-22.',
-      whatITried: 'Responding to random listings on Facebook groups. Almost lost €800 to a scammer asking for deposit via Western Union.',
-      whatFailed: 'Staying isolated in my Airbnb and stressing over paperwork while watching savings dwindle to €400.',
-      whatWorked: 'I joined a local bouldering gym and a weekly language exchange meetup. Within 5 days of meeting actual expats in person, a roommate told me their flatmate was moving to Vienna for 6 months and offered a legitimate sublet with registration.',
-      whatILearned: 'When moving abroad, physical human networks solve bureaucratic roadblocks 10x faster than digital listings.',
-      whatIWouldDoDifferently: 'I would save at least 3 months of emergency expenses (€3,500) instead of €1,500.'
+      content: `Starting university, I believed that GPA was the sole metric of success. I spent my first two semesters pulling all-nighters in library cubicles, memorizing slides and avoiding social events.
+
+By sophomore year, I was burnt out, isolated, and had zero practical skills or professional connections to show for it.
+
+### The Real Value of College
+I realized that textbooks and lecture slides are now accessible online for free to anyone in the world. The true, irreplaceable value of university is:
+- Direct access to professors during office hours.
+- Collaborating with ambitious peers on side projects.
+- Student discounts and conference travel grants.
+- Low-stakes environments to experiment and fail.
+
+When I shifted my energy to active group projects, internships, and faculty research, both my grades and my happiness skyrocketed.`,
+      whatILearned: 'University is an incubator for relationships and practical initiative, not just a testing factory.',
     },
     lessons: [
       {
         id: 'les_04_1',
         number: 1,
-        title: 'Never transfer deposits before seeing the keys',
-        description: 'Rental scams target desperate foreigners. Never send wire transfers or crypto for apartments you have not inspected physically.',
-        actionableStep: 'Always request official rental contracts with passport verification.'
+        title: 'Office hours are the ultimate cheat code',
+        description: 'Professors write recommendations and offer research roles to the students who show up and ask thoughtful questions.',
+        actionableStep: 'Visit at least two professors during office hours every single semester.',
       },
       {
         id: 'les_04_2',
         number: 2,
-        title: 'Join offline interest communities immediately',
-        description: 'Loneliness is the #1 reason young expats give up and return home within 90 days. Build a weekly hobby circle in week one.',
-        actionableStep: 'Attend a run club, gym, or hobby meetup within 72 hours of landing.'
-      }
+        title: 'Prioritize sleep over cramming',
+        description: 'All-nighters degrade cognitive performance for days. Distributed repetition beats last-minute desperation.',
+        actionableStep: 'Review lecture notes for 15 minutes within 24 hours of each class.',
+      },
     ],
-    likesCount: 412,
-    commentsCount: 51,
-    helpfulCount: 388,
-    notHelpfulCount: 14,
+    likesCount: 290,
+    commentsCount: 38,
+    helpfulCount: 245,
+    notHelpfulCount: 3,
     isLiked: false,
     isSaved: false,
     userHelpfulVote: null,
-    createdAt: '2026-10-05T09:20:00Z',
-    updatedAt: '2026-10-05T09:20:00Z'
+    createdAt: '2026-10-07T16:30:00Z',
+    updatedAt: '2026-10-07T16:30:00Z',
   },
   {
     id: 'exp_05',
-    title: 'The Silent Creep: How Lifestyle Inflation Trapped Me in a Toxic Job for 3 Years',
-    description: 'When my salary jumped from $45k to $95k, I thought I was rich. Here is how upgrading my car, apartment, and habits trapped me until I rebuilt my emergency runway.',
+    title: 'Things I Wish I Knew Before Starting Freelancing',
+    description: 'Taxes, contract disputes, scope creep, and how underpricing your services actually repels serious high-paying clients.',
     author: {
-      id: 'usr_06',
-      name: 'Farhan Siddiqui',
-      username: 'farhan_wealth',
-      avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80',
-      role: 'Financial Coach',
-      bio: 'Former corporate analyst helping early-career professionals escape the golden handcuffs.'
+      id: 'usr_team_lived',
+      name: 'The Team',
+      username: 'the_team',
+      avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80',
+      role: 'Lived — Team Project',
+      bio: 'Hard-won lessons from independent consulting.',
     },
-    category: 'Money',
-    tags: ['Personal Finance', 'Lifestyle Inflation', 'F.I.R.E.', 'Budgeting'],
+    category: 'Freelancing',
+    tags: ['Freelancing', 'Contracts', 'Pricing', 'Career', 'Money'],
     contentType: 'story',
     readTimeMinutes: 6,
-    coverImage: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&auto=format&fit=crop&q=80',
+    coverImage: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&auto=format&fit=crop&q=80',
     story: {
-      whereIStarted: 'Got promoted to Senior Strategy Associate at 24. My take-home pay more than doubled overnight.',
-      theProblem: 'Within 6 months, every dollar was committed: a luxury 1-bedroom apartment, dining at high-end spots, and a leased BMW. My savings rate was 0%.',
-      whatITried: 'Working even longer hours to get another bonus so I could start investing.',
-      whatFailed: 'My manager became openly hostile. Because I had exactly 2 weeks of savings in my bank account, I was terrified of quitting. The golden handcuffs were entirely my own doing.',
-      whatWorked: 'I instituted the "Base-Line Protocol": I capped my living baseline at my old $45k standard. I automatically diverted 50% of each paycheck into a separate index fund account before it hit checking.',
-      whatILearned: 'Wealth isn\'t what you spend; wealth is the options and peace of mind your unspent capital buys you.',
-      whatIWouldDoDifferently: 'I would freeze my living expenses for 12 full months after every salary increase.'
+      content: `When you start freelancing, you think your only job is doing the craft (writing, designing, coding).
+
+In reality, your craft is only about 40% of the job. The remaining 60% is sales, expectation management, contract writing, invoicing, and tax accounting.
+
+### 1. Scope Creep Will Kill Your Profitability
+In my early contracts, I agreed to vague milestones like "Build the web app". Clients naturally requested "one more tweak" 30 times. Now, every single deliverable has written boundaries, and extra requests are billed at a clear change-order rate.
+
+### 2. Never Work Without a 50% Upfront Deposit
+Legitimate clients who respect your expertise never hesitate to pay a 50% deposit before kickoff. Clients who refuse deposits are almost always the ones who dispute the invoice at the finish line.
+
+### 3. Set Aside 30% for Taxes Immediately
+Do not leave taxes until year-end. Every dollar that lands in your business account should immediately have 30% moved to a dedicated tax savings account.`,
+      whatILearned: 'Clear contracts preserve relationships. Boundaries make clients respect your professional standards.',
     },
     lessons: [
       {
         id: 'les_05_1',
         number: 1,
-        title: 'Lifestyle inflation is an invisible trap',
-        description: 'Upgrading your spending alongside every raise keeps your freedom score at zero regardless of your compensation.',
-        actionableStep: 'Automate 50% of every raise directly into investments on day one.'
+        title: 'Always collect 50% deposit upfront',
+        description: 'Deposits ensure serious client commitment and protect your cash flow.',
+        actionableStep: 'Never start work or deliver code without milestone clearance.',
       },
       {
         id: 'les_05_2',
         number: 2,
-        title: 'An emergency fund is your "Dignity Fund"',
-        description: 'Having 6 months of living expenses gives you the power to say no to abusive work environments.',
-        actionableStep: 'Build a 3-month survival runway before upgrading any lifestyle item.'
-      }
+        title: 'Document all changes in writing',
+        description: 'Scope creep happens when boundaries are undefined. Keep a clear change-order log.',
+        actionableStep: 'Reply to out-of-scope requests: "Happy to add this! Let me send over a brief addendum with the estimated hours."',
+      },
     ],
-    likesCount: 915,
-    commentsCount: 118,
-    helpfulCount: 882,
-    notHelpfulCount: 11,
-    isLiked: true,
+    likesCount: 420,
+    commentsCount: 52,
+    helpfulCount: 388,
+    notHelpfulCount: 5,
+    isLiked: false,
     isSaved: true,
-    userHelpfulVote: 'yes',
-    createdAt: '2026-10-06T11:00:00Z',
-    updatedAt: '2026-10-06T11:00:00Z'
-  }
+    userHelpfulVote: null,
+    createdAt: '2026-10-08T09:00:00Z',
+    updatedAt: '2026-10-08T09:00:00Z',
+  },
 ];
 
+// ============================================================================
+// 6. INITIAL NOTIFICATIONS
+// ============================================================================
 export const INITIAL_NOTIFICATIONS: Notification[] = [
   {
     id: 'notif_01',
-    userId: 'usr_me_01',
+    userId: 'usr_team_lived',
     actor: {
-      id: 'usr_02',
-      name: 'Tariq Rehman',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
+      id: 'usr_peer_01',
+      name: 'Community Learner',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
     },
     type: 'helpful',
     targetId: 'exp_01',
-    targetTitle: 'How I Built My First Micro-SaaS',
-    message: 'marked your experience as helpful! "This saved me 2 months of wasted work."',
+    targetTitle: 'How I Got My First Freelance Client',
+    message: 'marked your team experience as helpful! "This gave me the confidence to send my first video pitch."',
     isRead: false,
-    createdAt: '2026-10-08T09:15:00Z'
+    createdAt: '2026-10-08T14:15:00Z',
   },
   {
     id: 'notif_02',
-    userId: 'usr_me_01',
+    userId: 'usr_team_lived',
     actor: {
-      id: 'usr_03',
-      name: 'Maya Lin',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80'
+      id: 'usr_peer_02',
+      name: 'Aspiring Developer',
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
     },
     type: 'comment',
-    targetId: 'exp_02',
-    targetTitle: 'From Self-Taught to $110k Developer',
-    message: 'commented: "How did you manage burnout during month 6?"',
+    targetId: 'exp_03',
+    targetTitle: 'How I Learned Programming From Zero',
+    message: 'commented: "Which CSS project helped you understand flexbox best?"',
     isRead: false,
-    createdAt: '2026-10-08T07:30:00Z'
+    createdAt: '2026-10-08T11:30:00Z',
   },
   {
     id: 'notif_03',
-    userId: 'usr_me_01',
+    userId: 'usr_team_lived',
     actor: {
-      id: 'usr_04',
-      name: 'Dr. Zainab Qureshi',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
+      id: 'usr_peer_03',
+      name: 'Student Fellow',
+      avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
     },
     type: 'follow',
-    targetId: 'usr_me_01',
-    message: 'started following your journey in Technology & Career.',
+    targetId: 'usr_team_lived',
+    message: 'started following The Team project updates.',
     isRead: true,
-    createdAt: '2026-10-07T14:20:00Z'
-  }
+    createdAt: '2026-10-07T16:20:00Z',
+  },
 ];

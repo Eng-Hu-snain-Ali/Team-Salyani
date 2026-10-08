@@ -8,13 +8,19 @@ export type ContentType = 'story' | 'video' | 'pdf' | 'image' | 'guide';
 export type ExperienceCategory =
   | 'Career'
   | 'Education'
-  | 'Business'
   | 'Technology'
+  | 'Programming'
+  | 'Freelancing'
+  | 'Business'
   | 'Money'
-  | 'Health'
   | 'Personal Growth'
+  | 'Productivity'
+  | 'Motivation'
+  | 'Communication'
+  | 'Health'
   | 'Relationships'
-  | 'Travel';
+  | 'Travel'
+  | 'Student Life';
 
 export interface User {
   id: string;
@@ -196,4 +202,76 @@ export interface CreateExperiencePayload {
   story: StructuredStory;
   lessons?: Array<Omit<Lesson, 'id'>>;
   media?: ExperienceMedia;
+}
+
+// ----------------------------------------------------------------------------
+// Team Profile Models
+// ----------------------------------------------------------------------------
+export interface TeamMember {
+  id: string;
+  name: string; // e.g. "Team Member 01"
+  role: string; // e.g. "Frontend & UI Design"
+  bio: string;
+  avatar?: string;
+  initials: string;
+  github?: string;
+  linkedin?: string;
+}
+
+// ----------------------------------------------------------------------------
+// Curated Video & Knowledge Discovery Models
+// ----------------------------------------------------------------------------
+export interface ExploreVideo {
+  id: string;
+  title: string;
+  description: string;
+  creator: string; // e.g. "Steve Jobs / Stanford", "Ali Abdaal", "CS50"
+  source: 'YouTube' | 'External Resource';
+  category: ExperienceCategory;
+  duration: string; // e.g. "14:20"
+  thumbnailUrl: string;
+  youtubeVideoId: string; // Embeddable ID e.g. "UF8uR6Z6KLc"
+  youtubeUrl: string;
+  whyWatchThis: string;
+  keyTakeaways: string[];
+  viewsCount?: string;
+}
+
+export interface ExploreIdea {
+  id: string;
+  title: string;
+  summary: string;
+  category: ExperienceCategory;
+  readTimeMinutes: number;
+  coreInsight: string;
+  actionSteps: string[];
+}
+
+// ----------------------------------------------------------------------------
+// Authentication API Contracts
+// ----------------------------------------------------------------------------
+export interface RegisterPayload {
+  name: string;
+  email: string;
+  password?: string;
+  confirmPassword?: string;
+  username?: string;
+  avatar?: string;
+  interests?: ExperienceCategory[];
+}
+
+export interface LoginPayload {
+  email: string;
+  password?: string;
+}
+
+export interface ForgotPasswordPayload {
+  email: string;
+}
+
+export interface ResetPasswordPayload {
+  email?: string;
+  token?: string;
+  newPassword?: string;
+  confirmPassword?: string;
 }
