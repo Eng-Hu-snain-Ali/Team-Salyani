@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { Search, Bell, Sun, Moon, Sparkles } from 'lucide-react';
+import { Search, Bell, Sun, Moon } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const {
@@ -16,29 +16,26 @@ export const Header: React.FC = () => {
   return (
     <header className="app-header">
       <div className="header-container">
-        {/* Brand Logo & Tagline */}
+        {/* Brand Logo: Lived */}
         <div
           className="brand-block"
           onClick={() => setActiveTab('home')}
           role="button"
           tabIndex={0}
         >
-          <div className="brand-emblem">
-            <Sparkles size={18} className="emblem-icon" />
-          </div>
+          <div className="brand-dot-logo" />
           <div className="brand-text">
-            <span className="brand-title">LifeLore</span>
-            <span className="brand-tagline">Real Stories. Real Lessons.</span>
+            <span className="brand-title">Lived</span>
+            <span className="brand-tagline">Real experiences. Real lessons.</span>
           </div>
         </div>
 
         {/* Header Right Actions */}
         <div className="header-actions">
-          {/* Search Trigger */}
           {activeTab !== 'explore' && (
             <button
               type="button"
-              className="header-icon-btn search-trigger"
+              className="header-icon-btn"
               onClick={() => setActiveTab('explore')}
               title="Search experiences"
               aria-label="Search"
@@ -47,18 +44,16 @@ export const Header: React.FC = () => {
             </button>
           )}
 
-          {/* Theme Switcher */}
           <button
             type="button"
-            className="header-icon-btn theme-toggle-btn"
+            className="header-icon-btn"
             onClick={toggleTheme}
-            title={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+            title={theme === 'dark' ? 'Switch to Light' : 'Switch to Dark'}
             aria-label="Toggle theme"
           >
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
-          {/* Notifications Trigger with Unread Badge */}
           <button
             type="button"
             className="header-icon-btn notif-btn"
@@ -72,7 +67,6 @@ export const Header: React.FC = () => {
             )}
           </button>
 
-          {/* User Avatar */}
           <button
             type="button"
             className="header-avatar-btn"

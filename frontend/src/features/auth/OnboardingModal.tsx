@@ -37,7 +37,7 @@ export const OnboardingModal: React.FC = () => {
       isOpen={isOnboardingModalOpen}
       onClose={() => setIsOnboardingModalOpen(false)}
       title="Personalize Your Experience Feed"
-      subtitle="LifeLore customizes your feed based on real situations you face today."
+      subtitle="Lived customizes your feed based on real situations you face today."
       maxWidth="md"
     >
       <div className="onboarding-flow-container">

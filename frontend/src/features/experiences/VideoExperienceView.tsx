@@ -130,7 +130,7 @@ export const VideoExperienceView: React.FC = () => {
       try {
         await navigator.share({
           title: experience.title,
-          text: `Watch real lessons from "${experience.title}" on LifeLore:`,
+          text: `Watch real lessons from "${experience.title}" on Lived:`,
           url: shareUrl,
         });
         return;

@@ -74,8 +74,8 @@ export const AuthModal: React.FC = () => {
             <div className="auth-splash-emblem">
               <Sparkles size={32} />
             </div>
-            <h2 className="auth-title">Welcome to LifeLore</h2>
-            <p className="auth-tagline">"Real Stories. Real Lessons."</p>
+            <h2 className="auth-title">Welcome to Lived</h2>
+            <p className="auth-tagline">Real experiences. Real lessons.</p>
             <p className="auth-desc">
               Discover real-life experiences, learn actionable principles, and avoid costly mistakes.
             </p>
@@ -115,7 +115,7 @@ export const AuthModal: React.FC = () => {
         {/* Login Screen */}
         {mode === 'login' && (
           <form onSubmit={handleLogin} className="auth-form-view">
-            <h2 className="auth-title">Sign In to LifeLore</h2>
+            <h2 className="auth-title">Sign In to Lived</h2>
             <p className="auth-subtext">Access your saved experiences and reading history.</p>
 
             <div className="form-group">
@@ -178,7 +178,7 @@ export const AuthModal: React.FC = () => {
         {/* Register Screen */}
         {mode === 'register' && (
           <form onSubmit={handleRegister} className="auth-form-view">
-            <h2 className="auth-title">Join LifeLore</h2>
+            <h2 className="auth-title">Join Lived</h2>
             <p className="auth-subtext">Start learning from real human experiences.</p>
 
             <div className="form-group">

@@ -11,20 +11,20 @@ export const BottomNav: React.FC = () => {
     icon: React.ReactNode;
     badge?: number;
   }> = [
-    { id: 'home', label: 'Home', icon: <Home size={20} /> },
-    { id: 'explore', label: 'Explore', icon: <Compass size={20} /> },
+    { id: 'home', label: 'Home', icon: <Home size={19} /> },
+    { id: 'explore', label: 'Explore', icon: <Compass size={19} /> },
     {
       id: 'create',
       label: 'Share',
-      icon: <Plus size={24} className="create-plus-icon" />,
+      icon: <Plus size={20} />,
     },
     {
       id: 'saved',
       label: 'Saved',
-      icon: <Bookmark size={20} />,
+      icon: <Bookmark size={19} />,
       badge: savedExperiences.length > 0 ? savedExperiences.length : undefined,
     },
-    { id: 'profile', label: 'Profile', icon: <UserIcon size={20} /> },
+    { id: 'profile', label: 'Profile', icon: <UserIcon size={19} /> },
   ];
 
   return (
@@ -34,23 +34,22 @@ export const BottomNav: React.FC = () => {
           const isCreate = item.id === 'create';
           const isActive =
             activeTab === item.id ||
-            (item.id === 'home' && activeTab === 'detail') ||
-            (item.id === 'home' && activeTab === 'video');
+            (item.id === 'home' && (activeTab === 'detail' || activeTab === 'video'));
 
           if (isCreate) {
             return (
               <button
                 key={item.id}
                 type="button"
-                className={`nav-item-create ${activeTab === 'create' ? 'active' : ''}`}
+                className={`nav-item-share ${activeTab === 'create' ? 'active' : ''}`}
                 onClick={() => setActiveTab('create')}
-                aria-label="Share Your Experience"
-                title="Share your experience"
+                aria-label="Share Experience"
+                title="Share Experience"
               >
-                <div className="create-btn-inner">
+                <div className="share-btn-circle">
                   {item.icon}
                 </div>
-                <span className="create-btn-label">Share</span>
+                <span className="share-btn-text">Share</span>
               </button>
             );
           }

@@ -13,13 +13,8 @@ import {
   Heart,
   Bookmark,
   Share2,
-  BookOpen,
-  CheckCircle,
-  AlertTriangle,
-  Lightbulb,
-  Compass,
-  UserPlus,
   Check,
+  UserPlus,
 } from 'lucide-react';
 
 export const ExperienceDetailView: React.FC = () => {
@@ -46,8 +41,6 @@ export const ExperienceDetailView: React.FC = () => {
         const res = await experienceService.getExperienceById(selectedExperienceId);
         if (res.data) {
           setExperience(res.data);
-
-          // Load related experiences by category
           const allRes = await experienceService.getExperiences({
             category: res.data.category,
           });
@@ -56,7 +49,7 @@ export const ExperienceDetailView: React.FC = () => {
           }
         }
       } catch {
-        showToast('Could not load experience details', 'error');
+        showToast('Could not load experience', 'error');
       } finally {
         setLoading(false);
       }
@@ -68,302 +61,238 @@ export const ExperienceDetailView: React.FC = () => {
 
   if (loading || !experience) {
     return (
-      <div className="experience-detail-loading-container">
-        <div className="detail-loading-spinner" />
-        <p>Loading real experience narrative...</p>
+      <div className="reading-loading-box">
+        <p>Loading experience...</p>
       </div>
     );
   }
 
   const handleShare = async () => {
-    const shareUrl = window.location.href;
+    const url = window.location.href;
     if (navigator.share) {
       try {
         await navigator.share({
           title: experience.title,
-          text: `Read real lessons from "${experience.title}" on LifeLore:`,
-          url: shareUrl,
+          text: `Read this real experience on Lived: ${experience.title}`,
+          url,
         });
         return;
       } catch {
-        // Fallback to clipboard
+        // Fallback
       }
     }
-    navigator.clipboard?.writeText(shareUrl);
-    showToast('Link copied to clipboard!', 'success');
+    navigator.clipboard?.writeText(url);
+    showToast('Link copied to clipboard.', 'success');
   };
 
   const handleToggleFollow = async () => {
     await userService.toggleFollow(experience.author.id);
-    setIsFollowing((prev) => !prev);
+    setIsFollowing(!isFollowing);
     showToast(
-      isFollowing
-        ? `Unfollowed @${experience.author.username}`
-        : `Following @${experience.author.username}`,
+      isFollowing ? `Unfollowed @${experience.author.username}` : `Following @${experience.author.username}`,
       'info'
     );
   };
 
+  const hasStructuredSections = Boolean(
+    experience.story.whereIStarted ||
+    experience.story.theProblem ||
+    experience.story.whatFailed ||
+    experience.story.whatWorked
+  );
+
   return (
-    <article className="experience-detail-page">
-      {/* Top Floating Back & Action Bar */}
-      <nav className="detail-top-nav">
-        <button
-          type="button"
-          className="detail-back-btn"
-          onClick={goBack}
-          aria-label="Back to previous screen"
-        >
-          <ArrowLeft size={18} />
+    <article className="clean-reading-page">
+      {/* Top Simple Back Nav */}
+      <div className="clean-nav-row">
+        <button type="button" className="clean-back-btn" onClick={goBack}>
+          <ArrowLeft size={16} />
           <span>Back</span>
         </button>
+      </div>
 
-        <div className="detail-top-actions">
-          <button
-            type="button"
-            className={`detail-action-icon-btn ${experience.isLiked ? 'active' : ''}`}
-            onClick={() => toggleLike(experience.id)}
-            title="Like story"
-            aria-label="Like story"
-          >
-            <Heart size={18} fill={experience.isLiked ? 'currentColor' : 'none'} />
-            <span className="btn-count">{experience.likesCount}</span>
-          </button>
-
-          <button
-            type="button"
-            className={`detail-action-icon-btn ${experience.isSaved ? 'active' : ''}`}
-            onClick={() => toggleSave(experience.id)}
-            title="Save for later"
-            aria-label="Save for later"
-          >
-            <Bookmark size={18} fill={experience.isSaved ? 'currentColor' : 'none'} />
-          </button>
-
-          <button
-            type="button"
-            className="detail-action-icon-btn"
-            onClick={handleShare}
-            title="Share experience"
-            aria-label="Share experience"
-          >
-            <Share2 size={18} />
-          </button>
-        </div>
-      </nav>
-
-      {/* Hero Header */}
-      <header className="detail-header-block">
-        <div className="detail-tags-row">
-          <span className="detail-category-tag">{experience.category}</span>
-          <span className="detail-format-tag">
-            <BookOpen size={13} />
-            <span>Structured Story</span>
-          </span>
-          <span className="detail-readtime-tag">
-            <Clock size={13} />
+      {/* Header Block: Title, Author, Category */}
+      <header className="clean-reading-header">
+        <div className="clean-meta-tags">
+          <span className="clean-category-tag">{experience.category}</span>
+          <span className="clean-readtime-tag">
+            <Clock size={12} />
             <span>{experience.readTimeMinutes} min read</span>
           </span>
         </div>
 
-        <h1 className="detail-title">{experience.title}</h1>
-        <p className="detail-lead-summary">{experience.description}</p>
+        <h1 className="clean-story-title">{experience.title}</h1>
 
-        {/* Author Bio Banner */}
-        <div className="detail-author-box">
+        <div className="clean-author-bar">
           <img
             src={experience.author.avatar}
             alt={experience.author.name}
-            className="detail-author-avatar"
+            className="clean-author-avatar"
           />
-          <div className="detail-author-details">
-            <div className="detail-author-name-row">
-              <span className="detail-author-name">{experience.author.name}</span>
-              <span className="detail-author-handle">@{experience.author.username}</span>
-            </div>
-            <p className="detail-author-bio">
-              {experience.author.bio || experience.author.role || 'Contributor on LifeLore'}
-            </p>
+          <div className="clean-author-info">
+            <span className="clean-author-name">{experience.author.name}</span>
+            <span className="clean-author-role">
+              {experience.author.role || `@${experience.author.username}`}
+            </span>
           </div>
+
           <button
             type="button"
-            className={`btn-follow-author ${isFollowing ? 'following' : ''}`}
+            className={`clean-follow-btn ${isFollowing ? 'following' : ''}`}
             onClick={handleToggleFollow}
           >
-            {isFollowing ? (
-              <>
-                <Check size={14} />
-                <span>Following</span>
-              </>
-            ) : (
-              <>
-                <UserPlus size={14} />
-                <span>Follow</span>
-              </>
-            )}
+            {isFollowing ? <Check size={13} /> : <UserPlus size={13} />}
+            <span>{isFollowing ? 'Following' : 'Follow'}</span>
           </button>
         </div>
       </header>
 
-      {/* Structured Long-Form Reading Content */}
-      <main className="detail-reading-layout">
-        {/* Section: Where I Started */}
-        {experience.story.whereIStarted && (
-          <section className="story-section">
-            <div className="story-section-header">
-              <span className="story-step-indicator">Step 01</span>
-              <h2 className="story-section-title">Where I Started</h2>
-            </div>
-            <div className="story-body-text">
-              <p>{experience.story.whereIStarted}</p>
-            </div>
-          </section>
-        )}
-
-        {/* Section: The Problem */}
-        {experience.story.theProblem && (
-          <section className="story-section problem-highlight">
-            <div className="story-section-header">
-              <span className="story-step-indicator problem">Step 02</span>
-              <h2 className="story-section-title">The Problem & Unexpected Trap</h2>
-            </div>
-            <div className="story-body-text">
-              <p>{experience.story.theProblem}</p>
-            </div>
-          </section>
-        )}
-
-        {/* Section: What I Tried */}
-        {experience.story.whatITried && (
-          <section className="story-section">
-            <div className="story-section-header">
-              <span className="story-step-indicator">Step 03</span>
-              <h2 className="story-section-title">What I Tried Initially</h2>
-            </div>
-            <div className="story-body-text">
-              <p>{experience.story.whatITried}</p>
-            </div>
-          </section>
-        )}
-
-        {/* Section: What Failed */}
-        {experience.story.whatFailed && (
-          <section className="story-section failure-box">
-            <div className="story-section-header">
-              <AlertTriangle size={18} className="failure-icon" />
-              <h2 className="story-section-title">What Failed (The Mistakes)</h2>
-            </div>
-            <div className="story-body-text">
-              <p>{experience.story.whatFailed}</p>
-            </div>
-          </section>
-        )}
-
-        {/* Section: What Worked */}
-        {experience.story.whatWorked && (
-          <section className="story-section success-box">
-            <div className="story-section-header">
-              <CheckCircle size={18} className="success-icon" />
-              <h2 className="story-section-title">What Actually Worked (The Breakthrough)</h2>
-            </div>
-            <div className="story-body-text">
-              <p>{experience.story.whatWorked}</p>
-            </div>
-          </section>
-        )}
-
-        {/* Section: What I Learned */}
-        {experience.story.whatILearned && (
-          <section className="story-section">
-            <div className="story-section-header">
-              <Lightbulb size={18} className="insight-icon" />
-              <h2 className="story-section-title">What I Learned</h2>
-            </div>
-            <div className="story-body-text">
-              <p>{experience.story.whatILearned}</p>
-            </div>
-          </section>
-        )}
-
-        {/* Section: What I Would Do Differently */}
-        {experience.story.whatIWouldDoDifferently && (
-          <section className="story-section differently-box">
-            <div className="story-section-header">
-              <Compass size={18} className="differently-icon" />
-              <h2 className="story-section-title">What I Would Do Differently Today</h2>
-            </div>
-            <div className="story-body-text">
-              <p>{experience.story.whatIWouldDoDifferently}</p>
-            </div>
-          </section>
-        )}
-
-        {/* Key Lessons Section (Numbered Cards 01, 02, 03) */}
-        <section className="detail-key-lessons-block">
-          <div className="key-lessons-header">
-            <span className="lessons-badge">Core Takeaways</span>
-            <h2 className="key-lessons-title">Key Lessons</h2>
-            <p className="key-lessons-desc">
-              Direct, actionable principles you can apply right away to avoid repeating this hurdle.
-            </p>
-          </div>
-
-          <div className="key-lessons-list">
-            {experience.lessons.map((lesson) => (
-              <LessonCard key={lesson.id} lesson={lesson} showActionStep={true} />
+      {/* Main Distraction-Free Story Content */}
+      <div className="clean-story-body">
+        {/* Simple single text story */}
+        {experience.story.content && (
+          <div className="story-paragraphs">
+            {experience.story.content.split('\n\n').map((paragraph, idx) => (
+              <p key={idx}>{paragraph}</p>
             ))}
           </div>
-        </section>
+        )}
 
-        {/* "Was this experience helpful?" Feedback Section */}
-        <section className="helpful-feedback-section">
-          <div className="feedback-card">
-            <h3 className="feedback-title">Was this experience helpful?</h3>
-            <p className="feedback-desc">
-              Your feedback trains our recommendation engine and supports genuine experience sharing.
-            </p>
+        {/* Structured story sections if present */}
+        {hasStructuredSections && (
+          <div className="story-structured-flow">
+            {experience.story.whereIStarted && (
+              <div className="story-chapter">
+                <h3>Where I Started</h3>
+                <p>{experience.story.whereIStarted}</p>
+              </div>
+            )}
 
-            <div className="feedback-buttons-row">
-              <button
-                type="button"
-                className={`btn-helpful yes ${
-                  experience.userHelpfulVote === 'yes' ? 'voted' : ''
-                }`}
-                onClick={() => markHelpful(experience.id, 'yes')}
-              >
-                <ThumbsUp size={16} />
-                <span>Yes, it helped ({experience.helpfulCount})</span>
-              </button>
+            {experience.story.theProblem && (
+              <div className="story-chapter">
+                <h3>The Roadblock & Problem</h3>
+                <p>{experience.story.theProblem}</p>
+              </div>
+            )}
 
-              <button
-                type="button"
-                className={`btn-helpful no ${
-                  experience.userHelpfulVote === 'no' ? 'voted' : ''
-                }`}
-                onClick={() => markHelpful(experience.id, 'no')}
-              >
-                <ThumbsDown size={16} />
-                <span>Not really</span>
-              </button>
-            </div>
+            {experience.story.whatITried && (
+              <div className="story-chapter">
+                <h3>What I Tried</h3>
+                <p>{experience.story.whatITried}</p>
+              </div>
+            )}
+
+            {experience.story.whatFailed && (
+              <div className="story-chapter">
+                <h3>What Failed</h3>
+                <p>{experience.story.whatFailed}</p>
+              </div>
+            )}
+
+            {experience.story.whatWorked && (
+              <div className="story-chapter">
+                <h3>What Actually Worked</h3>
+                <p>{experience.story.whatWorked}</p>
+              </div>
+            )}
+
+            {experience.story.whatILearned && (
+              <div className="story-chapter">
+                <h3>What I Learned</h3>
+                <p>{experience.story.whatILearned}</p>
+              </div>
+            )}
+
+            {experience.story.whatIWouldDoDifferently && (
+              <div className="story-chapter">
+                <h3>What I Would Do Differently</h3>
+                <p>{experience.story.whatIWouldDoDifferently}</p>
+              </div>
+            )}
           </div>
-        </section>
+        )}
 
-        {/* Threaded Discussion Section */}
-        <CommentsSection experienceId={experience.id} />
-
-        {/* Related Experiences */}
-        {related.length > 0 && (
-          <section className="related-experiences-section">
-            <h3 className="related-heading">Related Experiences in {experience.category}</h3>
-            <div className="cards-feed-grid">
-              {related.map((rel) => (
-                <ExperienceCard key={rel.id} experience={rel} />
+        {/* Key Lessons if present */}
+        {experience.lessons && experience.lessons.length > 0 && (
+          <section className="clean-lessons-section">
+            <h3 className="clean-section-heading">Key Lessons</h3>
+            <div className="clean-lessons-grid">
+              {experience.lessons.map((lesson) => (
+                <LessonCard key={lesson.id} lesson={lesson} showActionStep={true} />
               ))}
             </div>
           </section>
         )}
-      </main>
+      </div>
+
+      {/* Was this helpful? Section */}
+      <section className="clean-helpful-box">
+        <h4 className="helpful-question">Was this helpful?</h4>
+        <div className="helpful-buttons">
+          <button
+            type="button"
+            className={`btn-helpful-clean yes ${
+              experience.userHelpfulVote === 'yes' ? 'voted' : ''
+            }`}
+            onClick={() => markHelpful(experience.id, 'yes')}
+          >
+            <ThumbsUp size={15} />
+            <span>Yes, it helped ({experience.helpfulCount})</span>
+          </button>
+
+          <button
+            type="button"
+            className={`btn-helpful-clean no ${
+              experience.userHelpfulVote === 'no' ? 'voted' : ''
+            }`}
+            onClick={() => markHelpful(experience.id, 'no')}
+          >
+            <ThumbsDown size={15} />
+            <span>Not really</span>
+          </button>
+        </div>
+      </section>
+
+      {/* Social Action Bar (Like, Comment, Save, Share) */}
+      <div className="clean-actions-toolbar">
+        <button
+          type="button"
+          className={`clean-action-pill ${experience.isLiked ? 'liked' : ''}`}
+          onClick={() => toggleLike(experience.id)}
+        >
+          <Heart size={16} fill={experience.isLiked ? 'currentColor' : 'none'} />
+          <span>{experience.likesCount} Like</span>
+        </button>
+
+        <button
+          type="button"
+          className={`clean-action-pill ${experience.isSaved ? 'saved' : ''}`}
+          onClick={() => toggleSave(experience.id)}
+        >
+          <Bookmark size={16} fill={experience.isSaved ? 'currentColor' : 'none'} />
+          <span>{experience.isSaved ? 'Saved' : 'Save'}</span>
+        </button>
+
+        <button type="button" className="clean-action-pill" onClick={handleShare}>
+          <Share2 size={16} />
+          <span>Share</span>
+        </button>
+      </div>
+
+      {/* Threaded Discussion */}
+      <CommentsSection experienceId={experience.id} />
+
+      {/* Related Experiences */}
+      {related.length > 0 && (
+        <section className="clean-related-section">
+          <h3 className="clean-section-heading">More in {experience.category}</h3>
+          <div className="cards-feed-grid">
+            {related.map((rel) => (
+              <ExperienceCard key={rel.id} experience={rel} />
+            ))}
+          </div>
+        </section>
+      )}
     </article>
   );
 };

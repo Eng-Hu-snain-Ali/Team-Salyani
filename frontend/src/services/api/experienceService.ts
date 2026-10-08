@@ -164,21 +164,24 @@ class ExperienceService {
     const newExp: Experience = {
       id: `exp_${Date.now()}`,
       title: payload.title,
-      description: payload.description,
+      description:
+        payload.description ||
+        (payload.story.content ? payload.story.content.slice(0, 140) + '...' : '') ||
+        'Real experience shared on Lived.',
       author: {
         id: 'usr_me_01',
         name: 'Alex Chen',
         username: 'alexchen_dev',
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-        role: 'Frontend Engineer',
-        bio: 'Software engineer & curious learner.',
+        role: 'Community Member',
+        bio: 'Learning from real human experiences on Lived.',
       },
-      category: payload.category,
-      tags: payload.tags,
+      category: payload.category || 'Personal Growth',
+      tags: payload.tags && payload.tags.length > 0 ? payload.tags : ['Experience'],
       contentType: payload.contentType,
-      readTimeMinutes: payload.readTimeMinutes,
+      readTimeMinutes: payload.readTimeMinutes || 3,
       story: payload.story,
-      lessons: payload.lessons.map((l, index) => ({
+      lessons: (payload.lessons || []).map((l, index) => ({
         id: `les_${Date.now()}_${index}`,
         number: index + 1,
         title: l.title,

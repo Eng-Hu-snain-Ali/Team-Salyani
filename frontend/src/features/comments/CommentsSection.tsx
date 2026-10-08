@@ -258,7 +258,7 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({ experienceId }
         isOpen={Boolean(reportingCommentId)}
         onClose={() => setReportingCommentId(null)}
         title="Report Comment"
-        subtitle="Help keep LifeLore a high-trust, educational environment."
+        subtitle="Help keep Lived a high-trust, educational environment."
       >
         <div className="report-modal-body">
           <label className="input-label">Reason for reporting:</label>

@@ -1,6 +1,6 @@
 // ============================================================================
-// LIFELORE DOMAIN TYPES & DATA CONTRACTS
-// "Real Stories. Real Lessons."
+// LIVED DOMAIN TYPES & DATA CONTRACTS
+// "Real experiences. Real lessons."
 // ============================================================================
 
 export type ContentType = 'story' | 'video' | 'pdf' | 'image' | 'guide';
@@ -44,14 +44,15 @@ export interface Lesson {
 }
 
 export interface StructuredStory {
+  content?: string;
   myStory?: string;
-  whereIStarted: string;
-  theProblem: string;
-  whatITried: string;
-  whatFailed: string;
-  whatWorked: string;
-  whatILearned: string;
-  whatIWouldDoDifferently: string;
+  whereIStarted?: string;
+  theProblem?: string;
+  whatITried?: string;
+  whatFailed?: string;
+  whatWorked?: string;
+  whatILearned?: string;
+  whatIWouldDoDifferently?: string;
 }
 
 export interface ExperienceMedia {
@@ -187,12 +188,12 @@ export interface AuthTokens {
 
 export interface CreateExperiencePayload {
   title: string;
-  description: string;
-  category: ExperienceCategory;
-  tags: string[];
+  description?: string;
+  category?: ExperienceCategory;
+  tags?: string[];
   contentType: ContentType;
-  readTimeMinutes: number;
+  readTimeMinutes?: number;
   story: StructuredStory;
-  lessons: Array<Omit<Lesson, 'id'>>;
+  lessons?: Array<Omit<Lesson, 'id'>>;
   media?: ExperienceMedia;
 }

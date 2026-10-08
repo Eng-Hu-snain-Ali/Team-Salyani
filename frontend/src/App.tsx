@@ -39,13 +39,13 @@ const MainAppContent: React.FC = () => {
   };
 
   return (
-    <div className="lifelore-app-shell">
+    <div className="lived-app-shell">
       {/* Universal Fixed Header */}
       <Header />
 
       {/* Main Responsive Viewport */}
-      <main className="lifelore-main-viewport" id="main-content">
-        <div className="lifelore-viewport-limiter">
+      <main className="lived-main-viewport" id="main-content">
+        <div className="lived-viewport-limiter">
           {renderCurrentScreen()}
         </div>
       </main>

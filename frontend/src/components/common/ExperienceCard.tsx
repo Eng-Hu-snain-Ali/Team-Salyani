@@ -1,49 +1,37 @@
 import React from 'react';
-import type { Experience } from '../../types';
 import { useApp } from '../../context/AppContext';
+import type { Experience } from '../../types';
 import {
   Clock,
   ThumbsUp,
-  Heart,
-  MessageSquare,
   Bookmark,
   Video,
   FileText,
   BookOpen,
-  Sparkles,
 } from 'lucide-react';
 
 interface ExperienceCardProps {
   experience: Experience;
-  featured?: boolean;
 }
 
-export const ExperienceCard: React.FC<ExperienceCardProps> = ({
-  experience,
-  featured = false,
-}) => {
-  const { openExperience, toggleLike, toggleSave } = useApp();
+export const ExperienceCard: React.FC<ExperienceCardProps> = ({ experience }) => {
+  const { openExperience, toggleSave } = useApp();
 
-  const getTypeIcon = () => {
+  const getTypeLabel = () => {
     switch (experience.contentType) {
       case 'video':
-        return <Video size={13} />;
+        return { label: 'Video', icon: <Video size={12} /> };
       case 'pdf':
-        return <FileText size={13} />;
-      case 'guide':
-        return <Sparkles size={13} />;
+        return { label: 'PDF', icon: <FileText size={12} /> };
       default:
-        return <BookOpen size={13} />;
+        return { label: 'Story', icon: <BookOpen size={12} /> };
     }
   };
 
+  const typeInfo = getTypeLabel();
+
   const handleCardClick = () => {
     openExperience(experience.id);
-  };
-
-  const handleLike = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    toggleLike(experience.id);
   };
 
   const handleSave = (e: React.MouseEvent) => {
@@ -53,7 +41,7 @@ export const ExperienceCard: React.FC<ExperienceCardProps> = ({
 
   return (
     <article
-      className={`experience-card ${featured ? 'featured' : ''}`}
+      className="clean-card"
       onClick={handleCardClick}
       role="button"
       tabIndex={0}
@@ -61,62 +49,37 @@ export const ExperienceCard: React.FC<ExperienceCardProps> = ({
         if (e.key === 'Enter') handleCardClick();
       }}
     >
-      {/* Top Metadata: Author & Category */}
-      <div className="card-top-meta">
-        <div className="card-author-info">
+      {/* Top Author & Tags Bar */}
+      <div className="clean-card-meta">
+        <div className="clean-author-cell">
           <img
             src={experience.author.avatar}
             alt={experience.author.name}
-            className="card-author-avatar"
+            className="clean-card-avatar"
             loading="lazy"
           />
-          <div className="card-author-text">
-            <span className="card-author-name">{experience.author.name}</span>
-            <span className="card-author-role">
-              {experience.author.role || `@${experience.author.username}`}
-            </span>
-          </div>
+          <span className="clean-card-author-name">{experience.author.name}</span>
         </div>
 
-        <div className="card-badges">
-          <span className={`badge-type ${experience.contentType}`}>
-            {getTypeIcon()}
-            <span>
-              {experience.contentType === 'video'
-                ? 'Video'
-                : experience.contentType === 'pdf'
-                ? 'PDF Guide'
-                : experience.contentType === 'guide'
-                ? 'Framework'
-                : 'Story'}
-            </span>
+        <div className="clean-card-tags">
+          <span className="clean-category-pill">{experience.category}</span>
+          <span className="clean-type-pill">
+            {typeInfo.icon}
+            <span>{typeInfo.label}</span>
           </span>
-          <span className="badge-category">{experience.category}</span>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="card-body">
-        <h3 className="card-title">{experience.title}</h3>
-        <p className="card-description">{experience.description}</p>
+      {/* Main Title & Preview */}
+      <div className="clean-card-content">
+        <h3 className="clean-card-title">{experience.title}</h3>
+        <p className="clean-card-preview">{experience.description}</p>
       </div>
 
-      {/* Lessons Preview Pills */}
-      {experience.lessons && experience.lessons.length > 0 && (
-        <div className="card-lessons-preview">
-          <span className="lessons-count-tag">
-            <strong>{experience.lessons.length}</strong> Key Lessons
-          </span>
-          <span className="card-lesson-sample-title">
-            "01 {experience.lessons[0].title}"
-          </span>
-        </div>
-      )}
-
-      {/* Card Footer: Metrics & Actions */}
-      <div className="card-footer">
-        <div className="card-footer-left">
-          <div className="card-metric read-time">
+      {/* Footer Metrics (Read time, Helpful, Save) */}
+      <div className="clean-card-footer">
+        <div className="clean-footer-left">
+          <div className="clean-metric-item">
             <Clock size={13} />
             <span>
               {experience.contentType === 'video'
@@ -126,37 +89,22 @@ export const ExperienceCard: React.FC<ExperienceCardProps> = ({
           </div>
 
           <div
-            className={`card-metric helpful ${
+            className={`clean-metric-item helpful ${
               experience.userHelpfulVote === 'yes' ? 'voted' : ''
             }`}
-            title="People who found this experience directly helpful"
           >
             <ThumbsUp size={13} />
             <span>{experience.helpfulCount} helpful</span>
           </div>
         </div>
 
-        <div className="card-footer-right">
+        <div className="clean-footer-right">
           <button
             type="button"
-            className={`card-action-btn like ${experience.isLiked ? 'active' : ''}`}
-            onClick={handleLike}
-            aria-label="Like experience"
-          >
-            <Heart size={15} fill={experience.isLiked ? 'currentColor' : 'none'} />
-            <span className="action-count">{experience.likesCount}</span>
-          </button>
-
-          <div className="card-action-stat comments">
-            <MessageSquare size={15} />
-            <span className="action-count">{experience.commentsCount}</span>
-          </div>
-
-          <button
-            type="button"
-            className={`card-action-btn save ${experience.isSaved ? 'active' : ''}`}
+            className={`clean-save-icon-btn ${experience.isSaved ? 'saved' : ''}`}
             onClick={handleSave}
-            aria-label={experience.isSaved ? 'Unsave experience' : 'Save experience'}
+            title={experience.isSaved ? 'Saved' : 'Save experience'}
+            aria-label={experience.isSaved ? 'Saved' : 'Save experience'}
           >
             <Bookmark size={15} fill={experience.isSaved ? 'currentColor' : 'none'} />
           </button>

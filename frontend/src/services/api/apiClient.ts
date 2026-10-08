@@ -22,7 +22,7 @@ interface RequestOptions extends RequestInit {
 
 class ApiClient {
   private baseURL: string;
-  private tokenKey = 'lifelore_auth_token';
+  private tokenKey = 'lived_auth_token';
 
   constructor() {
     this.baseURL = import.meta.env.VITE_API_BASE_URL || '';

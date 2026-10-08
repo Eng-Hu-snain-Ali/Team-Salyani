@@ -81,7 +81,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // 1. Theme State (defaults to dark or saved preference)
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     try {
-      const saved = localStorage.getItem('lifelore_theme');
+      const saved = localStorage.getItem('lived_theme');
       return (saved as 'light' | 'dark') || 'dark';
     } catch {
       return 'dark';
@@ -91,7 +91,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     try {
-      localStorage.setItem('lifelore_theme', theme);
+      localStorage.setItem('lived_theme', theme);
     } catch {
       // safe fallback
     }
@@ -306,7 +306,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const res = await userService.saveOnboarding(interests, goal);
       setUser(res.data);
       setIsOnboardingModalOpen(false);
-      showToast('Welcome to LifeLore! Your personalized experience feed is ready.', 'success');
+      showToast('Welcome to Lived! Your personalized experience feed is ready.', 'success');
     } catch {
       showToast('Could not save onboarding preferences', 'error');
     }

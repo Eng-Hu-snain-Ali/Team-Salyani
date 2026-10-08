@@ -243,7 +243,7 @@ export const ProfileView: React.FC = () => {
             <div className="about-section-box">
               <div className="about-header-row">
                 <Users size={18} className="about-icon" />
-                <h3>LifeLore Community Creed</h3>
+                <h3>Lived Community Creed</h3>
               </div>
               <blockquote className="community-creed">
                 "We don't post highlight reels. We post candid mistakes, unvarnished numbers, and
