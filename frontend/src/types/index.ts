@@ -1,181 +1,198 @@
-export type AgeGroup = 'teen' | 'young_adult' | 'adult';
+// ============================================================================
+// LIFELORE DOMAIN TYPES & DATA CONTRACTS
+// "Real Stories. Real Lessons."
+// ============================================================================
 
-export interface UserGoal {
-  id: string;
-  key: string;
-  label: string;
-  description: string;
-  icon: string;
-  priority: number;
-}
+export type ContentType = 'story' | 'video' | 'pdf' | 'image' | 'guide';
+
+export type ExperienceCategory =
+  | 'Career'
+  | 'Education'
+  | 'Business'
+  | 'Technology'
+  | 'Money'
+  | 'Health'
+  | 'Personal Growth'
+  | 'Relationships'
+  | 'Travel';
 
 export interface User {
   id: string;
   name: string;
-  email: string;
-  ageGroup: AgeGroup;
-  goals: string[]; // goal keys
+  username: string;
+  email?: string;
+  avatar: string;
+  bio: string;
+  location?: string;
+  role?: string;
+  interests: ExperienceCategory[];
+  currentGoal?: string;
+  followersCount: number;
+  followingCount: number;
+  experiencesCount: number;
+  helpfulCount: number;
   onboardingCompleted: boolean;
-  xp: number;
-  level: number;
-  streak: number;
-  longestStreak: number;
-  lastActiveDate: string;
-  avatarUrl?: string;
-  bio?: string;
+  createdAt: string;
 }
 
-export type ModuleKey = 
-  | 'decision_making' 
-  | 'money_management' 
-  | 'time_management' 
-  | 'communication' 
-  | 'problem_solving';
-
-export interface ModuleInfo {
+export interface Lesson {
   id: string;
-  key: ModuleKey;
-  name: string;
-  tagline: string;
-  description: string;
-  color: string;
-  secondaryColor: string;
-  bgGradient: string;
-  icon: string;
-  active: boolean;
-}
-
-export interface Skill {
-  id: string;
-  key: string;
-  moduleId: string;
-  moduleKey: ModuleKey;
-  name: string;
-  description: string;
-  currentScore: number; // 0-100
-  level: number; // 1-10
-}
-
-export interface ScenarioOption {
-  id: string;
-  label: string; // A, B, C, D
-  text: string;
-  consequence: string;
-  feedback: string;
-  skillScores: Record<string, number>; // skill_id -> score delta (-10 to +25)
-  xpAward: number;
-  isOptimal?: boolean;
-}
-
-export interface Scenario {
-  id: string;
-  moduleId: string;
-  moduleKey: ModuleKey;
+  number: number; // e.g. 1 -> displayed as "01"
   title: string;
-  summary: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
-  ageMin: number;
-  ageMax: number;
-  estimatedMinutes: number;
-  context: string;
-  dilemma: string;
-  options: ScenarioOption[];
+  description: string;
+  actionableStep?: string;
+}
+
+export interface StructuredStory {
+  myStory?: string;
+  whereIStarted: string;
+  theProblem: string;
+  whatITried: string;
+  whatFailed: string;
+  whatWorked: string;
+  whatILearned: string;
+  whatIWouldDoDifferently: string;
+}
+
+export interface ExperienceMedia {
+  type: 'video' | 'image' | 'pdf';
+  url: string;
+  thumbnailUrl?: string;
+  fileName?: string;
+  fileSizeBytes?: number;
+  durationSeconds?: number;
+}
+
+export interface Experience {
+  id: string;
+  title: string;
+  description: string; // short summary
+  author: {
+    id: string;
+    name: string;
+    username: string;
+    avatar: string;
+    role?: string;
+    bio?: string;
+  };
+  category: ExperienceCategory;
   tags: string[];
-  isDailyChallenge?: boolean;
-  recommendationReason?: string;
+  contentType: ContentType;
+  readTimeMinutes: number; // or watch time for video
+  coverImage?: string;
+  
+  // Structured long-form story
+  story: StructuredStory;
+  
+  // High-yield takeaway cards
+  lessons: Lesson[];
+  
+  // Optional attached media (video, PDF, image gallery)
+  media?: ExperienceMedia;
+  
+  // Engagement & Feedback
+  likesCount: number;
+  commentsCount: number;
+  helpfulCount: number;
+  notHelpfulCount: number;
+  isLiked?: boolean;
+  isSaved?: boolean;
+  userHelpfulVote?: 'yes' | 'no' | null;
+  
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface AIEvaluationResult {
-  overallScore: number; // 0-100
-  skillScores: Record<string, number>;
-  strengths: string[];
-  improvements: string[];
-  consequenceExplanation: string;
-  nextAction: string;
-  retryAvailable: boolean;
-  xpAwarded: number;
-}
-
-export interface Attempt {
+export interface Comment {
   id: string;
-  scenarioId: string;
-  scenarioTitle: string;
-  moduleKey: ModuleKey;
+  experienceId: string;
+  author: {
+    id: string;
+    name: string;
+    username: string;
+    avatar: string;
+  };
+  content: string;
+  likesCount: number;
+  isLiked?: boolean;
+  parentId?: string | null; // For threaded replies
+  replies?: Comment[];
+  createdAt: string;
+}
+
+export interface Notification {
+  id: string;
   userId: string;
-  timestamp: string;
-  responseType: 'choice' | 'text';
-  selectedOptionId?: string;
-  openTextResponse?: string;
-  score: number;
-  xpEarned: number;
-  consequenceSummary: string;
-  feedbackSummary: string;
-  status: 'completed' | 'in_progress';
-}
-
-export interface Achievement {
-  id: string;
-  key: string;
-  title: string;
-  description: string;
-  icon: string;
-  moduleKey?: ModuleKey;
-  unlockedAt?: string;
-  isUnlocked: boolean;
-  progress: number;
-  maxProgress: number;
-  xpReward: number;
-}
-
-export interface MentorExperience {
-  id: string;
-  authorName: string;
-  authorRole: string; // e.g. "Founder, Logistics Co ($500k ARR)"
-  authorAvatar: string;
-  businessType: string;
-  title: string;
-  category: 'business_launch' | 'costly_mistake' | 'sales_negotiation' | 'mindset_shift' | 'growth_hack';
-  summary: string;
-  fullStory: string;
-  lessonLearned: string;
-  keyTakeaways: string[];
-  relatedScenarioId?: string;
-  likes: number;
-  readMinutes: number;
-  date: string;
-  verifiedMentor: boolean;
-}
-
-export interface BusinessIdea {
-  id: string;
-  title: string;
-  category: 'zero_capital' | 'digital_service' | 'local_arbitrage' | 'high_margin';
-  tagline: string;
-  description: string;
-  targetAudience: string;
-  startingBudget: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
-  potentialRevenue: string;
-  executionSteps: string[];
-  mentorAdvice: string;
-  skillsNeeded: string[];
-}
-
-export interface NotificationItem {
-  id: string;
-  title: string;
+  actor: {
+    id: string;
+    name: string;
+    avatar: string;
+  };
+  type: 'like' | 'comment' | 'reply' | 'follow' | 'helpful';
+  targetId: string; // experienceId or commentId
+  targetTitle?: string;
   message: string;
-  timestamp: string;
-  read: boolean;
-  type: 'streak' | 'achievement' | 'challenge' | 'system';
+  isRead: boolean;
+  createdAt: string;
 }
 
-export type NavigationTab = 
-  | 'home' 
-  | 'feed'
-  | 'ideas'
-  | 'challenges' 
-  | 'scenario' 
-  | 'skills' 
-  | 'progress' 
-  | 'profile';
+export interface SavedExperience {
+  experienceId: string;
+  savedAt: string;
+  category: ExperienceCategory;
+  contentType: ContentType;
+}
+
+export interface Follow {
+  followerId: string;
+  followingId: string;
+  createdAt: string;
+}
+
+// ----------------------------------------------------------------------------
+// API & Pagination Contracts (For Backend Developers)
+// ----------------------------------------------------------------------------
+
+export interface Pagination {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+  error?: string;
+  pagination?: Pagination;
+}
+
+export interface FilterOptions {
+  category?: ExperienceCategory | 'All';
+  contentType?: ContentType | 'All';
+  sortBy?: 'popularity' | 'newest' | 'most_helpful';
+  searchQuery?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface AuthTokens {
+  accessToken: string;
+  refreshToken?: string;
+  expiresAt?: string;
+}
+
+export interface CreateExperiencePayload {
+  title: string;
+  description: string;
+  category: ExperienceCategory;
+  tags: string[];
+  contentType: ContentType;
+  readTimeMinutes: number;
+  story: StructuredStory;
+  lessons: Array<Omit<Lesson, 'id'>>;
+  media?: ExperienceMedia;
+}

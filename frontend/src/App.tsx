@@ -2,74 +2,72 @@ import React from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Header } from './components/common/Header';
 import { BottomNav } from './components/common/BottomNav';
-import { UnlockModal } from './components/common/UnlockModal';
-import { HomeDashboard } from './components/home/HomeDashboard';
-import { ScenarioPlayer } from './components/scenario/ScenarioPlayer';
-import { ChallengesExplorer } from './components/challenges/ChallengesExplorer';
-import { SkillsAnalytics } from './components/skills/SkillsAnalytics';
-import { ProgressView } from './components/progress/ProgressView';
-import { ProfileSettings } from './components/profile/ProfileSettings';
-import { OnboardingFlow } from './components/onboarding/OnboardingFlow';
-import { ExperienceFeed } from './components/feed/ExperienceFeed';
-import { IdeaVault } from './components/ideas/IdeaVault';
+import { ToastContainer } from './components/common/Toast';
+import { HomeView } from './features/home/HomeView';
+import { ExploreView } from './features/explore/ExploreView';
+import { CreateExperienceView } from './features/create/CreateExperienceView';
+import { SavedView } from './features/saved/SavedView';
+import { ProfileView } from './features/profile/ProfileView';
+import { ExperienceDetailView } from './features/experiences/ExperienceDetailView';
+import { VideoExperienceView } from './features/experiences/VideoExperienceView';
+import { NotificationDrawer } from './features/notifications/NotificationDrawer';
+import { AuthModal } from './features/auth/AuthModal';
+import { OnboardingModal } from './features/auth/OnboardingModal';
 
-const MainAppLayout: React.FC = () => {
-  const { user, activeTab } = useApp();
+const MainAppContent: React.FC = () => {
+  const { activeTab } = useApp();
 
-  // If user hasn't completed onboarding, show onboarding
-  if (!user.onboardingCompleted) {
-    return (
-      <div className="app-viewport-wrapper">
-        <Header />
-        <main className="main-content-area">
-          <OnboardingFlow />
-        </main>
-        <UnlockModal />
-      </div>
-    );
-  }
-
-  const renderActiveScreen = () => {
+  const renderCurrentScreen = () => {
     switch (activeTab) {
       case 'home':
-        return <HomeDashboard />;
-      case 'feed':
-        return <ExperienceFeed />;
-      case 'ideas':
-        return <IdeaVault />;
-      case 'challenges':
-        return <ChallengesExplorer />;
-      case 'scenario':
-        return <ScenarioPlayer />;
-      case 'skills':
-        return <SkillsAnalytics />;
-      case 'progress':
-        return <ProgressView />;
+        return <HomeView />;
+      case 'explore':
+        return <ExploreView />;
+      case 'create':
+        return <CreateExperienceView />;
+      case 'saved':
+        return <SavedView />;
       case 'profile':
-        return <ProfileSettings />;
+        return <ProfileView />;
+      case 'detail':
+        return <ExperienceDetailView />;
+      case 'video':
+        return <VideoExperienceView />;
       default:
-        return <HomeDashboard />;
+        return <HomeView />;
     }
   };
 
   return (
-    <div className="app-viewport-wrapper">
+    <div className="lifelore-app-shell">
+      {/* Universal Fixed Header */}
       <Header />
-      <main className="main-content-area">
-        {renderActiveScreen()}
+
+      {/* Main Responsive Viewport */}
+      <main className="lifelore-main-viewport" id="main-content">
+        <div className="lifelore-viewport-limiter">
+          {renderCurrentScreen()}
+        </div>
       </main>
+
+      {/* Bottom Navigation */}
       <BottomNav />
-      <UnlockModal />
+
+      {/* Global Drawers & Modals */}
+      <NotificationDrawer />
+      <AuthModal />
+      <OnboardingModal />
+      <ToastContainer />
     </div>
   );
 };
 
-export function App() {
+export const App: React.FC = () => {
   return (
     <AppProvider>
-      <MainAppLayout />
+      <MainAppContent />
     </AppProvider>
   );
-}
+};
 
 export default App;

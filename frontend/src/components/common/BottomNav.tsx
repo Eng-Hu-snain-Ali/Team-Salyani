@@ -1,72 +1,80 @@
 import React from 'react';
-import { useApp } from '../../context/AppContext';
-import type { NavigationTab } from '../../types';
-import { Compass, BookOpen, Lightbulb, Layers, BarChart3, User as UserIcon } from 'lucide-react';
+import { useApp, type NavigationTab } from '../../context/AppContext';
+import { Home, Compass, Plus, Bookmark, User as UserIcon } from 'lucide-react';
 
 export const BottomNav: React.FC = () => {
-  const { activeTab, setActiveTab } = useApp();
+  const { activeTab, setActiveTab, savedExperiences } = useApp();
 
-  const navItems: { tab: NavigationTab; label: string; icon: React.ReactNode }[] = [
-    { tab: 'home', label: 'Home', icon: <Compass size={19} /> },
-    { tab: 'feed', label: 'Stories', icon: <BookOpen size={19} /> },
-    { tab: 'ideas', label: 'Ideas', icon: <Lightbulb size={19} /> },
-    { tab: 'challenges', label: 'Cases', icon: <Layers size={19} /> },
-    { tab: 'skills', label: 'Skills', icon: <BarChart3 size={19} /> },
-    { tab: 'profile', label: 'Profile', icon: <UserIcon size={19} /> },
+  const navItems: Array<{
+    id: NavigationTab;
+    label: string;
+    icon: React.ReactNode;
+    badge?: number;
+  }> = [
+    { id: 'home', label: 'Home', icon: <Home size={20} /> },
+    { id: 'explore', label: 'Explore', icon: <Compass size={20} /> },
+    {
+      id: 'create',
+      label: 'Share',
+      icon: <Plus size={24} className="create-plus-icon" />,
+    },
+    {
+      id: 'saved',
+      label: 'Saved',
+      icon: <Bookmark size={20} />,
+      badge: savedExperiences.length > 0 ? savedExperiences.length : undefined,
+    },
+    { id: 'profile', label: 'Profile', icon: <UserIcon size={20} /> },
   ];
 
   return (
-    <nav style={{
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      background: 'rgba(10, 13, 20, 0.92)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
-      borderTop: '1px solid var(--glass-border)',
-      padding: '8px 16px 12px',
-      display: 'flex',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      zIndex: 60,
-    }} className="mobile-bottom-nav">
-      {navItems.map((item) => {
-        const isActive = activeTab === item.tab;
-        return (
-          <button
-            key={item.tab}
-            onClick={() => setActiveTab(item.tab)}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 4,
-              color: isActive ? '#818CF8' : 'var(--text-muted)',
-              fontSize: '0.72rem',
-              fontWeight: isActive ? 700 : 500,
-              padding: '4px 12px',
-              borderRadius: 'var(--radius-md)',
-              position: 'relative',
-              transition: 'all var(--transition-fast)',
-            }}
-          >
-            {item.icon}
-            <span>{item.label}</span>
-            {isActive && (
-              <span style={{
-                position: 'absolute',
-                top: -8,
-                width: 24,
-                height: 3,
-                borderRadius: 2,
-                background: 'var(--brand-gradient)',
-                boxShadow: '0 0 8px rgba(99, 102, 241, 0.8)',
-              }} />
-            )}
-          </button>
-        );
-      })}
+    <nav className="bottom-nav-bar" aria-label="Main Navigation">
+      <div className="bottom-nav-container">
+        {navItems.map((item) => {
+          const isCreate = item.id === 'create';
+          const isActive =
+            activeTab === item.id ||
+            (item.id === 'home' && activeTab === 'detail') ||
+            (item.id === 'home' && activeTab === 'video');
+
+          if (isCreate) {
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className={`nav-item-create ${activeTab === 'create' ? 'active' : ''}`}
+                onClick={() => setActiveTab('create')}
+                aria-label="Share Your Experience"
+                title="Share your experience"
+              >
+                <div className="create-btn-inner">
+                  {item.icon}
+                </div>
+                <span className="create-btn-label">Share</span>
+              </button>
+            );
+          }
+
+          return (
+            <button
+              key={item.id}
+              type="button"
+              className={`nav-item ${isActive ? 'active' : ''}`}
+              onClick={() => setActiveTab(item.id)}
+              aria-label={item.label}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              <div className="nav-icon-wrapper">
+                {item.icon}
+                {item.badge !== undefined && (
+                  <span className="nav-badge-pill">{item.badge}</span>
+                )}
+              </div>
+              <span className="nav-label">{item.label}</span>
+            </button>
+          );
+        })}
+      </div>
     </nav>
   );
 };

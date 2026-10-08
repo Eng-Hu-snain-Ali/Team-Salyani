@@ -1,462 +1,370 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type {
   User,
-  Skill,
-  Scenario,
-  Achievement,
-  Attempt,
-  AgeGroup,
-  NavigationTab,
-  AIEvaluationResult,
-  ModuleInfo,
-  MentorExperience,
-  BusinessIdea,
+  Experience,
+  Notification,
+  ExperienceCategory,
+  CreateExperiencePayload,
 } from '../types';
 import {
-  SEED_MODULES,
-  SEED_SKILLS,
-  SEED_SCENARIOS,
-  SEED_ACHIEVEMENTS,
-  SEED_EXPERIENCES,
-  SEED_BUSINESS_IDEAS,
-} from '../data/seedData';
-import {
-  evaluateOpenTextResponse,
-  getRecommendedScenario,
-  checkBackendConnection,
-} from '../services/apiService';
-import type { BackendStatus } from '../services/apiService';
+  authService,
+  experienceService,
+  notificationService,
+  userService,
+} from '../services/api';
 import confetti from 'canvas-confetti';
 
-interface AppContextType {
-  user: User;
-  skills: Skill[];
-  scenarios: Scenario[];
-  modules: ModuleInfo[];
-  achievements: Achievement[];
-  attempts: Attempt[];
-  experiences: MentorExperience[];
-  businessIdeas: BusinessIdea[];
-  activeExperience: MentorExperience | null;
-  activeScenario: Scenario | null;
-  activeTab: NavigationTab;
-  deviceViewMode: 'desktop' | 'mobile';
-  backendStatus: BackendStatus;
-  isEvaluating: boolean;
-  latestEvaluation: AIEvaluationResult | null;
-  latestAttempt: Attempt | null;
-  showUnlockToast: Achievement | null;
+export type NavigationTab = 'home' | 'explore' | 'create' | 'saved' | 'profile' | 'detail' | 'video';
 
-  // Actions
-  setActiveTab: (tab: NavigationTab) => void;
-  setActiveExperience: (exp: MentorExperience | null) => void;
-  createExperience: (exp: Omit<MentorExperience, 'id' | 'likes' | 'date' | 'verifiedMentor'>) => void;
-  likeExperience: (id: string) => void;
-  setDeviceViewMode: (mode: 'desktop' | 'mobile') => void;
-  startScenario: (scenarioId: string) => void;
-  submitChoiceResponse: (scenario: Scenario, optionId: string) => Promise<Attempt>;
-  submitTextResponse: (scenario: Scenario, responseText: string) => Promise<Attempt>;
-  completeOnboarding: (ageGroup: AgeGroup, goals: string[]) => void;
-  resetProgress: () => void;
-  switchProfile: (profileType: 'teen' | 'college' | 'professional') => void;
-  updateUser: (updates: Partial<User>) => void;
-  clearUnlockToast: () => void;
-  refreshBackendStatus: () => Promise<void>;
+interface ToastState {
+  id: string;
+  message: string;
+  type: 'success' | 'info' | 'error';
 }
 
-const STORAGE_KEY_PREFIX = 'lifeos_app_data_v3_';
+interface AppContextType {
+  // Theme
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
 
-const DEFAULT_USER: User = {
-  id: 'user-demo-1',
-  name: 'LifeOS Explorer',
-  email: 'team@lifeos.app',
-  ageGroup: 'young_adult',
-  goals: ['financial_independence', 'stress_free_time', 'clear_decision_making'],
-  onboardingCompleted: true,
-  xp: 420,
-  level: 3,
-  streak: 4,
-  longestStreak: 5,
-  lastActiveDate: new Date().toISOString().split('T')[0],
-  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
-  bio: 'Learning to balance high-stakes deadlines, personal finance, and team leadership.',
-};
+  // Navigation
+  activeTab: NavigationTab;
+  setActiveTab: (tab: NavigationTab) => void;
+  selectedExperienceId: string | null;
+  openExperience: (id: string) => void;
+  goBack: () => void;
+
+  // Exploration filters passed from Home
+  exploreSearchQuery: string;
+  setExploreSearchQuery: (q: string) => void;
+  exploreSelectedCategory: ExperienceCategory | 'All';
+  setExploreSelectedCategory: (cat: ExperienceCategory | 'All') => void;
+
+  // User State
+  user: User;
+  updateUser: (updates: Partial<User>) => Promise<void>;
+  completeOnboarding: (interests: ExperienceCategory[], goal?: string) => Promise<void>;
+
+  // Experiences & Engagement
+  experiences: Experience[];
+  savedExperiences: Experience[];
+  isLoadingExperiences: boolean;
+  refreshExperiences: () => Promise<void>;
+  toggleLike: (id: string) => Promise<void>;
+  toggleSave: (id: string) => Promise<void>;
+  markHelpful: (id: string, vote: 'yes' | 'no') => Promise<void>;
+  publishExperience: (payload: CreateExperiencePayload) => Promise<Experience>;
+
+  // Notifications
+  notifications: Notification[];
+  unreadNotifsCount: number;
+  isNotificationsOpen: boolean;
+  setIsNotificationsOpen: (open: boolean) => void;
+  markNotificationRead: (id: string) => Promise<void>;
+  markAllNotificationsRead: () => Promise<void>;
+
+  // Modals
+  isAuthModalOpen: boolean;
+  setIsAuthModalOpen: (open: boolean) => void;
+  isOnboardingModalOpen: boolean;
+  setIsOnboardingModalOpen: (open: boolean) => void;
+
+  // Toast
+  toasts: ToastState[];
+  showToast: (message: string, type?: 'success' | 'info' | 'error') => void;
+  dismissToast: (id: string) => void;
+}
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}user`);
-    return saved ? JSON.parse(saved) : DEFAULT_USER;
+export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // 1. Theme State (defaults to dark or saved preference)
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    try {
+      const saved = localStorage.getItem('lifelore_theme');
+      return (saved as 'light' | 'dark') || 'dark';
+    } catch {
+      return 'dark';
+    }
   });
 
-  const [skills, setSkills] = useState<Skill[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}skills`);
-    return saved ? JSON.parse(saved) : SEED_SKILLS;
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    try {
+      localStorage.setItem('lifelore_theme', theme);
+    } catch {
+      // safe fallback
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  // 2. User State
+  const [user, setUser] = useState<User>({
+    id: 'usr_me_01',
+    name: 'Alex Chen',
+    username: 'alexchen_dev',
+    email: 'alex.chen@example.com',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    bio: 'Software engineer & curious learner. Sharing what university never taught me about career transitions and saving money.',
+    location: 'San Francisco, CA',
+    role: 'Frontend Engineer',
+    interests: ['Career', 'Technology', 'Money', 'Personal Growth'],
+    currentGoal: 'Land my first senior engineering role & invest consistently without burnout.',
+    followersCount: 342,
+    followingCount: 189,
+    experiencesCount: 4,
+    helpfulCount: 890,
+    onboardingCompleted: true,
+    createdAt: '2026-01-15T08:00:00Z',
   });
 
-  const [scenarios] = useState<Scenario[]>(SEED_SCENARIOS);
-  const [modules] = useState<ModuleInfo[]>(SEED_MODULES);
+  // 3. Navigation State
+  const [activeTab, setActiveTabState] = useState<NavigationTab>('home');
+  const [historyStack, setHistoryStack] = useState<NavigationTab[]>(['home']);
+  const [selectedExperienceId, setSelectedExperienceId] = useState<string | null>(null);
 
-  const [achievements, setAchievements] = useState<Achievement[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}achievements`);
-    return saved ? JSON.parse(saved) : SEED_ACHIEVEMENTS;
-  });
+  const setActiveTab = (tab: NavigationTab) => {
+    setHistoryStack((prev) => [...prev, tab]);
+    setActiveTabState(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-  const [attempts, setAttempts] = useState<Attempt[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}attempts`);
-    return saved ? JSON.parse(saved) : [];
-  });
+  const goBack = () => {
+    if (historyStack.length > 1) {
+      const newStack = [...historyStack];
+      newStack.pop(); // Remove current
+      const previous = newStack[newStack.length - 1] || 'home';
+      setHistoryStack(newStack);
+      setActiveTabState(previous);
+    } else {
+      setActiveTabState('home');
+    }
+  };
 
-  const [experiences, setExperiences] = useState<MentorExperience[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY_PREFIX}experiences`);
-    return saved ? JSON.parse(saved) : SEED_EXPERIENCES;
-  });
+  const openExperience = (id: string) => {
+    const target = experiences.find((e) => e.id === id);
+    setSelectedExperienceId(id);
+    if (target?.contentType === 'video') {
+      setActiveTab('video');
+    } else {
+      setActiveTab('detail');
+    }
+  };
 
-  const [businessIdeas] = useState<BusinessIdea[]>(SEED_BUSINESS_IDEAS);
-  const [activeExperience, setActiveExperience] = useState<MentorExperience | null>(null);
+  // 4. Explore Filters passing
+  const [exploreSearchQuery, setExploreSearchQuery] = useState('');
+  const [exploreSelectedCategory, setExploreSelectedCategory] = useState<ExperienceCategory | 'All'>('All');
 
-  const [activeTab, setActiveTab] = useState<NavigationTab>('home');
-  const [activeScenario, setActiveScenario] = useState<Scenario | null>(null);
-  const [deviceViewMode, setDeviceViewMode] = useState<'desktop' | 'mobile'>('desktop');
-  const [backendStatus, setBackendStatus] = useState<BackendStatus>({
-    connected: false,
-    message: 'Testing connection...',
-  });
-  const [isEvaluating, setIsEvaluating] = useState<boolean>(false);
-  const [latestEvaluation, setLatestEvaluation] = useState<AIEvaluationResult | null>(null);
-  const [latestAttempt, setLatestAttempt] = useState<Attempt | null>(null);
-  const [showUnlockToast, setShowUnlockToast] = useState<Achievement | null>(null);
+  // 5. Experiences State
+  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [savedExperiences, setSavedExperiences] = useState<Experience[]>([]);
+  const [isLoadingExperiences, setIsLoadingExperiences] = useState(true);
 
-  // Sync state to LocalStorage
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}user`, JSON.stringify(user));
-  }, [user]);
+  // 6. Notifications State
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}skills`, JSON.stringify(skills));
-  }, [skills]);
+  // 7. Modals
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isOnboardingModalOpen, setIsOnboardingModalOpen] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}achievements`, JSON.stringify(achievements));
-  }, [achievements]);
+  // 8. Toasts
+  const [toasts, setToasts] = useState<ToastState[]>([]);
 
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}attempts`, JSON.stringify(attempts));
-  }, [attempts]);
-
-  useEffect(() => {
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}experiences`, JSON.stringify(experiences));
-  }, [experiences]);
-
-  // Initial backend health check
-  useEffect(() => {
-    refreshBackendStatus();
+  const showToast = useCallback((message: string, type: 'success' | 'info' | 'error' = 'info') => {
+    const id = `toast_${Date.now()}_${Math.random()}`;
+    setToasts((prev) => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 3800);
   }, []);
 
-  const refreshBackendStatus = async () => {
-    const status = await checkBackendConnection();
-    setBackendStatus(status);
+  const dismissToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  const triggerCelebration = () => {
+  // Initialize data from API services
+  const refreshExperiences = useCallback(async () => {
     try {
-      confetti({
-        particleCount: 65,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#6366F1', '#10B981', '#F59E0B', '#EC4899', '#06B6D4'],
-      });
+      setIsLoadingExperiences(true);
+      const [expRes, savedRes, notifRes, userRes] = await Promise.all([
+        experienceService.getExperiences({}),
+        experienceService.getSavedExperiences(),
+        notificationService.getNotifications(),
+        authService.getMe(),
+      ]);
+
+      if (expRes.data) setExperiences(expRes.data);
+      if (savedRes.data) setSavedExperiences(savedRes.data);
+      if (notifRes.data) setNotifications(notifRes.data);
+      if (userRes.data) setUser(userRes.data);
     } catch {
-      // Fallback
+      showToast('Error syncing with data service', 'error');
+    } finally {
+      setIsLoadingExperiences(false);
+    }
+  }, [showToast]);
+
+  useEffect(() => {
+    refreshExperiences();
+  }, [refreshExperiences]);
+
+  // Engagement Actions
+  const toggleLike = async (id: string) => {
+    try {
+      const res = await experienceService.toggleLike(id);
+      setExperiences((prev) =>
+        prev.map((e) =>
+          e.id === id ? { ...e, isLiked: res.data.isLiked, likesCount: res.data.likesCount } : e
+        )
+      );
+      showToast(res.data.isLiked ? 'Added to liked experiences' : 'Removed from likes', 'info');
+    } catch {
+      showToast('Could not update like', 'error');
     }
   };
 
-  const checkAchievementProgress = (newAttempts: Attempt[], updatedUser: User) => {
-    const newAchievements = achievements.map((ach) => {
-      if (ach.isUnlocked) return ach;
+  const toggleSave = async (id: string) => {
+    try {
+      const res = await experienceService.toggleSave(id);
+      setExperiences((prev) =>
+        prev.map((e) => (e.id === id ? { ...e, isSaved: res.data.isSaved } : e))
+      );
+      const savedRes = await experienceService.getSavedExperiences();
+      if (savedRes.data) setSavedExperiences(savedRes.data);
 
-      let isNowUnlocked = false;
-      let newProgress = ach.progress;
+      showToast(
+        res.data.isSaved ? 'Saved to your reading vault' : 'Removed from saved experiences',
+        'success'
+      );
+    } catch {
+      showToast('Could not save experience', 'error');
+    }
+  };
 
-      if (ach.key === 'first_decision' && newAttempts.length >= 1) {
-        isNowUnlocked = true;
-        newProgress = 1;
-      } else if (ach.key === 'streak_3_days' && updatedUser.streak >= 3) {
-        isNowUnlocked = true;
-        newProgress = 3;
-      } else if (ach.key === 'streak_7_days') {
-        newProgress = Math.min(7, updatedUser.streak);
-        if (newProgress >= 7) isNowUnlocked = true;
-      } else if (ach.key === 'open_thinker' && newAttempts.some(a => a.responseType === 'text')) {
-        isNowUnlocked = true;
-        newProgress = 1;
+  const markHelpful = async (id: string, vote: 'yes' | 'no') => {
+    try {
+      const res = await experienceService.markHelpful(id, vote);
+      setExperiences((prev) =>
+        prev.map((e) =>
+          e.id === id
+            ? {
+                ...e,
+                helpfulCount: res.data.helpfulCount,
+                notHelpfulCount: res.data.notHelpfulCount,
+                userHelpfulVote: e.userHelpfulVote === vote ? null : vote,
+              }
+            : e
+        )
+      );
+      if (vote === 'yes') {
+        confetti({
+          particleCount: 40,
+          spread: 60,
+          origin: { y: 0.8 },
+          colors: ['#6366F1', '#10B981', '#F59E0B'],
+        });
+        showToast('Thank you! Your feedback helps others find proven lessons.', 'success');
+      } else {
+        showToast('Feedback noted. We will adjust recommendations.', 'info');
       }
+    } catch {
+      showToast('Could not submit feedback', 'error');
+    }
+  };
 
-      if (isNowUnlocked && !ach.isUnlocked) {
-        setShowUnlockToast({ ...ach, isUnlocked: true });
-        triggerCelebration();
-        return {
-          ...ach,
-          isUnlocked: true,
-          progress: ach.maxProgress,
-          unlockedAt: new Date().toISOString(),
-        };
-      }
+  const publishExperience = async (payload: CreateExperiencePayload): Promise<Experience> => {
+    const res = await experienceService.createExperience(payload);
+    await refreshExperiences();
 
-      return { ...ach, progress: newProgress };
+    confetti({
+      particleCount: 80,
+      spread: 80,
+      origin: { y: 0.6 },
+      colors: ['#6366F1', '#A855F7', '#EC4899', '#10B981'],
     });
 
-    setAchievements(newAchievements);
+    showToast('Your experience is live! Thank you for sharing real wisdom.', 'success');
+    return res.data;
   };
 
-  const startScenario = (scenarioId: string) => {
-    const scen = scenarios.find((s) => s.id === scenarioId) || scenarios[0];
-    setActiveScenario(scen);
-    setLatestEvaluation(null);
-    setLatestAttempt(null);
-    setActiveTab('scenario');
-  };
-
-  const submitChoiceResponse = async (scenario: Scenario, optionId: string): Promise<Attempt> => {
-    setIsEvaluating(true);
-    const chosenOption = scenario.options.find((o) => o.id === optionId) || scenario.options[0];
-
-    // Artificial tiny pause for UX feel
-    await new Promise((r) => setTimeout(r, 600));
-
-    // Update Skill scores
-    const updatedSkills = skills.map((skill) => {
-      const delta = chosenOption.skillScores[skill.id] || 0;
-      if (delta !== 0) {
-        const newScore = Math.min(100, Math.max(10, skill.currentScore + delta));
-        const newLevel = Math.max(1, Math.floor(newScore / 10));
-        return { ...skill, currentScore: newScore, level: newLevel };
-      }
-      return skill;
-    });
-    setSkills(updatedSkills);
-
-    // XP & Streak Calculation
-    const xpGained = chosenOption.xpAward;
-    const newXP = user.xp + xpGained;
-    const newLevel = Math.floor(newXP / 200) + 1;
-    const updatedUser: User = {
-      ...user,
-      xp: newXP,
-      level: newLevel,
-      streak: user.streak + 1,
-      lastActiveDate: new Date().toISOString().split('T')[0],
-    };
-    setUser(updatedUser);
-
-    const attempt: Attempt = {
-      id: `att-${Date.now()}`,
-      scenarioId: scenario.id,
-      scenarioTitle: scenario.title,
-      moduleKey: scenario.moduleKey,
-      userId: user.id,
-      timestamp: new Date().toISOString(),
-      responseType: 'choice',
-      selectedOptionId: optionId,
-      score: chosenOption.isOptimal ? 95 : 60,
-      xpEarned: xpGained,
-      consequenceSummary: chosenOption.consequence,
-      feedbackSummary: chosenOption.feedback,
-      status: 'completed',
-    };
-
-    const newAttempts = [attempt, ...attempts];
-    setAttempts(newAttempts);
-    setLatestAttempt(attempt);
-    setIsEvaluating(false);
-
-    if (chosenOption.isOptimal) {
-      triggerCelebration();
-    }
-
-    checkAchievementProgress(newAttempts, updatedUser);
-    return attempt;
-  };
-
-  const submitTextResponse = async (scenario: Scenario, responseText: string): Promise<Attempt> => {
-    setIsEvaluating(true);
-    const evaluation = await evaluateOpenTextResponse(scenario, responseText, skills);
-    setLatestEvaluation(evaluation);
-
-    // Apply skill deltas
-    const updatedSkills = skills.map((skill) => {
-      const delta = evaluation.skillScores[skill.id] || 0;
-      if (delta !== 0) {
-        const newScore = Math.min(100, Math.max(10, skill.currentScore + delta));
-        const newLevel = Math.max(1, Math.floor(newScore / 10));
-        return { ...skill, currentScore: newScore, level: newLevel };
-      }
-      return skill;
-    });
-    setSkills(updatedSkills);
-
-    // Update User XP
-    const xpGained = evaluation.xpAwarded;
-    const newXP = user.xp + xpGained;
-    const newLevel = Math.floor(newXP / 200) + 1;
-    const updatedUser: User = {
-      ...user,
-      xp: newXP,
-      level: newLevel,
-      streak: user.streak + 1,
-      lastActiveDate: new Date().toISOString().split('T')[0],
-    };
-    setUser(updatedUser);
-
-    const attempt: Attempt = {
-      id: `att-${Date.now()}`,
-      scenarioId: scenario.id,
-      scenarioTitle: scenario.title,
-      moduleKey: scenario.moduleKey,
-      userId: user.id,
-      timestamp: new Date().toISOString(),
-      responseType: 'text',
-      openTextResponse: responseText,
-      score: evaluation.overallScore,
-      xpEarned: xpGained,
-      consequenceSummary: evaluation.consequenceExplanation,
-      feedbackSummary: evaluation.strengths.join(' ') + ' ' + evaluation.improvements.join(' '),
-      status: 'completed',
-    };
-
-    const newAttempts = [attempt, ...attempts];
-    setAttempts(newAttempts);
-    setLatestAttempt(attempt);
-    setIsEvaluating(false);
-
-    if (evaluation.overallScore >= 70) {
-      triggerCelebration();
-    }
-
-    checkAchievementProgress(newAttempts, updatedUser);
-    return attempt;
-  };
-
-  const completeOnboarding = (ageGroup: AgeGroup, goals: string[]) => {
-    const updatedUser: User = {
-      ...user,
-      ageGroup,
-      goals,
-      onboardingCompleted: true,
-      xp: user.xp + 50,
-    };
-    setUser(updatedUser);
-    triggerCelebration();
-
-    // Start recommended first scenario
-    const firstScenario = getRecommendedScenario(scenarios, skills, attempts);
-    startScenario(firstScenario.id);
-  };
-
-  const resetProgress = () => {
-    localStorage.clear();
-    setUser({ ...DEFAULT_USER, onboardingCompleted: false, xp: 0, streak: 1, level: 1 });
-    setSkills(SEED_SKILLS);
-    setAttempts([]);
-    setAchievements(SEED_ACHIEVEMENTS.map(a => ({ ...a, isUnlocked: false, progress: 0 })));
-    setActiveScenario(null);
-    setActiveTab('home');
-  };
-
-  const switchProfile = (profileType: 'teen' | 'college' | 'professional') => {
-    if (profileType === 'teen') {
-      setUser({
-        ...DEFAULT_USER,
-        name: 'Zayn (High Schooler)',
-        ageGroup: 'teen',
-        goals: ['stress_free_time', 'clear_decision_making'],
-        level: 2,
-        xp: 180,
-        streak: 2,
-      });
-    } else if (profileType === 'college') {
-      setUser({
-        ...DEFAULT_USER,
-        name: 'Jordan (College Student)',
-        ageGroup: 'young_adult',
-        goals: ['financial_independence', 'stress_free_time', 'clear_decision_making'],
-        level: 3,
-        xp: 420,
-        streak: 4,
-      });
-    } else {
-      setUser({
-        ...DEFAULT_USER,
-        name: 'Elena (Associate Manager)',
-        ageGroup: 'adult',
-        goals: ['confident_communication', 'creative_problem_solving'],
-        level: 5,
-        xp: 980,
-        streak: 12,
-      });
+  const updateUser = async (updates: Partial<User>) => {
+    try {
+      const res = await userService.updateProfile(user.id, updates);
+      setUser(res.data);
+      showToast('Profile updated successfully', 'success');
+    } catch {
+      showToast('Could not update profile', 'error');
     }
   };
 
-  const createExperience = (newExpData: Omit<MentorExperience, 'id' | 'likes' | 'date' | 'verifiedMentor'>) => {
-    const created: MentorExperience = {
-      ...newExpData,
-      id: `exp-${Date.now()}`,
-      likes: 1,
-      date: 'Just now',
-      verifiedMentor: false,
-    };
-    setExperiences([created, ...experiences]);
-    triggerCelebration();
+  const completeOnboarding = async (interests: ExperienceCategory[], goal?: string) => {
+    try {
+      const res = await userService.saveOnboarding(interests, goal);
+      setUser(res.data);
+      setIsOnboardingModalOpen(false);
+      showToast('Welcome to LifeLore! Your personalized experience feed is ready.', 'success');
+    } catch {
+      showToast('Could not save onboarding preferences', 'error');
+    }
   };
 
-  const likeExperience = (id: string) => {
-    setExperiences(experiences.map(e => e.id === id ? { ...e, likes: e.likes + 1 } : e));
+  const markNotificationRead = async (id: string) => {
+    await notificationService.markAsRead(id);
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+    );
   };
 
-  const updateUser = (updates: Partial<User>) => {
-    setUser(prev => ({ ...prev, ...updates }));
+  const markAllNotificationsRead = async () => {
+    await notificationService.markAllAsRead();
+    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    showToast('All notifications marked as read', 'info');
   };
 
-  const clearUnlockToast = () => {
-    setShowUnlockToast(null);
-  };
+  const unreadNotifsCount = notifications.filter((n) => !n.isRead).length;
 
   return (
     <AppContext.Provider
       value={{
-        user,
-        skills,
-        scenarios,
-        modules,
-        achievements,
-        attempts,
-        experiences,
-        businessIdeas,
-        activeExperience,
-        activeScenario,
+        theme,
+        toggleTheme,
         activeTab,
-        deviceViewMode,
-        backendStatus,
-        isEvaluating,
-        latestEvaluation,
-        latestAttempt,
-        showUnlockToast,
         setActiveTab,
-        setActiveExperience,
-        createExperience,
-        likeExperience,
-        setDeviceViewMode,
-        startScenario,
-        submitChoiceResponse,
-        submitTextResponse,
-        completeOnboarding,
-        resetProgress,
-        switchProfile,
+        selectedExperienceId,
+        openExperience,
+        goBack,
+        exploreSearchQuery,
+        setExploreSearchQuery,
+        exploreSelectedCategory,
+        setExploreSelectedCategory,
+        user,
         updateUser,
-        clearUnlockToast,
-        refreshBackendStatus,
+        completeOnboarding,
+        experiences,
+        savedExperiences,
+        isLoadingExperiences,
+        refreshExperiences,
+        toggleLike,
+        toggleSave,
+        markHelpful,
+        publishExperience,
+        notifications,
+        unreadNotifsCount,
+        isNotificationsOpen,
+        setIsNotificationsOpen,
+        markNotificationRead,
+        markAllNotificationsRead,
+        isAuthModalOpen,
+        setIsAuthModalOpen,
+        isOnboardingModalOpen,
+        setIsOnboardingModalOpen,
+        toasts,
+        showToast,
+        dismissToast,
       }}
     >
       {children}
@@ -464,7 +372,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   );
 };
 
-export const useApp = () => {
+export const useApp = (): AppContextType => {
   const context = useContext(AppContext);
   if (!context) {
     throw new Error('useApp must be used within an AppProvider');

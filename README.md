@@ -1,60 +1,103 @@
-# LifeOS — Learn by Living
+# LifeLore — Real Stories. Real Lessons.
 
-> **AI-Powered Practical Life-Learning Platform**  
-> Practice realistic everyday situations • Make decisions • See consequences • Build real-world resilience
+> **Social Learning Platform Based on Real-Life Experiences**  
+> *"People learn from people who have already lived through the experience."*
 
 ---
 
-## 🌟 Overview & Product Vision
+## 🌟 Product Concept & Vision
 
-**LifeOS** is an interactive learning platform where users practice realistic everyday situations, make high-stakes or subtle choices, experience immediate cause-and-effect consequences, and receive structured AI feedback to improve their practical intuition.
+**LifeLore** is a mobile-first social learning platform where people discover, read, watch, save, discuss, and learn from real human experiences.
 
-### Core Loop
+Instead of generic social media feeds with algorithmic doom-scrolling, LifeLore is an educational repository designed like a blend of **Medium + Reddit + modern learning platform**:
+
 ```
-SCENARIO ──► DECISION ──► CONSEQUENCE ──► AI FEEDBACK ──► SKILL UPDATE ──► NEXT CHALLENGE
+DISCOVER EXPERIENCE ──► LEARN FROM IT ──► APPLY THE LESSON ──► SHARE YOUR OWN EXPERIENCE
 ```
 
----
-
-## 🗂️ Five Foundational Modules
-
-1. **🧭 Decision Making**: Trade-offs, opportunity costs, peer pressure, and avoiding analysis paralysis.
-2. **💳 Money Management**: Budgeting, cashflow resilience, handling unexpected expenses, and splitting group bills.
-3. **⏱️ Time Management**: Prioritization under competing deadlines, avoiding procrastination traps, and protecting peak energy.
-4. **💬 Communication**: Diplomatic boundary assertion, de-escalating team conflict, and constructive accountability.
-5. **🔧 Problem Solving**: High-pressure crisis recovery, constraint identification, and structured troubleshooting.
+### What People Share & Learn:
+- **Written Stories**: Freelancing struggles, moving abroad, career pivots, early startup failures.
+- **Videos**: Deep breakdowns with structured key takeaways.
+- **PDF Guides & Resources**: Survival checklists, relocation roadmaps, revision frameworks.
+- **Actionable Lessons**: Numbered rules (`01`, `02`, `03`) with concrete next actions.
+- **Helpful Feedback**: A community-driven rating system (*"Was this experience helpful?"*).
 
 ---
 
-## 🏗️ Repository Architecture
+## 🎨 Visual Identity & Brand
 
-This repository is organized to support seamless full-stack collaboration:
+- **Brand Name**: LifeLore
+- **Tagline**: *"Real Stories. Real Lessons."*
+- **Theme**: Seamless Light & Dark mode support with obsidian dark palette and crisp editorial light mode.
+- **Design Philosophy**: High trust, human empathy, clean typography, rounded cards, subtle glassmorphic borders, and zero childish clutter.
+
+---
+
+## 🏗️ Frontend Architecture
+
+The frontend is built using **React 19 + TypeScript + Vite**, structured for mobile-first responsiveness and complete decoupling from backend logic.
 
 ```
 Team-Salyani/
-├── frontend/               # React + Vite + TypeScript Web & Mobile UI
-│   ├── src/
-│   │   ├── components/     # Reusable UI & Screen modules
-│   │   │   ├── common/     # Header, BottomNav, Badges, Modals
-│   │   │   ├── home/       # Daily Challenge hero, streak matrix, XP level
-│   │   │   ├── scenario/   # Core loop player (Multiple choice & Open-Text AI)
-│   │   │   ├── challenges/ # Explorer with search & module filtering
-│   │   │   ├── skills/     # 5 Core skills breakdown & mastery meters
-│   │   │   ├── progress/   # Habit streaks, trophies & decision journal
-│   │   │   ├── profile/    # Personas, goals editor, and FastAPI config
-│   │   │   └── onboarding/ # 5-step diagnostic & calibration wizard
-│   │   ├── context/        # AppContext (persistent state, local storage)
-│   │   ├── data/           # Seed scenarios, skills, achievements
-│   │   ├── services/       # API client & client-side AI evaluation fallback
-│   │   └── types/          # Strict TypeScript domain interfaces
-│   ├── index.html          # Entry HTML with typography & SEO
-│   └── package.json
-└── backend/                # FastAPI + PostgreSQL + SQLAlchemy (For backend teammates)
+└── frontend/
+    ├── src/
+    │   ├── components/
+    │   │   └── common/             # Reusable UI system (Header, BottomNav, Cards, Modals, Toasts)
+    │   ├── features/
+    │   │   ├── auth/               # Splash, Welcome, Login, Register, Onboarding flow
+    │   │   ├── home/               # Home Dashboard ("Learn from lives", Recommended, Trending, Short Lessons)
+    │   │   ├── explore/            # Full-text search, Format pills, Category chips, Sort options
+    │   │   ├── experiences/        # Long-form structured reading & dedicated video player
+    │   │   ├── create/             # "Share Your Experience" multi-step publishing & media dropzone
+    │   │   ├── saved/              # Saved experiences library categorized by format
+    │   │   ├── profile/            # User profile, learning goals, stats, Edit Profile modal
+    │   │   ├── comments/           # Constructive discussion threads with replies & reporting
+    │   │   └── notifications/      # Real-time interaction drawer (likes, comments, helpful marks)
+    │   ├── services/
+    │   │   └── api/                # REST API Client & domain service abstractions
+    │   │       ├── apiClient.ts    # Centralized HTTP fetch client (JWT bearer token & headers)
+    │   │       ├── authService.ts  # Auth, login, registration, password reset
+    │   │       ├── experienceService.ts # Feed, search, filters, publish, voting
+    │   │       ├── commentService.ts # Threaded discussions, moderation reporting
+    │   │       ├── userService.ts  # Profiles, topics of interest, follow graph
+    │   │       └── notificationService.ts # Activity alerts & unread badges
+    │   ├── context/
+    │   │   └── AppContext.tsx      # Global theme, auth session, navigation & toast state
+    │   ├── types/
+    │   │   └── index.ts            # Strict domain TypeScript contracts & API schemas
+    │   ├── constants/              # Categories, content types, and sorting tokens
+    │   ├── data/
+    │   │   └── mockData.ts         # High-yield seed data for local preview & testing
+    │   ├── App.tsx                 # Viewport shell & routing manager
+    │   ├── main.tsx                # Entry point
+    │   └── index.css               # Comprehensive LifeLore design system tokens
+    ├── package.json
+    └── vite.config.ts
 ```
 
 ---
 
-## 🚀 Running the Frontend Locally
+## 🔌 Backend Integration Guide (For Backend Engineers)
+
+The frontend is **100% API-ready** with clean service abstractions and typed data models:
+
+1. **Configure API Base URL**:
+   Create a `.env` file inside the `frontend/` directory:
+   ```env
+   VITE_API_BASE_URL=http://localhost:8000/api/v1
+   ```
+2. **Centralized Client**:
+   All HTTP communication flows through [`src/services/api/apiClient.ts`](file:///frontend/src/services/api/apiClient.ts).
+   - Automatically attaches `Authorization: Bearer <token>` from localStorage.
+   - Normalizes HTTP error responses into typed `ApiError` objects.
+   - If `VITE_API_BASE_URL` is empty, it safely uses the rich in-memory provider so frontend teammates can develop and review UI immediately.
+
+3. **Domain Contracts**:
+   Inspect [`src/types/index.ts`](file:///frontend/src/types/index.ts) for full TypeScript definitions of `Experience`, `User`, `Lesson`, `Comment`, `Notification`, `CreateExperiencePayload`, and `ApiResponse<T>`.
+
+---
+
+## 💻 Running the Frontend Locally
 
 ```bash
 # 1. Navigate to the frontend directory
@@ -63,24 +106,17 @@ cd frontend
 # 2. Install dependencies
 npm install
 
-# 3. Start the development server
+# 3. Start development server
 npm run dev
 ```
 
-Visit **`http://localhost:5173`** in your browser.
+Open **`http://localhost:5173`** in your browser.
 
 ---
 
-## ⚡ Key Frontend Features Implemented
+## ✅ Quality & Build Check
 
-- **✨ Rich Modern Aesthetics**: Dark obsidian palette, vibrant module accents, glassmorphic surfaces, and celebration confetti.
-- **📱 Dual Viewport Engine**: One-click toggle between standard full-width responsive web layout and an interactive iPhone frame simulator.
-- **🧠 Hybrid AI Evaluation**:
-  - Connects out-of-the-box to FastAPI endpoints (`http://localhost:8000/attempts/evaluate`).
-  - Seamless built-in heuristic AI evaluation fallback that runs 100% offline without crashing when the backend is not yet started.
-- **🎯 Full PRD Feature Set**:
-  - Onboarding assessment & baseline calibration.
-  - Multi-choice and open-text AI responses.
-  - Consequence reveal first, followed by AI feedback and trade-off analysis.
-  - Persistent streak tracking, XP levels, and unlocked achievement trophies.
-  - Granular skill radar & competency progression.
+```bash
+npm run build
+```
+*(Runs TypeScript strict type-checking `tsc -b` and Vite production bundling with 0 errors).*
