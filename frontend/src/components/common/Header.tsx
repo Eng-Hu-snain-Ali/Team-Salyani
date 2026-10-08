@@ -4,8 +4,6 @@ import type { NavigationTab } from '../../types';
 import { 
   Flame, 
   Award, 
-  Smartphone, 
-  Monitor, 
   Sparkles,
   Layers,
   Compass,
@@ -19,8 +17,6 @@ export const Header: React.FC = () => {
     user, 
     activeTab, 
     setActiveTab, 
-    deviceViewMode, 
-    setDeviceViewMode, 
     backendStatus 
   } = useApp();
 
@@ -144,36 +140,6 @@ export const Header: React.FC = () => {
 
         {/* User Badges & Utilities */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {/* Device Simulator Toggle */}
-          <button
-            onClick={() => setDeviceViewMode(deviceViewMode === 'desktop' ? 'mobile' : 'desktop')}
-            title={deviceViewMode === 'desktop' ? 'Switch to Mobile App Preview' : 'Switch to Desktop Web View'}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid var(--glass-border)',
-              padding: '6px 12px',
-              borderRadius: 'var(--radius-md)',
-              color: 'var(--text-secondary)',
-              fontSize: '0.8rem',
-              transition: 'all var(--transition-fast)',
-            }}
-          >
-            {deviceViewMode === 'desktop' ? (
-              <>
-                <Smartphone size={16} color="#818CF8" />
-                <span className="hide-mobile">Phone Frame</span>
-              </>
-            ) : (
-              <>
-                <Monitor size={16} color="#10B981" />
-                <span className="hide-mobile">Full Web</span>
-              </>
-            )}
-          </button>
-
           {/* Backend Status indicator */}
           <div 
             title={backendStatus.connected ? 'Connected to FastAPI Backend (port 8000)' : 'Standalone Mode with Built-in AI Evaluation Engine'}

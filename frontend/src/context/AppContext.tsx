@@ -55,12 +55,12 @@ interface AppContextType {
   refreshBackendStatus: () => Promise<void>;
 }
 
-const STORAGE_KEY_PREFIX = 'lifeos_app_data_v2_';
+const STORAGE_KEY_PREFIX = 'lifeos_app_data_v3_';
 
 const DEFAULT_USER: User = {
   id: 'user-demo-1',
-  name: 'Husnain Ali',
-  email: 'husnain@lifeos.app',
+  name: 'LifeOS Explorer',
+  email: 'team@lifeos.app',
   ageGroup: 'young_adult',
   goals: ['financial_independence', 'stress_free_time', 'clear_decision_making'],
   onboardingCompleted: true,
@@ -357,7 +357,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     } else if (profileType === 'college') {
       setUser({
         ...DEFAULT_USER,
-        name: 'Husnain Ali (Student Leader)',
+        name: 'Jordan (College Student)',
         ageGroup: 'young_adult',
         goals: ['financial_independence', 'stress_free_time', 'clear_decision_making'],
         level: 3,

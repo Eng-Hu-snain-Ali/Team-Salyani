@@ -12,7 +12,7 @@ import { ProfileSettings } from './components/profile/ProfileSettings';
 import { OnboardingFlow } from './components/onboarding/OnboardingFlow';
 
 const MainAppLayout: React.FC = () => {
-  const { user, activeTab, deviceViewMode } = useApp();
+  const { user, activeTab } = useApp();
 
   // If user hasn't completed onboarding, show onboarding
   if (!user.onboardingCompleted) {
@@ -45,22 +45,6 @@ const MainAppLayout: React.FC = () => {
         return <HomeDashboard />;
     }
   };
-
-  if (deviceViewMode === 'mobile') {
-    return (
-      <div className="app-viewport-wrapper mode-mobile">
-        <div className="mobile-frame-device">
-          <div className="mobile-dynamic-island" />
-          <Header />
-          <main className="main-content-area">
-            {renderActiveScreen()}
-          </main>
-          <BottomNav />
-          <UnlockModal />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="app-viewport-wrapper">

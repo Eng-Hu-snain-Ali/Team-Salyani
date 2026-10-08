@@ -113,8 +113,8 @@ export const ProfileSettings: React.FC = () => {
               gap: 4,
             }}
           >
-            <strong style={{ fontSize: '0.92rem', color: '#FFFFFF' }}>College Leader (18-24)</strong>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Husnain Ali • Budgeting, teamwork & exams</span>
+            <strong style={{ fontSize: '0.92rem', color: '#FFFFFF' }}>College Student (18-24)</strong>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Budgeting, teamwork & exams</span>
           </button>
 
           <button
