@@ -1,11 +1,11 @@
-# LIFEOS — MVP Product Requirements Document (PRD)
+# USTAD ONLINE — MVP Product Requirements Document (PRD)
 
-> **Learn by Living • Frontend + Backend + AI • Build-Ready Specification**
+> **Learn. Decide. Improve. • Frontend + Backend + AI • Build-Ready Specification**
 
 ---
 
 ## 1. Product Vision
-LifeOS is an AI-powered practical life-learning platform. Users practice realistic everyday situations, make decisions, see consequences, receive feedback, and improve through repeated practice. 
+USTAD ONLINE is a practical life-learning platform that helps users improve real-life decision-making skills through interactive scenarios, consequences, feedback, and progress tracking.
 
 **MVP Goal**: Prove that short, personalized decision scenarios create repeat usage and measurable skill improvement.
 
@@ -21,12 +21,12 @@ LifeOS is an AI-powered practical life-learning platform. Users practice realist
   4. **Communication** (Conflict, requests, boundaries, tone & clarity)
   5. **Problem Solving** (Break problems into steps, constraints, compare options, recover from setbacks)
 - **Daily Challenge & Scenario Engine**: Multiple-choice and short open-text responses.
-- **AI Feedback**: Structured evaluation for open-text responses.
+- **Feedback & Consequence Engine**: Structured evaluation for responses with realistic outcomes.
 - **Gamification**: Skill scores (0-100), XP, streaks, and basic achievements.
 - **Recommendation Engine**: Personalized next-challenge recommendations based on skill performance.
 - **States**: Profile/settings, loading, empty, offline, and error states.
 
-*Out of MVP scope*: Payments, social feed, public leaderboard, school/admin dashboard, advanced voice analysis.
+*Out of MVP scope*: Traditional school management, social media feeds, public leaderboard, advanced voice analysis.
 
 ---
 
@@ -41,24 +41,24 @@ SCENARIO ──► DECISION ──► CONSEQUENCE ──► FEEDBACK ──► S
 5. Read scenario context & dilemma.
 6. Choose option (A, B, C, D) or write custom response.
 7. System evaluates response.
-8. Show consequence first, then AI feedback + skill impact.
+8. Show consequence first, then pedagogical feedback + skill impact.
 9. Award XP and update streak.
 10. Recommend the next challenge.
 
 ---
 
 ## 4. Frontend Architecture
-- **Tech Stack**: React, TypeScript, Vite, Vanilla CSS design system.
+- **Tech Stack**: React 19, TypeScript, Vite, Vanilla CSS design system.
 - **Icons & Polish**: Lucide React, Canvas Confetti.
 - **State Management**: React Context (`AppContext`) synced with LocalStorage.
 - **Screen Inventory**:
   - Splash / Welcome / Onboarding Flow
-  - Home Dashboard (Greeting, Streak, Daily Challenge, 5 Modules, XP)
-  - Scenario Player (Briefing, Choices, AI Text Box, Consequence Reveal, Feedback)
-  - Challenges Explorer (Search, Module Filters, Difficulty Tiers)
-  - Skills Analytics (Radar / Bar breakdowns, Mastery levels)
-  - Progress View (Streaks, Trophies, Decision History Journal)
-  - Profile Settings (Demographics, Personas, FastAPI Backend Config)
+  - Home Dashboard (Greeting, Streak, Daily Challenge, 5 Core Skills, XP)
+  - Challenges Explorer (Search, Category Filters, Difficulty Tiers)
+  - Interactive Challenge Flow (Briefing, Choices, Text Box, Consequence Reveal, Feedback)
+  - Skills Diagnostics (5 Skills, Strengths, Growth Opportunities, Progression)
+  - Progress View (Overall Analytics, Skill Distribution, Achievements, Decision Journal)
+  - Profile & Settings (Demographics, Goals, Notifications, Appearance, Logout)
 
 ---
 
@@ -69,18 +69,7 @@ SCENARIO ──► DECISION ──► CONSEQUENCE ──► FEEDBACK ──► S
 - **Endpoints**:
   - `POST /auth/register`, `POST /auth/login`, `GET /auth/me`
   - `POST /onboarding/profile`, `POST /onboarding/goals`, `POST /onboarding/assessment`
-  - `GET /modules`, `GET /scenarios`, `GET /scenarios/recommended`, `GET /scenarios/{id}`
-  - `POST /scenarios/{id}/start`, `POST /attempts/{id}/responses`, `POST /attempts/{id}/evaluate`
-  - `GET /skills`, `GET /progress/overview`, `GET /streak`, `GET /achievements`
-
----
-
-## 6. AI Evaluation Schema
-Output schema expected from AI evaluation:
-- `overall_score`: Integer (0 - 100)
-- `skill_scores`: Key-value pairs of skill ID to score delta
-- `strengths`: List of identified positive traits
-- `improvements`: List of growth opportunities
-- `consequence_explanation`: Narrative of realistic outcome
-- `next_action`: Actionable follow-up recommendation
-- `retry_available`: Boolean
+  - `GET /skills`, `GET /skills/{id}`, `POST /skills/{id}/progress`
+  - `GET /challenges`, `GET /challenges/daily`, `GET /challenges/recommended`, `GET /challenges/{id}`
+  - `POST /challenges/{id}/attempt`
+  - `GET /notifications`, `PATCH /notifications/{id}/read`, `POST /notifications/read-all`

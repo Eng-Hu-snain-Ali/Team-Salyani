@@ -1,638 +1,701 @@
 import type {
-  Experience,
-  Notification,
   User,
-  TeamMember,
-  ExploreVideo,
-  ExploreIdea,
+  SkillData,
+  Challenge,
+  Achievement,
+  NotificationItem,
+  OnboardingAssessmentQuestion,
 } from '../types';
 
 // ============================================================================
-// 1. THE TEAM PROFILE (Default / Core Identity)
-// "This is a TEAM PROJECT created by multiple team members."
+// 1. DEFAULT ACTIVE USER
 // ============================================================================
-export const TEAM_PROFILE: User = {
-  id: 'usr_team_lived',
-  name: 'The Team',
-  username: 'the_team',
-  email: 'team@lived.app',
-  avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=300&auto=format&fit=crop&q=80',
-  bio: 'A collaborative platform where people share real experiences, practical lessons and ideas to help others learn and grow.',
-  location: 'Collaborative Project',
-  role: 'Lived — Team Project',
-  interests: [
-    'Career',
-    'Education',
-    'Technology',
-    'Programming',
-    'Freelancing',
-    'Personal Growth',
-    'Productivity',
+export const INITIAL_USER: User = {
+  id: 'usr_ustad_demo',
+  name: 'Ali Rehman',
+  email: 'ali.rehman@ustadonline.edu',
+  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80',
+  currentLevel: 3,
+  xp: 420,
+  nextLevelXp: 600,
+  streakDays: 5,
+  longestStreak: 9,
+  weeklyActivity: [
+    { day: 'Mon', date: '2026-10-05', active: true },
+    { day: 'Tue', date: '2026-10-06', active: true },
+    { day: 'Wed', date: '2026-10-07', active: true },
+    { day: 'Thu', date: '2026-10-08', active: true },
+    { day: 'Fri', date: '2026-10-09', active: true },
+    { day: 'Sat', date: '2026-10-10', active: false },
+    { day: 'Sun', date: '2026-10-11', active: false },
   ],
-  currentGoal: 'Empowering genuine peer-to-peer learning from lived experiences.',
-  followersCount: 1540,
-  followingCount: 5,
-  experiencesCount: 5,
-  helpfulCount: 4210,
+  ageGroup: '20-24',
+  learningGoals: [
+    'Stop overspending & build an emergency reserve',
+    'Overcome procrastination & manage conflicting deadlines',
+    'Make confident life decisions despite uncertainty',
+  ],
   onboardingCompleted: true,
-  createdAt: '2026-01-01T00:00:00Z',
+  notificationPreferences: {
+    dailyReminders: true,
+    streakAlerts: true,
+    weeklyReport: false,
+  },
+  createdAt: '2026-09-15T08:00:00Z',
 };
 
-// Aliased as default for compatibility with existing imports
-export const CURRENT_USER: User = TEAM_PROFILE;
-
 // ============================================================================
-// 2. TEAM MEMBERS (Clean placeholder member cards ready for actual members)
+// 2. THE FIVE CORE LIFE SKILLS
 // ============================================================================
-export const TEAM_MEMBERS: TeamMember[] = [
+export const INITIAL_SKILLS: SkillData[] = [
   {
-    id: 'tm_01',
-    name: 'Team Member 01',
-    role: 'Lead Developer & Product Engineering',
-    bio: 'Responsible for core web infrastructure, application shell, and component orchestration.',
-    initials: '01',
-  },
-  {
-    id: 'tm_02',
-    name: 'Team Member 02',
-    role: 'UI/UX Design & System Architecture',
-    bio: 'Focused on minimal editorial layout, typography scale, responsive viewports and design tokens.',
-    initials: '02',
-  },
-  {
-    id: 'tm_03',
-    name: 'Team Member 03',
-    role: 'Frontend Architecture & API Contracts',
-    bio: 'Created clean service abstractions, typed models, and authentication state ready for backend sync.',
-    initials: '03',
-  },
-  {
-    id: 'tm_04',
-    name: 'Team Member 04',
-    role: 'Discovery Engine & Video Learning',
-    bio: 'Designed the comprehensive Explorer, YouTube video learning integration, and curated ideas.',
-    initials: '04',
-  },
-  {
-    id: 'tm_05',
-    name: 'Team Member 05',
-    role: 'Quality Assurance & State Polish',
-    bio: 'Guaranteed 1-minute simple publishing flow, bookmarking workflows, and cross-browser resilience.',
-    initials: '05',
-  },
-];
-
-// ============================================================================
-// 3. CURATED WATCH & LEARN VIDEOS (Public YouTube embeds/links)
-// Clearly identified as "From YouTube" / "External Resource"
-// ============================================================================
-export const CURATED_VIDEOS: ExploreVideo[] = [
-  {
-    id: 'vid_01',
-    title: 'How to Live Before You Die (Stanford Commencement Address)',
-    description: 'Connecting the dots, love and loss, and how the awareness of mortality clarifies what truly matters.',
-    creator: 'Steve Jobs / Stanford University',
-    source: 'YouTube',
-    category: 'Motivation',
-    duration: '15:04',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600&auto=format&fit=crop&q=80',
-    youtubeVideoId: 'UF8uR6Z6KLc',
-    youtubeUrl: 'https://www.youtube.com/watch?v=UF8uR6Z6KLc',
-    whyWatchThis: 'One of the most honest reflections on failure, resilience, and following genuine curiosity rather than safe expectations.',
-    keyTakeaways: [
-      'You cannot connect the dots looking forward; you can only connect them looking backwards.',
-      'Getting fired was the best thing that could have happened to me: lightness replaced heaviness.',
-      'Your time is limited, so don\'t waste it living someone else\'s life.',
+    id: 'decision-making',
+    name: 'Decision Making',
+    shortName: 'Decisions',
+    icon: 'Compass',
+    color: '#2563EB',
+    description: 'Evaluating trade-offs, separating emotional impulses from rational criteria, and committing decisively.',
+    score: 68,
+    level: 3,
+    levelTitle: 'Pragmatic Strategist',
+    strengths: [
+      'Strong awareness of long-term opportunity costs',
+      'Good at identifying hidden assumptions before acting',
     ],
-    viewsCount: '42M views',
-  },
-  {
-    id: 'vid_02',
-    title: 'How I Manage My Time - 10 Practical Productivity Systems',
-    description: 'Evidence-based frameworks for time management, avoiding procrastination, and building consistent output without burnout.',
-    creator: 'Ali Abdaal',
-    source: 'YouTube',
-    category: 'Productivity',
-    duration: '18:22',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=600&auto=format&fit=crop&q=80',
-    youtubeVideoId: 'iONDebHX9qk',
-    youtubeUrl: 'https://www.youtube.com/watch?v=iONDebHX9qk',
-    whyWatchThis: 'Breaks down actionable calendar and task management rules for students, founders, and knowledge workers.',
-    keyTakeaways: [
-      'Calendar blocking outperforms open-ended to-do lists by 3x.',
-      'The daily highlight rule: choose exactly one non-negotiable accomplishment per day.',
-      'Energy management matters more than raw hours spent sitting at a desk.',
+    areasToImprove: [
+      'Tendency to over-analyze small reversible choices',
+      'Can hesitate under ambiguous social expectations',
     ],
-    viewsCount: '3.8M views',
-  },
-  {
-    id: 'vid_03',
-    title: 'How to Think Like a Programmer (CS50 Lecture 0)',
-    description: 'Computational thinking, problem decomposition, and foundational algorithms explained from absolute zero.',
-    creator: 'David J. Malan / Harvard CS50',
-    source: 'YouTube',
-    category: 'Programming',
-    duration: '24:45',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&auto=format&fit=crop&q=80',
-    youtubeVideoId: 'zOjov-2OZ0E',
-    youtubeUrl: 'https://www.youtube.com/watch?v=zOjov-2OZ0E',
-    whyWatchThis: 'Demystifies computer science and programming fundamentals with crystal clarity for beginners.',
-    keyTakeaways: [
-      'Programming is simply expressing precise problem-solving instructions step by step.',
-      'Binary search illustrates logarithmic efficiency: divide and conquer.',
-      'Focus on concepts and problem-solving before memorizing language syntax.',
-    ],
-    viewsCount: '8.4M views',
-  },
-  {
-    id: 'vid_04',
-    title: 'How to Talk to Customers & Validate Real Problems',
-    description: 'The Mom Test framework: how to ask questions about people\'s real life without biasing their answers.',
-    creator: 'Y Combinator Startup School',
-    source: 'YouTube',
-    category: 'Business',
-    duration: '16:10',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&auto=format&fit=crop&q=80',
-    youtubeVideoId: 'MT4TgT002DA',
-    youtubeUrl: 'https://www.youtube.com/watch?v=MT4TgT002DA',
-    whyWatchThis: 'Essential lesson on avoiding building things nobody wants by asking about past behaviors instead of hypothetical opinions.',
-    keyTakeaways: [
-      'Never ask: "Would you buy this?" Ask: "How did you solve this problem last week?"',
-      'Look for active workarounds: if people aren\'t already trying to solve the problem, it\'s not urgent.',
-      'Talk about their specific past life experiences, not future promises.',
-    ],
-    viewsCount: '1.2M views',
-  },
-  {
-    id: 'vid_05',
-    title: 'Getting Your First Freelance Client in 30 Days',
-    description: 'Cold outreach, personal portfolio proofs of work, and pricing transparency for first-time freelancers.',
-    creator: 'Traversy Media & Freelance Devs',
-    source: 'YouTube',
-    category: 'Freelancing',
-    duration: '21:30',
-    thumbnailUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=80',
-    youtubeVideoId: 'e8d1GkWwL6c',
-    youtubeUrl: 'https://www.youtube.com/watch?v=e8d1GkWwL6c',
-    whyWatchThis: 'Candid advice on landing paying clients without years of prior reputation or expensive agency tools.',
-    keyTakeaways: [
-      'Build 2 specific sample projects for the exact industry you are targeting before sending cold pitches.',
-      'Focus your pitch on the client\'s revenue or speed, not just your tech stack.',
-      'Follow up politely 3 to 5 times; 70% of responses happen on follow-ups.',
-    ],
-    viewsCount: '950K views',
-  },
-];
-
-// ============================================================================
-// 4. IDEAS WORTH EXPLORING (High-yield conceptual frameworks)
-// ============================================================================
-export const IDEAS_WORTH_EXPLORING: ExploreIdea[] = [
-  {
-    id: 'idea_01',
-    title: 'How to Build Better Habits',
-    summary: 'Make behaviors tiny, obvious, and immediate to remove reliance on fragile willpower.',
-    category: 'Personal Growth',
-    readTimeMinutes: 4,
-    coreInsight: 'You do not rise to the level of your goals; you fall to the level of your systems. Reduce friction for good habits and increase friction for bad ones.',
-    actionSteps: [
-      'Anchor the new habit to an existing routine (e.g. "After I pour morning coffee, I will write 5 lines").',
-      'The 2-Minute Rule: Scale down the initial effort until it is impossible to procrastinate.',
-      'Never miss twice: If life interrupts your routine once, treat the second consecutive day as mandatory.',
+    history: [
+      { date: 'Yesterday', delta: +6, challengeTitle: 'Career Pivot Dilemma' },
+      { date: '3 days ago', delta: +4, challengeTitle: 'Choosing Between Short & Long Term' },
     ],
   },
   {
-    id: 'idea_02',
-    title: 'How to Start Freelancing',
-    summary: 'Shift from generic skill selling to solving one concrete, painful bottleneck for local or online clients.',
-    category: 'Freelancing',
-    readTimeMinutes: 5,
-    coreInsight: 'Clients do not buy programming languages or design software; they buy speed, saved time, and extra revenue.',
-    actionSteps: [
-      'Pick one tight niche (e.g. Shopify page speed for independent coffee brands).',
-      'Build one public case study demonstrating the before-and-after outcome.',
-      'Send 5 personalized video audits weekly highlighting immediate fixes they can implement.',
+    id: 'money-management',
+    name: 'Money Management',
+    shortName: 'Money',
+    icon: 'Wallet',
+    color: '#16A34A',
+    description: 'Budgeting with limited capital, avoiding debt traps, resisting impulse spending, and maintaining safety buffers.',
+    score: 54,
+    level: 2,
+    levelTitle: 'Budget Apprentice',
+    strengths: [
+      'Understands the concept of emergency cash cushions',
+      'Proactively questions subscription leakages',
+    ],
+    areasToImprove: [
+      'Vulnerable to emotional compensatory spending under stress',
+      'Hesitant to negotiate recurring fixed bills',
+    ],
+    history: [
+      { date: '2 days ago', delta: +8, challengeTitle: 'The Broken Laptop Budget Crunch' },
     ],
   },
   {
-    id: 'idea_03',
-    title: 'How to Improve Your Communication',
-    summary: 'Speak simply, listen without formulating your retort, and state the headline before the background context.',
-    category: 'Communication',
-    readTimeMinutes: 4,
-    coreInsight: 'Clear writing and speaking reflect clear thinking. Remove conversational padding and lead with the bottom line (BLUF).',
-    actionSteps: [
-      'Use the BLUF technique: Bottom Line Up Front in emails and slack messages.',
-      'Summarize what the other person said before offering your counterpoint.',
-      'Replace filler phrases ("I think", "kind of") with grounded observations.',
+    id: 'time-management',
+    name: 'Time Management',
+    shortName: 'Time',
+    icon: 'Clock',
+    color: '#F59E0B',
+    description: 'Ruthless prioritization, deep focus protection, scheduling sanity, and conquering the urge to multitask.',
+    score: 62,
+    level: 3,
+    levelTitle: 'Focus Adept',
+    strengths: [
+      'Consistently uses time-blocking for high-impact tasks',
+      'Understands the 80/20 Pareto principle',
+    ],
+    areasToImprove: [
+      'Underestimates buffer time needed between high-friction tasks',
+      'Says yes too quickly to urgent but low-importance demands',
+    ],
+    history: [
+      { date: 'Today', delta: +5, challengeTitle: 'The 3 Urgent Deadlines Dilemma' },
+      { date: '4 days ago', delta: +7, challengeTitle: 'Calendar Defense System' },
     ],
   },
   {
-    id: 'idea_04',
-    title: 'How to Manage Your Time',
-    summary: 'Protect morning blocks for deep cognitively demanding tasks; bundle reactive meetings into the afternoon.',
-    category: 'Productivity',
-    readTimeMinutes: 4,
-    coreInsight: 'Time cannot be managed without ruthless prioritization. Deciding what NOT to do is the essence of high leverage.',
-    actionSteps: [
-      'Identify your 1 high-leverage task the night before and place it on your morning calendar.',
-      'Turn off non-essential notifications during 90-minute focus blocks.',
-      'Perform a weekly retrospective to eliminate recurring low-value commitments.',
+    id: 'communication',
+    name: 'Communication',
+    shortName: 'Communication',
+    icon: 'MessageSquare',
+    color: '#7C3AED',
+    description: 'Direct and empathetic expression, handling friction without defensiveness, clear boundary enforcement.',
+    score: 75,
+    level: 4,
+    levelTitle: 'Constructive Diplomat',
+    strengths: [
+      'De-escalates tense debates using active listening',
+      'States the bottom line clearly before context',
+    ],
+    areasToImprove: [
+      'Can soften boundaries too much to preserve harmony',
+      'Needs practice delivering tough feedback upwards',
+    ],
+    history: [
+      { date: 'Today', delta: +6, challengeTitle: 'Public Disagreement in Team Meeting' },
+      { date: '5 days ago', delta: +9, challengeTitle: 'Setting Firm Client Boundaries' },
     ],
   },
   {
-    id: 'idea_05',
-    title: 'How to Learn a New Skill',
-    summary: 'Deconstruct the skill into sub-components, obtain immediate feedback, and practice under realistic conditions.',
-    category: 'Education',
-    readTimeMinutes: 5,
-    coreInsight: 'Passive consumption (reading, watching tutorials) creates the illusion of competence. Only active retrieval and building build neural pathways.',
-    actionSteps: [
-      'Identify the critical 20% of sub-skills that produce 80% of real outcomes.',
-      'Commit to 20 hours of focused, self-directed practice before switching tutorials.',
-      'Teach or write a breakdown of the concept for someone with zero background knowledge.',
+    id: 'problem-solving',
+    name: 'Problem Solving',
+    shortName: 'Problem Solving',
+    icon: 'Cpu',
+    color: '#0891B2',
+    description: 'Breaking complex chaos into concrete sub-problems, finding root causes, and testing small reversible solutions.',
+    score: 58,
+    level: 2,
+    levelTitle: 'Systematic Thinker',
+    strengths: [
+      'Good at isolating variables rather than panicking',
+      'Recognizes circular logic and unverified rumors',
     ],
-  },
-  {
-    id: 'idea_06',
-    title: 'How to Deal With Failure',
-    summary: 'Separate your personal identity from project outcomes. Treat setbacks as diagnostic feedback.',
-    category: 'Motivation',
-    readTimeMinutes: 4,
-    coreInsight: 'Failure is not the opposite of success; it is information about the constraints of reality. A failure without reflection is wasted pain.',
-    actionSteps: [
-      'Write a post-mortem within 48 hours focusing on controllable inputs vs external luck.',
-      'Ask: "What assumption was proven false, and what data do I now possess that others don\'t?"',
-      'Re-engage with small, immediate action to prevent psychological paralysis.',
+    areasToImprove: [
+      'Jumps to implementing fixes before verifying the root problem',
+      'Needs more practice under strict time constraints',
     ],
-  },
-  {
-    id: 'idea_07',
-    title: 'How to Build Confidence',
-    summary: 'Confidence is not a feeling you conjure up; it is the natural byproduct of keeping small promises to yourself.',
-    category: 'Personal Growth',
-    readTimeMinutes: 3,
-    coreInsight: 'Self-trust is earned through consistent execution over time, especially when no one is watching.',
-    actionSteps: [
-      'Set and achieve 3 micro-commitments every single day.',
-      'Collect a "Proof Folder" of past obstacles you solved and milestones reached.',
-      'Adopt physical posture and vocal pacing that convey calm presence.',
+    history: [
+      { date: '3 days ago', delta: +5, challengeTitle: 'Production Crash 1 Hour Before Launch' },
     ],
   },
 ];
 
 // ============================================================================
-// 5. INITIAL & FEATURED EXPERIENCES
-// Includes the 5 core requested topics:
-// - "How I Got My First Freelance Client"
-// - "What I Learned After Failing My First Business"
-// - "How I Learned Programming From Zero"
-// - "My University Experience"
-// - "Things I Wish I Knew Before Starting Freelancing"
+// 3. REALISTIC INTERACTIVE CHALLENGES
 // ============================================================================
-export const INITIAL_EXPERIENCES: Experience[] = [
+export const INITIAL_CHALLENGES: Challenge[] = [
   {
-    id: 'exp_01',
-    title: 'How I Got My First Freelance Client',
-    description: 'After 3 months of applying on generic job boards with zero responses, I changed my entire strategy to sending 2-minute Loom video audits.',
-    author: {
-      id: 'usr_team_lived',
-      name: 'The Team',
-      username: 'the_team',
-      avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80',
-      role: 'Lived — Team Project',
-      bio: 'Curated team case study on client acquisition.',
-    },
-    category: 'Freelancing',
-    tags: ['Freelancing', 'Client Acquisition', 'Cold Outreach', 'Career'],
-    contentType: 'story',
-    readTimeMinutes: 5,
-    coverImage: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=80',
-    story: {
-      content: `In early 2024, I decided to transition into freelance frontend development. I spent weeks polishing my resume, setting up Upwork and Fiverr accounts, and bidding on whatever job postings popped up.
+    id: 'ch_01',
+    title: 'The 3 Urgent Deadlines Dilemma',
+    category: 'time-management',
+    difficulty: 'Intermediate',
+    estimatedMinutes: 3,
+    xpReward: 50,
+    isDaily: true,
+    summary: 'It is 2:00 PM. Three high-stakes stakeholders are demanding immediate deliverables by 5:00 PM. You cannot finish all three.',
+    scenarioContext: `You are managing an operational project. At 2:00 PM on Thursday, three critical tasks collide:
+1. Your manager asks for a revised budget presentation for an executive meeting tomorrow at 9:00 AM.
+2. A high-value client emails stating their invoice contains an overcharge error and demands an immediate recalculation before paying.
+3. Your closest teammate is blocked on a deployment pipeline error that requires 40 minutes of your technical expertise.
 
-Result: 84 proposals sent, 3 replies, 0 contracts. I was burning through my savings and wondering if I had made a terrible mistake.
-
-### The Breakthrough Shift
-I realized that clients on freelance boards receive 50+ identical cover letters within 10 minutes of posting. To win, I needed to show value before asking for money.
-
-Instead of applying to public postings, I searched for local e-commerce stores and small service businesses whose websites had obvious performance issues or broken mobile layouts.
-
-### What Worked: The 2-Minute Video Audit
-1. I recorded a quick screen video showing their homepage loading on mobile.
-2. I pointed out 2 specific things hurting their conversion rate (e.g. uncompressed 5MB hero banner, checkout button cut off on iPhone SE).
-3. I built a quick mock-up showing the fixed version.
-4. I sent a 3-sentence email: "Hi [Name], I noticed your mobile site is losing customers because the CTA gets clipped on mobile. Here is a 90-second video explaining the fix. No pressure at all—hope this helps!"
-
-On my 7th email, the founder replied: "Can you fix this for us this Thursday?" That single email turned into an $850 initial contract and a ongoing monthly retainer.`,
-      whatILearned: 'Give value upfront without asking for anything. Demonstrating competence visually cuts through noise faster than any resume.',
-    },
-    lessons: [
+You have exactly 3 hours of uninterrupted focus before mandatory office closure. Attempting all three simultaneously will result in rushed mistakes and missed deadlines across the board.`,
+    dilemma: 'How do you triage this workload without destroying stakeholder trust or burning out?',
+    options: [
       {
-        id: 'les_01_1',
-        number: 1,
-        title: 'Provide immediate visual proof',
-        description: 'Showing a client their exact problem solved is 10x more persuasive than promising you have the skills.',
-        actionableStep: 'Record a 2-minute loom pointing out 1 high-value improvement before pitching.',
+        id: 'A',
+        label: 'Work in panic mode, splitting 1 hour per task',
+        description: 'Try to rush through all three tasks by context-switching rapidly every 40-60 minutes.',
+        consequence: 'By 5:00 PM, the budget slides contain typos, the client invoice correction missed a tax deduction, and your teammate was only partially unblocked. All three stakeholders are disappointed.',
+        feedback: 'Context switching degrades cognitive capacity by up to 40%. Rushing three tasks simultaneously creates hidden compound errors that take triple the time to fix the next morning.',
+        skillImpact: { skill: 'time-management', delta: -2 },
+        isOptimal: false,
       },
       {
-        id: 'les_01_2',
-        number: 2,
-        title: 'Target clients outside crowded marketplaces',
-        description: 'Direct outreach eliminates bidding wars and lets you charge value-based rates.',
-        actionableStep: 'Look for businesses with dated websites that are already actively spending money on advertising.',
+        id: 'B',
+        label: 'Triage by true external urgency: Client first, align manager second, hand off teammate',
+        description: 'Call the client immediately (15 mins) to verify the error and promise the revised invoice by 4:00 PM. Update your manager with an outline and negotiate final delivery for 8:30 AM tomorrow. Direct your teammate to documentation for 1 hour.',
+        consequence: 'The client receives an accurate invoice and pays promptly. Your manager appreciates the proactive communication and agrees to the 8:30 AM delivery. Your teammate resolves part of the bug independently.',
+        feedback: 'Outstanding prioritization! You separated "false urgency" from "actual business impact" and proactively renegotiated deadlines before missing them.',
+        skillImpact: { skill: 'time-management', delta: +6 },
+        isOptimal: true,
+      },
+      {
+        id: 'C',
+        label: 'Shut off all notifications and focus exclusively on the manager\'s deck',
+        description: 'Prioritize your direct superior above all else. Ignore the client and teammate until tomorrow morning.',
+        consequence: 'Your manager gets a polished deck, but the angry client escalates to your company director over the unaddressed overcharge, causing an unnecessary leadership crisis.',
+        feedback: 'While pleasing your manager is important, ignoring an active billing dispute with a paying customer creates severe organizational risk. Silence is perceived as negligence.',
+        skillImpact: { skill: 'time-management', delta: +1 },
+        isOptimal: false,
+      },
+      {
+        id: 'D',
+        label: 'Drop everything to pair-program with your teammate first',
+        description: 'Help your colleague through the deployment issue because team culture and loyalty come first.',
+        consequence: 'Your teammate is grateful, but neither the manager\'s deck nor the client invoice is addressed. You face disciplinary reprimand for neglecting primary responsibilities.',
+        feedback: 'High empathy, but poor organizational stewardship. Helping others at the complete expense of your core duties harms both you and the organization.',
+        skillImpact: { skill: 'time-management', delta: 0 },
+        isOptimal: false,
       },
     ],
-    likesCount: 342,
-    commentsCount: 45,
-    helpfulCount: 289,
-    notHelpfulCount: 4,
-    isLiked: false,
-    isSaved: false,
-    userHelpfulVote: null,
-    createdAt: '2026-10-05T08:00:00Z',
-    updatedAt: '2026-10-05T08:00:00Z',
+    allowWrittenResponse: true,
+    recommendedReason: 'Recommended today because Time Management is your most active growth skill this week.',
+    completed: true,
+    completedAt: '2026-10-09T01:15:00Z',
+    userChoiceId: 'B',
+    userWrittenResponse: 'I chose B because proactive renegotiation is better than silent failure.',
+    tags: ['Prioritization', 'Workplace Urgency', 'Context Switching'],
   },
   {
-    id: 'exp_02',
-    title: 'What I Learned After Failing My First Business',
-    description: 'We raised angel capital, spent 8 months perfecting software features in secrecy, and launched to complete silence. Here is what that painful mistake taught us.',
-    author: {
-      id: 'usr_team_lived',
-      name: 'The Team',
-      username: 'the_team',
-      avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80',
-      role: 'Lived — Team Project',
-      bio: 'Team retrospective on startup validation and lean development.',
-    },
-    category: 'Business',
-    tags: ['Business', 'Startups', 'Failure', 'Validation', 'Lessons'],
-    contentType: 'story',
-    readTimeMinutes: 6,
-    coverImage: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80',
-    story: {
-      content: `Our first venture was an inventory tracking tool for independent retail boutiques. We were convinced that existing tools were too ugly, and that beautiful UI would naturally attract thousands of shop owners.
+    id: 'ch_02',
+    title: 'The Rent vs Broken Laptop Budget Crunch',
+    category: 'money-management',
+    difficulty: 'Intermediate',
+    estimatedMinutes: 4,
+    xpReward: 60,
+    isDaily: false,
+    summary: 'You have $900 in checking. Rent of $750 is due in 3 days. Your laptop—your only work tool—just motherboard-fried and repairs cost $450.',
+    scenarioContext: `You are working as an independent freelance contractor or remote worker. Your entire monthly income ($2,200) depends on having a functioning computer.
 
-We spent $18,000 and 8 months coding in isolation. We added dark mode, custom dashboards, exports, and automations.
+On the 28th of the month:
+- Rent due on the 1st: $750 (Strict 10% late fee if unpaid by the 3rd).
+- Cash available: $900.
+- Laptop completely dead: Certified repair estimate is $450 (ready in 2 days) or a refurbished loaner is $120/month.
+- A client owes you $800, but their payment is scheduled for the 10th of next month.
 
-### The Launch Disaster
-On launch day, we posted on Product Hunt, Hacker News, and Twitter. We got 1,200 upvotes and plenty of praise from developer friends. But exactly two boutique owners signed up, and both stopped logging in after 4 days.
-
-When we finally visited retail store owners in person, we uncovered the brutal truth: their real bottleneck wasn't ugly software—it was supplier delays and physical barcode scanning hardware compatibility. Our cloud app solved a problem they didn't care about.
-
-### What We Should Have Done
-If we had spent 2 weeks shadowing 5 shop owners before writing a single line of code, we would have saved 8 months of our lives and thousands of dollars.`,
-      whatILearned: 'Never fall in love with your solution. Fall in love with the customer\'s daily friction.',
-    },
-    lessons: [
+You have no credit card with remaining limit, and taking a high-interest payday loan charges 35% fees.`,
+    dilemma: 'How do you preserve shelter and protect your ability to earn without spiraling into toxic debt?',
+    options: [
       {
-        id: 'les_02_1',
-        number: 1,
-        title: 'Talk to real users before building anything',
-        description: 'No code should be written until you observe potential users trying to solve the problem manually.',
-        actionableStep: 'Interview 10 people experiencing the friction before creating a prototype.',
+        id: 'A',
+        label: 'Spend $450 on immediate laptop repair and pay partial rent late',
+        description: 'Fix the laptop right away with cash, pay $450 towards rent, and hope the landlord forgives the late fee.',
+        consequence: 'Your laptop is fixed, but the landlord issues a formal lease violation notice and applies a $75 penalty. You are now behind on living costs with zero safety cushion.',
+        feedback: 'Paying rent late without prior agreement triggers landlord friction and penalties. Shelter security must always be protected through clear communication.',
+        skillImpact: { skill: 'money-management', delta: +1 },
+        isOptimal: false,
       },
       {
-        id: 'les_02_2',
-        number: 2,
-        title: 'Validation requires committed skin in the game',
-        description: 'Polite verbal compliments mean zero. Pre-orders, deposits, or signed letters of intent are real validation.',
-        actionableStep: 'Ask for a paid pre-order or formal pilot agreement before full feature build.',
+        id: 'B',
+        label: 'Pay full rent ($750), use $150 remaining for a refurbished rental / library setup, and invoice the client with an early-pay discount',
+        description: 'Secure shelter first. Rent a basic working laptop for $80 or use campus/co-working stations for 5 days. Offer your pending client a 5% discount if they clear the $800 invoice 5 days early.',
+        consequence: 'Rent is paid with zero penalties. The client accepts the small early-payment discount and pays $760 within 48 hours, allowing you to pay for the permanent repair with zero high-interest debt!',
+        feedback: 'Brilliant financial engineering! You prioritized non-negotiable living security, avoided predatory debt, created a temporary workaround, and pulled forward receivables.',
+        skillImpact: { skill: 'money-management', delta: +8 },
+        isOptimal: true,
+      },
+      {
+        id: 'C',
+        label: 'Take a quick payday advance / informal high-interest loan to cover both',
+        description: 'Borrow $400 at 30% monthly interest so you don\'t have to compromise on either rent or machine.',
+        consequence: 'Both problems seem solved on day 1, but the $120 interest fee traps your upcoming paycheck, leaving you in an escalating cash deficit next month.',
+        feedback: 'Payday and high-interest micro-loans are wealth destroyers. Short-term relief turns into months of compound financial stress.',
+        skillImpact: { skill: 'money-management', delta: -5 },
+        isOptimal: false,
+      },
+      {
+        id: 'D',
+        label: 'Do not pay rent, do not fix laptop, and wait until the client pays on the 10th',
+        description: 'Freeze all spending and simply stop working for two weeks until funds arrive.',
+        consequence: 'You miss client deadlines, risk losing future contracts, and accumulate severe landlord friction.',
+        feedback: 'Financial paralysis is not risk management. Passively waiting while revenue halts compounds both income loss and housing instability.',
+        skillImpact: { skill: 'money-management', delta: -3 },
+        isOptimal: false,
       },
     ],
-    likesCount: 512,
-    commentsCount: 68,
-    helpfulCount: 478,
-    notHelpfulCount: 6,
-    isLiked: false,
-    isSaved: true,
-    userHelpfulVote: null,
-    createdAt: '2026-10-06T10:15:00Z',
-    updatedAt: '2026-10-06T10:15:00Z',
+    allowWrittenResponse: true,
+    recommendedReason: 'Recommended to strengthen your emergency cash flow resilience and debt avoidance tactics.',
+    completed: false,
+    tags: ['Cashflow', 'Emergency Fund', 'Negotiation', 'Receivables'],
   },
   {
-    id: 'exp_03',
-    title: 'How I Learned Programming From Zero',
-    description: 'I went from a complete non-technical background to building web applications in 9 months. The exact roadmap that avoided tutorial purgatory.',
-    author: {
-      id: 'usr_team_lived',
-      name: 'The Team',
-      username: 'the_team',
-      avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80',
-      role: 'Lived — Team Project',
-      bio: 'Practical guide to self-taught coding.',
-    },
-    category: 'Programming',
-    tags: ['Programming', 'Technology', 'Self-Taught', 'Education', 'Roadmap'],
-    contentType: 'story',
-    readTimeMinutes: 7,
-    coverImage: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80',
-    story: {
-      content: `For the first 3 months of my coding journey, I fell directly into the "tutorial trap". I watched 60+ hours of video courses, followed every keystroke, and felt like a genius.
+    id: 'ch_03',
+    title: 'Responding to Public Disagreement in a Team Meeting',
+    category: 'communication',
+    difficulty: 'Beginner',
+    estimatedMinutes: 3,
+    xpReward: 40,
+    isDaily: false,
+    summary: 'During an all-hands product review, a senior colleague bluntly calls your proposal "unrealistic and a waste of engineering time".',
+    scenarioContext: `You have spent 2 weeks preparing a user onboarding revision proposal. In the meeting with 12 team members present, right after you present slide 4, a senior engineer speaks over you:
+"Look, this proposal is completely detached from reality. We cannot build this, and frankly it's a waste of engineering time to even discuss it right now."
 
-Then I opened a blank VS Code editor to build a simple habit tracker and couldn't write 5 lines without getting stuck.
-
-### The Shift to Project-Based Struggle
-Everything changed when I switched from following tutorials to building projects with intentional constraints:
-
-1. **HTML & CSS Foundations (Weeks 1-4)**: Built 3 clone pages from scratch using only DevTools inspection.
-2. **Vanilla JavaScript (Weeks 5-12)**: Focused on DOM manipulation, API fetching, and array transformations before touching any framework.
-3. **TypeScript & React (Weeks 13-24)**: Built one full-featured application and refactored it 3 times.
-
-### The Secret: Reading Errors Carefully
-Beginners fear error messages in the console. The breakthrough moment was learning that the compiler is not an enemy—it is a free diagnostic tool telling you the exact line number and variable name that went wrong.`,
-      whatILearned: 'You only learn programming when you break things and debug them without a tutorial holding your hand.',
-    },
-    lessons: [
+Several colleagues glance awkwardly at their screens. The room goes silent, and the meeting chair looks at you to see how you will react. You feel a surge of anger and embarrassment.`,
+    dilemma: 'How do you respond in the moment to maintain professional authority without escalating into petty defensiveness or shrinking away?',
+    options: [
       {
-        id: 'les_03_1',
-        number: 1,
-        title: 'Break tutorial addiction early',
-        description: 'After watching a concept, close the video and implement it from scratch on your own machine.',
-        actionableStep: 'Spend 2x more time coding than watching video lectures.',
+        id: 'A',
+        label: 'Clap back immediately: "If you actually read the technical specs beforehand, you would know this is standard."',
+        description: 'Defend your competence by pointing out their failure to review materials before the meeting.',
+        consequence: 'The room becomes intensely hostile. The meeting chair intervenes to stop the argument. Colleagues remember the clash rather than the merits of your proposal.',
+        feedback: 'Public counter-attacks make you look emotionally defensive. Even if factually correct, escalating defensiveness in front of leaders damages executive presence.',
+        skillImpact: { skill: 'communication', delta: -3 },
+        isOptimal: false,
       },
       {
-        id: 'les_03_2',
-        number: 2,
-        title: 'Master one ecosystem deeply first',
-        description: 'Jumping between Python, Rust, and JavaScript creates cognitive overload. Pick one stack and stick to it.',
-        actionableStep: 'Build 3 functional portfolio projects in one stack before exploring another language.',
+        id: 'B',
+        label: 'Acknowledge technical concern, separate emotion, and ask for specific constraint details',
+        description: 'Take a calm breath and say: "I appreciate you flagging feasibility early, Tariq. Which specific part of the flow do you see as the highest engineering roadblock? Let\'s note those constraints right now."',
+        consequence: 'The tension immediately dissipates. The engineer is forced to shift from vague emotional dismissals to concrete technical details. You look poised, collaborative, and in total control of the room.',
+        feedback: 'Masterful conversational Aikido! You validated their right to raise concerns, neutralized their hostility, and refocused the conversation from personal insults to objective technical constraints.',
+        skillImpact: { skill: 'communication', delta: +7 },
+        isOptimal: true,
+      },
+      {
+        id: 'C',
+        label: 'Apologize profusely and offer to scrap the proposal immediately',
+        description: 'Avoid all conflict by backing down: "I\'m so sorry, maybe I was mistaken, let\'s move on to the next topic."',
+        consequence: 'The proposal is discarded. Colleagues assume your work was indeed careless, and your confidence takes a severe hit.',
+        feedback: 'Conflict avoidance at the cost of your legitimate work signals low conviction. Constructive disagreement is healthy; immediate capitulation undermines credibility.',
+        skillImpact: { skill: 'communication', delta: -2 },
+        isOptimal: false,
+      },
+      {
+        id: 'D',
+        label: 'Stay completely silent and look at the floor until someone else speaks',
+        description: 'Refuse to engage and let the awkward silence force the meeting chair to intervene.',
+        consequence: 'The meeting chair awkwardly changes the subject. The dismissal goes unaddressed, leaving an impression of helplessness.',
+        feedback: 'Silence in the face of public criticism forfeits your platform. You don\'t need to fight, but you must acknowledge and steer the dialogue.',
+        skillImpact: { skill: 'communication', delta: 0 },
+        isOptimal: false,
       },
     ],
-    likesCount: 680,
-    commentsCount: 92,
-    helpfulCount: 610,
-    notHelpfulCount: 8,
-    isLiked: true,
-    isSaved: false,
-    userHelpfulVote: 'yes',
-    createdAt: '2026-10-07T14:00:00Z',
-    updatedAt: '2026-10-07T14:00:00Z',
+    allowWrittenResponse: true,
+    recommendedReason: 'Recommended to develop diplomatic de-escalation and professional poise under scrutiny.',
+    completed: false,
+    tags: ['De-escalation', 'Executive Presence', 'Workplace Conflict'],
   },
   {
-    id: 'exp_04',
-    title: 'My University Experience',
-    description: 'What high school never prepares you for: managing independence, finding study systems that actually work, and building relationships outside the classroom.',
-    author: {
-      id: 'usr_team_lived',
-      name: 'The Team',
-      username: 'the_team',
-      avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80',
-      role: 'Lived — Team Project',
-      bio: 'Real student survival insights.',
-    },
-    category: 'Student Life',
-    tags: ['Student Life', 'Education', 'College', 'Personal Growth', 'University'],
-    contentType: 'story',
-    readTimeMinutes: 5,
-    coverImage: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80',
-    story: {
-      content: `Starting university, I believed that GPA was the sole metric of success. I spent my first two semesters pulling all-nighters in library cubicles, memorizing slides and avoiding social events.
+    id: 'ch_04',
+    title: 'The High-Salary Safe Job vs High-Equity Startup Offer',
+    category: 'decision-making',
+    difficulty: 'Advanced',
+    estimatedMinutes: 5,
+    xpReward: 70,
+    isDaily: false,
+    summary: 'You have two offers: Offer A pays $95k with strict routine; Offer B pays $60k with 1.5% equity and steep learning curve.',
+    scenarioContext: `You are 24 years old with minimal student debt and 6 months of living expenses saved.
 
-By sophomore year, I was burnt out, isolated, and had zero practical skills or professional connections to show for it.
+Offer A (Legacy Enterprise):
+- Base salary: $95,000 + 401(k) match.
+- Stability: High. Little risk of layoffs.
+- Scope: Maintenance of existing internal tooling. Slow promotion cycle (2-3 years per step).
+- Learning: Low to medium. Modern frameworks are rarely adopted.
 
-### The Real Value of College
-I realized that textbooks and lecture slides are now accessible online for free to anyone in the world. The true, irreplaceable value of university is:
-- Direct access to professors during office hours.
-- Collaborating with ambitious peers on side projects.
-- Student discounts and conference travel grants.
-- Low-stakes environments to experiment and fail.
-
-When I shifted my energy to active group projects, internships, and faculty research, both my grades and my happiness skyrocketed.`,
-      whatILearned: 'University is an incubator for relationships and practical initiative, not just a testing factory.',
-    },
-    lessons: [
+Offer B (Seed-stage YC Startup):
+- Base salary: $60,000 + 1.5% vested equity.
+- Stability: Low. Company has 14 months of runway.
+- Scope: You will own the entire customer-facing product architecture.
+- Learning: Exponential. You will interact with customers, ship weekly, and work directly with serial founders.`,
+    dilemma: 'How do you structure this life decision based on your stage of life and asymmetric upside vs downside risk?',
+    options: [
       {
-        id: 'les_04_1',
-        number: 1,
-        title: 'Office hours are the ultimate cheat code',
-        description: 'Professors write recommendations and offer research roles to the students who show up and ask thoughtful questions.',
-        actionableStep: 'Visit at least two professors during office hours every single semester.',
+        id: 'A',
+        label: 'Take Offer A solely because $95k is higher than $60k right now',
+        description: 'Maximize current year cash earnings without weighing long-term career capital or skills velocity.',
+        consequence: 'You have comfortable disposable income, but after 3 years you realize your skill set has stagnated and moving to modern tech roles is harder than anticipated.',
+        feedback: 'Early in your career, skills velocity and compounding network value often dwarf small early salary differentials. Don\'t optimize for cash over compounding competency too early.',
+        skillImpact: { skill: 'decision-making', delta: +2 },
+        isOptimal: false,
       },
       {
-        id: 'les_04_2',
-        number: 2,
-        title: 'Prioritize sleep over cramming',
-        description: 'All-nighters degrade cognitive performance for days. Distributed repetition beats last-minute desperation.',
-        actionableStep: 'Review lecture notes for 15 minutes within 24 hours of each class.',
+        id: 'B',
+        label: 'Apply an Asymmetric Risk & Regret Minimization Framework to your financial baseline',
+        description: 'Evaluate worst-case vs best-case: Since you have 6 months of savings and low fixed liabilities, the downside of Offer B (startup folds in 14 mos) leaves you with elite full-stack experience and network. The downside of Offer A is 3 years of career plateau.',
+        consequence: 'You negotiate Offer B to $65k with milestone review. Whether the startup succeeds or fails, within 18 months your market value jumps to $120k+ due to proven product ownership.',
+        feedback: 'Exceptional decision framework! You evaluated personal downside tolerance (low liabilities, existing runway) against career upside asymmetry rather than nominal salary vanity.',
+        skillImpact: { skill: 'decision-making', delta: +8 },
+        isOptimal: true,
+      },
+      {
+        id: 'C',
+        label: 'Flip a coin or poll 20 friends on Instagram to see what majority votes',
+        description: 'Delegate personal career agency to public opinion polls.',
+        consequence: 'You receive conflicting advice from people who don\'t understand your personal risk tolerance, leaving you more paralyzed than before.',
+        feedback: 'Crowdsourcing high-stakes decisions is an evasion of personal agency. Only you bear the consequences of your life choices.',
+        skillImpact: { skill: 'decision-making', delta: -4 },
+        isOptimal: false,
+      },
+      {
+        id: 'D',
+        label: 'Try to secretly work both full-time jobs remotely simultaneously',
+        description: 'Accept both offers and hope nobody notices your conflicting meetings.',
+        consequence: 'Within 3 weeks, meeting calendar collisions result in missed client presentations. Both companies fire you for breach of contract and conduct violations.',
+        feedback: 'Dishonest overemployment under pressure destroys your reputation and network integrity. Trust is the hardest asset to rebuild.',
+        skillImpact: { skill: 'decision-making', delta: -8 },
+        isOptimal: false,
       },
     ],
-    likesCount: 290,
-    commentsCount: 38,
-    helpfulCount: 245,
-    notHelpfulCount: 3,
-    isLiked: false,
-    isSaved: false,
-    userHelpfulVote: null,
-    createdAt: '2026-10-07T16:30:00Z',
-    updatedAt: '2026-10-07T16:30:00Z',
+    allowWrittenResponse: true,
+    recommendedReason: 'Recommended to teach asymmetrical upside analysis and regret minimization frameworks.',
+    completed: false,
+    tags: ['Risk Asymmetry', 'Regret Minimization', 'Career Strategy'],
   },
   {
-    id: 'exp_05',
-    title: 'Things I Wish I Knew Before Starting Freelancing',
-    description: 'Taxes, contract disputes, scope creep, and how underpricing your services actually repels serious high-paying clients.',
-    author: {
-      id: 'usr_team_lived',
-      name: 'The Team',
-      username: 'the_team',
-      avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150&auto=format&fit=crop&q=80',
-      role: 'Lived — Team Project',
-      bio: 'Hard-won lessons from independent consulting.',
-    },
-    category: 'Freelancing',
-    tags: ['Freelancing', 'Contracts', 'Pricing', 'Career', 'Money'],
-    contentType: 'story',
-    readTimeMinutes: 6,
-    coverImage: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&auto=format&fit=crop&q=80',
-    story: {
-      content: `When you start freelancing, you think your only job is doing the craft (writing, designing, coding).
-
-In reality, your craft is only about 40% of the job. The remaining 60% is sales, expectation management, contract writing, invoicing, and tax accounting.
-
-### 1. Scope Creep Will Kill Your Profitability
-In my early contracts, I agreed to vague milestones like "Build the web app". Clients naturally requested "one more tweak" 30 times. Now, every single deliverable has written boundaries, and extra requests are billed at a clear change-order rate.
-
-### 2. Never Work Without a 50% Upfront Deposit
-Legitimate clients who respect your expertise never hesitate to pay a 50% deposit before kickoff. Clients who refuse deposits are almost always the ones who dispute the invoice at the finish line.
-
-### 3. Set Aside 30% for Taxes Immediately
-Do not leave taxes until year-end. Every dollar that lands in your business account should immediately have 30% moved to a dedicated tax savings account.`,
-      whatILearned: 'Clear contracts preserve relationships. Boundaries make clients respect your professional standards.',
-    },
-    lessons: [
+    id: 'ch_05',
+    title: 'Production Crash 1 Hour Before Product Launch',
+    category: 'problem-solving',
+    difficulty: 'Advanced',
+    estimatedMinutes: 5,
+    xpReward: 65,
+    isDaily: false,
+    summary: '60 minutes before 10,000 public users arrive for launch, payment gateway webhooks fail with Error 500 across all testing accounts.',
+    scenarioContext: `Your team has hyped a product launch for 3 months. Marketing campaigns and press releases go live at 10:00 AM.
+At 8:55 AM, automated test suites trigger red alerts:
+- 100% of Stripe test checkout transactions are returning HTTP 500.
+- A junior developer merged 4 different pull requests at 8:30 AM containing database index updates, email copy fixes, and payment webhook secret rotations.
+- The marketing director is messaging every 2 minutes: "Are we still on track? Do not delay without warning!"`,
+    dilemma: 'Under severe time pressure, how do you diagnose the root cause and execute a recovery plan without causing worse secondary disasters?',
+    options: [
       {
-        id: 'les_05_1',
-        number: 1,
-        title: 'Always collect 50% deposit upfront',
-        description: 'Deposits ensure serious client commitment and protect your cash flow.',
-        actionableStep: 'Never start work or deliver code without milestone clearance.',
+        id: 'A',
+        label: 'Start randomly editing environment variables and pushing hotfixes directly to main',
+        description: 'Panic fix lines of code in production directly in the cloud console to see if it starts working.',
+        consequence: 'The ad-hoc changes corrupt the database migration state. Now not only are payments failing, but the user registration table is locked.',
+        feedback: 'Under pressure, random intervention without structured diagnosis accelerates catastrophe. Never debug through hasty blind edits.',
+        skillImpact: { skill: 'problem-solving', delta: -4 },
+        isOptimal: false,
       },
       {
-        id: 'les_05_2',
-        number: 2,
-        title: 'Document all changes in writing',
-        description: 'Scope creep happens when boundaries are undefined. Keep a clear change-order log.',
-        actionableStep: 'Reply to out-of-scope requests: "Happy to add this! Let me send over a brief addendum with the estimated hours."',
+        id: 'B',
+        label: 'Execute systematic rollback to the last verified stable commit, isolate the webhook diff, and send an upfront status broadcast',
+        description: 'Immediately revert the 8:30 AM batch merge to restore known stability. Test payments on the reverted build (takes 10 mins). Inform marketing leadership calmly of the 15-minute verification buffer.',
+        consequence: 'The instant rollback fixes payments immediately. By 9:25 AM, the stable build is verified green. You isolate the bug (an unescaped webhook signing secret) in a clean staging branch for later deployment.',
+        feedback: 'Flawless incident response! You prioritized "known safe state via rollback" over blind debugging, isolated variables, and communicated calmly to stakeholders.',
+        skillImpact: { skill: 'problem-solving', delta: +9 },
+        isOptimal: true,
+      },
+      {
+        id: 'C',
+        label: 'Blame the junior developer publicly in Slack and demand they fix their commits',
+        description: 'Direct accountability to whoever merged last and refuse to intervene.',
+        consequence: 'The junior developer freezes under panic. Time runs out, launch fails in public view, and team trust is permanently fractured.',
+        feedback: 'Blame during an active crisis guarantees failure. Blameless incident post-mortems happen AFTER the fire is extinguished.',
+        skillImpact: { skill: 'problem-solving', delta: -6 },
+        isOptimal: false,
+      },
+      {
+        id: 'D',
+        label: 'Proceed with the launch anyway and plan to refund whoever encounters an error',
+        description: 'Ignore the test suite failures and hope real users don\'t trigger the bug.',
+        consequence: 'Thousands of users fail checkout simultaneously, flooding social media with scam allegations. The brand reputation is ruined on day one.',
+        feedback: 'Launching knowingly broken mission-critical flows (especially payments) is professional suicide. Controlled short delays are always preferable to broken core transactions.',
+        skillImpact: { skill: 'problem-solving', delta: -5 },
+        isOptimal: false,
       },
     ],
-    likesCount: 420,
-    commentsCount: 52,
-    helpfulCount: 388,
-    notHelpfulCount: 5,
-    isLiked: false,
-    isSaved: true,
-    userHelpfulVote: null,
-    createdAt: '2026-10-08T09:00:00Z',
-    updatedAt: '2026-10-08T09:00:00Z',
+    allowWrittenResponse: true,
+    recommendedReason: 'Recommended to train systematic root cause isolation under extreme time constraints.',
+    completed: false,
+    tags: ['Incident Response', 'Root Cause', 'Rollback Strategy'],
+  },
+  {
+    id: 'ch_06',
+    title: 'The Sunk Cost Gym Membership vs Home Habit',
+    category: 'money-management',
+    difficulty: 'Beginner',
+    estimatedMinutes: 3,
+    xpReward: 35,
+    isDaily: false,
+    summary: 'You prepaid $600 for an annual luxury gym membership 4 months ago, but have only visited 3 times due to long commute.',
+    scenarioContext: `In January, inspired by new year motivation, you signed a non-refundable $600/year contract ($50/month effective).
+Now in May, reality has set in:
+- The gym is a 35-minute drive in peak traffic.
+- Every time you plan to go, the travel time causes you to procrastinate and skip entirely.
+- A friend suggests a $25 resistance band set and free park runs, which you actually enjoy.
+- You keep telling yourself: "I spent $600! I must force myself to drive 35 minutes!"`,
+    dilemma: 'How do you overcome the psychological trap of sunk costs to optimize health and financial peace?',
+    options: [
+      {
+        id: 'A',
+        label: 'Keep feeling guilty and forcing yourself once every 3 weeks to justify the $600',
+        description: 'Continue the current painful pattern because acknowledging the wasted money feels too painful.',
+        consequence: 'You spend another 7 months feeling guilty, exercising infrequently, and gaining no physical health benefits.',
+        feedback: 'The classic Sunk Cost Fallacy: spending emotional energy and future time trying to salvage money that is already gone forever.',
+        skillImpact: { skill: 'money-management', delta: -1 },
+        isOptimal: false,
+      },
+      {
+        id: 'B',
+        label: 'Accept the $600 as a closed tuition fee, explore contract transfer, and start the home routine today',
+        description: 'Acknowledge the money is already spent. Check if the gym contract permits member transfer/sublet to someone living closer. Switch immediately to the high-consistency home routine.',
+        consequence: 'You transfer the remaining 7 months of contract to a coworker for $250 recovery, and your workout consistency jumps to 4 days per week at home!',
+        feedback: 'Exemplary financial and behavioral clarity! Sunk costs cannot be retrieved; only future friction and marginal utility matter.',
+        skillImpact: { skill: 'money-management', delta: +6 },
+        isOptimal: true,
+      },
+      {
+        id: 'C',
+        label: 'Buy $400 more luxury gym apparel to motivate yourself to make the commute',
+        description: 'Double down on the investment to force enthusiasm.',
+        consequence: 'You are now out $1,000 and still hate the 35-minute commute.',
+        feedback: 'Throwing good money after bad is a dangerous habit. Gear rarely solves environmental friction.',
+        skillImpact: { skill: 'money-management', delta: -4 },
+        isOptimal: false,
+      },
+      {
+        id: 'D',
+        label: 'Give up on fitness entirely until the contract expires in December',
+        description: 'Quit working out out of frustration with the gym commitment.',
+        consequence: 'Physical and mental health deteriorate while the $600 continues to waste away.',
+        feedback: 'Never sacrifice foundational well-being because of an imperfect financial choice.',
+        skillImpact: { skill: 'money-management', delta: -2 },
+        isOptimal: false,
+      },
+    ],
+    allowWrittenResponse: false,
+    recommendedReason: 'Recommended to diagnose cognitive biases like the Sunk Cost Fallacy.',
+    completed: false,
+    tags: ['Sunk Cost', 'Behavioral Economics', 'Habit Friction'],
   },
 ];
 
 // ============================================================================
-// 6. INITIAL NOTIFICATIONS
+// 4. ACHIEVEMENTS SYSTEM
 // ============================================================================
-export const INITIAL_NOTIFICATIONS: Notification[] = [
+export const INITIAL_ACHIEVEMENTS: Achievement[] = [
+  {
+    id: 'ach_first_step',
+    title: 'First Decision',
+    description: 'Complete your first interactive real-life scenario.',
+    category: 'general',
+    icon: 'Award',
+    unlocked: true,
+    progress: 1,
+    maxProgress: 1,
+    unlockedAt: '2026-10-09T01:15:00Z',
+  },
+  {
+    id: 'ach_streak_5',
+    title: 'Consistency Builder',
+    description: 'Maintain a 5-day active learning streak.',
+    category: 'general',
+    icon: 'Flame',
+    unlocked: true,
+    progress: 5,
+    maxProgress: 5,
+    unlockedAt: '2026-10-09T01:15:00Z',
+  },
+  {
+    id: 'ach_prioritizer',
+    title: 'Master Prioritizer',
+    description: 'Solve 3 Time Management challenges with optimal triage decisions.',
+    category: 'time-management',
+    icon: 'Clock',
+    unlocked: false,
+    progress: 1,
+    maxProgress: 3,
+  },
+  {
+    id: 'ach_budget_guard',
+    title: 'Financial Shield',
+    description: 'Prevent high-interest debt and balance cashflow under pressure.',
+    category: 'money-management',
+    icon: 'ShieldCheck',
+    unlocked: false,
+    progress: 0,
+    maxProgress: 2,
+  },
+  {
+    id: 'ach_diplomat',
+    title: 'Calm Diplomat',
+    description: 'De-escalate workplace conflict and preserve stakeholder alignment.',
+    category: 'communication',
+    icon: 'MessageSquare',
+    unlocked: false,
+    progress: 1,
+    maxProgress: 3,
+  },
+  {
+    id: 'ach_root_cause',
+    title: 'Root Cause Detective',
+    description: 'Solve an advanced crisis without creating secondary failures.',
+    category: 'problem-solving',
+    icon: 'Cpu',
+    unlocked: false,
+    progress: 0,
+    maxProgress: 2,
+  },
+  {
+    id: 'ach_level_5',
+    title: 'Life Strategist',
+    description: 'Reach Level 5 and accumulate 1,000 XP in practical wisdom.',
+    category: 'general',
+    icon: 'Zap',
+    unlocked: false,
+    progress: 420,
+    maxProgress: 1000,
+  },
+];
+
+// ============================================================================
+// 5. ONBOARDING DIAGNOSTIC ASSESSMENT
+// ============================================================================
+export const ONBOARDING_ASSESSMENT_QUESTIONS: OnboardingAssessmentQuestion[] = [
+  {
+    id: 'diag_01',
+    category: 'time-management',
+    title: 'Workload Diagnostic',
+    scenario: 'You planned to study or work for 3 hours on Sunday evening, but a close friend calls in emotional distress and asks you to meet for coffee.',
+    options: [
+      {
+        id: 'opt_1',
+        label: 'Drop everything and spend 3 hours with them, sacrificing your study plan completely.',
+        description: 'Prioritizes emotional empathy, but sacrifices your non-negotiable personal commitments.',
+        skillImpacts: { 'communication': +4, 'time-management': -4 },
+      },
+      {
+        id: 'opt_2',
+        label: 'Offer a focused 30-minute listening call now, then schedule a proper meetup on Tuesday after your deadlines.',
+        description: 'Boundaries with compassion: provides immediate support while guarding core focus blocks.',
+        skillImpacts: { 'communication': +8, 'time-management': +8, 'decision-making': +6 },
+      },
+      {
+        id: 'opt_3',
+        label: 'Ignore the call and send a short text saying you are too busy.',
+        description: 'Protects time ruthlessly, but damages social capital and relationship warmth.',
+        skillImpacts: { 'time-management': +2, 'communication': -6 },
+      },
+    ],
+  },
+  {
+    id: 'diag_02',
+    category: 'money-management',
+    title: 'Financial Buffer Diagnostic',
+    scenario: 'You receive an unexpected $400 bonus at the end of the month. Your checking account has $80 in buffer.',
+    options: [
+      {
+        id: 'opt_1',
+        label: 'Treat yourself to dinner and gadgets with the full $400 as a well-deserved reward.',
+        description: 'Immediate dopamine reward, but leaves you one flat tire away from debt.',
+        skillImpacts: { 'money-management': -5, 'decision-making': -3 },
+      },
+      {
+        id: 'opt_2',
+        label: 'Put $350 immediately into an untouchable emergency buffer, spend $50 on a small celebration.',
+        description: 'Balances psychological satisfaction with building antifragile financial resilience.',
+        skillImpacts: { 'money-management': +10, 'decision-making': +8 },
+      },
+      {
+        id: 'opt_3',
+        label: 'Put all $400 into a high-risk crypto coin hoping to turn it into $2,000.',
+        description: 'Treats critical base liquidity as speculative gambling capital.',
+        skillImpacts: { 'money-management': -8, 'problem-solving': -4 },
+      },
+    ],
+  },
+];
+
+// ============================================================================
+// 6. NOTIFICATIONS
+// ============================================================================
+export const INITIAL_NOTIFICATIONS: NotificationItem[] = [
   {
     id: 'notif_01',
-    userId: 'usr_team_lived',
-    actor: {
-      id: 'usr_peer_01',
-      name: 'Community Learner',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-    },
-    type: 'helpful',
-    targetId: 'exp_01',
-    targetTitle: 'How I Got My First Freelance Client',
-    message: 'marked your team experience as helpful! "This gave me the confidence to send my first video pitch."',
+    title: "Today's Scenario is Ready",
+    message: 'The 3 Urgent Deadlines Dilemma: Practice prioritizing high-friction tasks before 5 PM.',
+    type: 'daily',
+    targetChallengeId: 'ch_01',
     isRead: false,
-    createdAt: '2026-10-08T14:15:00Z',
+    createdAt: '2 hours ago',
   },
   {
     id: 'notif_02',
-    userId: 'usr_team_lived',
-    actor: {
-      id: 'usr_peer_02',
-      name: 'Aspiring Developer',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-    },
-    type: 'comment',
-    targetId: 'exp_03',
-    targetTitle: 'How I Learned Programming From Zero',
-    message: 'commented: "Which CSS project helped you understand flexbox best?"',
+    title: '5-Day Streak Maintained! 🔥',
+    message: 'You have solved a practical scenario every day since Monday. Keep the momentum going.',
+    type: 'streak',
     isRead: false,
-    createdAt: '2026-10-08T11:30:00Z',
+    createdAt: 'Yesterday',
   },
   {
     id: 'notif_03',
-    userId: 'usr_team_lived',
-    actor: {
-      id: 'usr_peer_03',
-      name: 'Student Fellow',
-      avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
-    },
-    type: 'follow',
-    targetId: 'usr_team_lived',
-    message: 'started following The Team project updates.',
+    title: 'Achievement Unlocked: First Decision',
+    message: 'You earned your first decision badge and gained +50 XP in Time Management.',
+    type: 'achievement',
     isRead: true,
-    createdAt: '2026-10-07T16:20:00Z',
+    createdAt: '3 days ago',
   },
 ];

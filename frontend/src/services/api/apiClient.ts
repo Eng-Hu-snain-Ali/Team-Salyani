@@ -22,7 +22,7 @@ interface RequestOptions extends RequestInit {
 
 class ApiClient {
   private baseURL: string;
-  private tokenKey = 'lived_auth_token';
+  private tokenKey = 'ustad_online_auth_token';
 
   constructor() {
     this.baseURL = import.meta.env.VITE_API_BASE_URL || '';
@@ -32,7 +32,7 @@ class ApiClient {
     try {
       localStorage.setItem(this.tokenKey, token);
     } catch {
-      // Safe fallback for restricted storage environments
+      // Safe fallback
     }
   }
 
@@ -113,7 +113,6 @@ class ApiClient {
         throw new ApiError(errorMessage, response.status, errorData);
       }
 
-      // Handle 204 No Content
       if (response.status === 204) {
         return {} as T;
       }

@@ -1,12 +1,11 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { Search, Bell, Sun, Moon } from 'lucide-react';
+import { Flame, Zap, Bell, Sun, Moon, Compass } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const {
     theme,
     toggleTheme,
-    activeTab,
     setActiveTab,
     unreadNotifsCount,
     setIsNotificationsOpen,
@@ -16,76 +15,85 @@ export const Header: React.FC = () => {
   } = useApp();
 
   return (
-    <header className="app-header">
-      <div className="header-container">
-        {/* Brand Logo: Lived */}
+    <header className="ustad-header">
+      <div className="ustad-header-inner">
+        {/* Brand: USTAD ONLINE */}
         <div
-          className="brand-block"
+          className="header-brand"
           onClick={() => setActiveTab('home')}
           role="button"
           tabIndex={0}
         >
-          <div className="brand-dot-logo" />
-          <div className="brand-text">
-            <span className="brand-title">Lived</span>
-            <span className="brand-tagline">Real experiences. Real lessons.</span>
+          <div className="brand-icon-emblem">
+            <Compass size={22} strokeWidth={2.4} />
+          </div>
+          <div className="brand-text-col">
+            <span className="brand-title">USTAD ONLINE</span>
+            <span className="brand-tagline">Learn. Decide. Improve.</span>
           </div>
         </div>
 
-        {/* Header Right Actions */}
+        {/* Right Navigation & Status Metrics */}
         <div className="header-actions">
-          {activeTab !== 'explore' && (
-            <button
-              type="button"
-              className="header-icon-btn"
-              onClick={() => setActiveTab('explore')}
-              title="Search experiences"
-              aria-label="Search"
-            >
-              <Search size={18} />
-            </button>
-          )}
-
+          {/* Streak Indicator */}
           <button
             type="button"
-            className="header-icon-btn"
+            className="streak-pill-btn"
+            onClick={() => setActiveTab('progress')}
+            title="Current Streak"
+          >
+            <Flame size={16} fill="currentColor" />
+            <span>{user.streakDays}d</span>
+          </button>
+
+          {/* XP Pill */}
+          <div className="xp-pill-badge" title="Total Accumulated XP">
+            <Zap size={15} fill="currentColor" />
+            <span>{user.xp} XP</span>
+          </div>
+
+          {/* Theme Switcher */}
+          <button
+            type="button"
+            className="icon-action-btn"
             onClick={toggleTheme}
             title={theme === 'dark' ? 'Switch to Light' : 'Switch to Dark'}
             aria-label="Toggle theme"
           >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
           </button>
 
+          {/* Notifications Drawer Toggle */}
           <button
             type="button"
-            className="header-icon-btn notif-btn"
+            className="icon-action-btn"
             onClick={() => setIsNotificationsOpen(true)}
-            title="Notifications"
+            title="Notifications & Alerts"
             aria-label="Notifications"
           >
-            <Bell size={18} />
-            {unreadNotifsCount > 0 && (
-              <span className="notif-badge">{unreadNotifsCount}</span>
-            )}
+            <Bell size={17} />
+            {unreadNotifsCount > 0 && <span className="badge-unread-count" />}
           </button>
 
-          {!isAuthenticated ? (
-            <button
-              type="button"
-              className="header-auth-btn"
-              onClick={() => openAuthModal('welcome')}
-            >
-              Sign In
-            </button>
-          ) : (
+          {/* Profile / Auth Avatar */}
+          {isAuthenticated ? (
             <button
               type="button"
               className="header-avatar-btn"
               onClick={() => setActiveTab('profile')}
-              title="Profile"
+              title={`Profile (${user.name})`}
               aria-label="Profile"
             >
-              <img src={user.avatar} alt={user.name} className="header-avatar-img" />
+              <img src={user.avatar} alt={user.name} />
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn-primary"
+              style={{ padding: '6px 14px', fontSize: '0.84rem' }}
+              onClick={() => openAuthModal('welcome')}
+            >
+              Sign In
             </button>
           )}
         </div>

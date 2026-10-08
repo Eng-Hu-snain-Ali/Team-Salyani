@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Modal } from '../../components/common/Modal';
-import { CATEGORIES } from '../../constants';
-import type { ExperienceCategory } from '../../types';
+import { AGE_GROUPS } from '../../constants';
 import {
-  ArrowRight,
-  Lock,
   Mail,
+  Lock,
   User as UserIcon,
-  KeyRound,
-  ChevronLeft,
+  Compass,
+  ArrowRight,
+  Sparkles,
 } from 'lucide-react';
 
 export const AuthModal: React.FC = () => {
@@ -24,528 +23,386 @@ export const AuthModal: React.FC = () => {
     resetPassword,
   } = useApp();
 
-  // Registration form
+  // Form states
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [selectedInterests, setSelectedInterests] = useState<ExperienceCategory[]>([]);
-
-  // Reset password form
-  const [resetToken] = useState('demo-token');
+  const [ageGroup, setAgeGroup] = useState('20-24');
   const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
-
-  // UI state
   const [errorMsg, setErrorMsg] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [showOptionalFields, setShowOptionalFields] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const toggleInterest = (cat: ExperienceCategory) => {
-    setSelectedInterests((prev) =>
-      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
-    );
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
     if (!email || !password) {
       setErrorMsg('Please enter both email and password.');
       return;
     }
-    setIsLoading(true);
+    setIsSubmitting(true);
     const success = await loginUser({ email, password });
-    setIsLoading(false);
+    setIsSubmitting(false);
     if (!success) {
       setErrorMsg('Invalid login credentials. Please try again.');
     }
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleDemoLogin = async () => {
+    setIsSubmitting(true);
+    await loginUser({ email: 'ali.rehman@ustadonline.edu', password: 'password123' });
+    setIsSubmitting(false);
+  };
+
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
     if (!name || !email || !password) {
-      setErrorMsg('Name, email, and password are required.');
-      return;
-    }
-    if (password !== confirmPassword) {
-      setErrorMsg('Passwords do not match. Please verify.');
+      setErrorMsg('Please fill in all required fields.');
       return;
     }
     if (password.length < 6) {
       setErrorMsg('Password should be at least 6 characters.');
       return;
     }
-
-    setIsLoading(true);
-    const success = await registerUser({
-      name,
-      email,
-      username: username || email.split('@')[0],
-      password,
-      confirmPassword,
-      interests: selectedInterests,
-    });
-    setIsLoading(false);
+    setIsSubmitting(true);
+    const success = await registerUser({ name, email, password, ageGroup });
+    setIsSubmitting(false);
     if (!success) {
-      setErrorMsg('Registration failed. Please check details.');
+      setErrorMsg('Registration failed. Please check your information.');
     }
   };
 
-  const handleForgot = async (e: React.FormEvent) => {
+  const handleForgotSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
     if (!email) {
-      setErrorMsg('Please enter your account email.');
+      setErrorMsg('Please provide your registered email address.');
       return;
     }
-    setIsLoading(true);
-    const success = await forgotPassword(email);
-    setIsLoading(false);
-    if (success) {
-      openAuthModal('reset');
-    }
+    setIsSubmitting(true);
+    await forgotPassword(email);
+    setIsSubmitting(false);
   };
 
-  const handleReset = async (e: React.FormEvent) => {
+  const handleResetSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
-    if (!newPassword) {
-      setErrorMsg('Please provide a new password.');
+    if (!newPassword || newPassword.length < 6) {
+      setErrorMsg('Password must be at least 6 characters.');
       return;
     }
-    if (newPassword !== confirmNewPassword) {
-      setErrorMsg('Passwords do not match.');
-      return;
-    }
-    setIsLoading(true);
-    await resetPassword({
-      email,
-      token: resetToken,
-      newPassword,
-      confirmPassword: confirmNewPassword,
-    });
-    setIsLoading(false);
+    setIsSubmitting(true);
+    await resetPassword({ email, newPassword });
+    setIsSubmitting(false);
   };
 
   return (
     <Modal
       isOpen={isAuthModalOpen}
       onClose={() => setIsAuthModalOpen(false)}
-      maxWidth="sm"
+      title={
+        authModalMode === 'welcome'
+          ? 'Welcome to USTAD ONLINE'
+          : authModalMode === 'login'
+          ? 'Sign in to Your Account'
+          : authModalMode === 'register'
+          ? 'Create Learner Account'
+          : authModalMode === 'forgot'
+          ? 'Reset Password'
+          : 'Set New Password'
+      }
+      subtitle="Learn. Decide. Improve."
+      maxWidth="md"
     >
-      <div className="auth-modal-content">
-        {/* ================================================================== */}
-        {/* 1. WELCOME SCREEN                                                 */}
-        {/* ================================================================== */}
-        {authModalMode === 'welcome' && (
-          <div className="auth-splash-view">
-            <div className="auth-splash-emblem">
-              <span>L</span>
-            </div>
-            <h2 className="auth-title">Welcome to Lived</h2>
-            <p className="auth-tagline">Real experiences. Real lessons.</p>
-            <p className="auth-desc">
-              A collaborative platform where people share what they have experienced,
-              and others learn from it.
-            </p>
+      <div>
+        {errorMsg && (
+          <div
+            style={{
+              padding: '10px 14px',
+              backgroundColor: 'var(--color-danger-light)',
+              color: 'var(--color-danger)',
+              borderRadius: 'var(--radius-md)',
+              fontSize: '0.86rem',
+              marginBottom: '14px',
+              fontWeight: 600,
+            }}
+          >
+            {errorMsg}
+          </div>
+        )}
 
-            <div className="auth-button-stack">
+        {/* 1. Welcome Mode */}
+        {authModalMode === 'welcome' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'center' }}>
+            <div
+              style={{
+                width: '60px',
+                height: '60px',
+                margin: '0 auto',
+                borderRadius: 'var(--radius-lg)',
+                backgroundColor: 'var(--color-primary)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#FFFFFF',
+              }}
+            >
+              <Compass size={32} />
+            </div>
+
+            <div>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', marginBottom: '6px' }}>
+                Practice Life-Altering Choices
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                Interactive scenarios across Money, Time, Communication, Problem Solving and Decisions.
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
               <button
                 type="button"
-                className="btn-primary auth-main-btn"
+                className="btn-primary"
                 onClick={() => openAuthModal('register')}
               >
-                <span>Create an Account</span>
+                <span>Create New Account</span>
                 <ArrowRight size={16} />
               </button>
 
               <button
                 type="button"
-                className="btn-secondary auth-sub-btn"
+                className="btn-secondary"
                 onClick={() => openAuthModal('login')}
               >
-                <span>Sign In to Existing Account</span>
+                Sign In With Existing Account
               </button>
 
               <button
                 type="button"
-                className="btn-text auth-browse-btn"
-                onClick={() => setIsAuthModalOpen(false)}
+                className="btn-ghost"
+                onClick={handleDemoLogin}
+                style={{ color: 'var(--color-primary)' }}
               >
-                Continue browsing as guest
+                <Sparkles size={14} />
+                <span>Instant Demo Access (Ali Rehman)</span>
               </button>
             </div>
           </div>
         )}
 
-        {/* ================================================================== */}
-        {/* 2. LOGIN SCREEN                                                    */}
-        {/* ================================================================== */}
+        {/* 2. Login Mode */}
         {authModalMode === 'login' && (
-          <div className="auth-form-view">
-            <div className="auth-header-row">
-              <button
-                type="button"
-                className="btn-text-back"
-                onClick={() => openAuthModal('welcome')}
-              >
-                <ChevronLeft size={16} />
-                <span>Back</span>
-              </button>
-              <h2 className="auth-form-title">Welcome Back</h2>
+          <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div className="form-group">
+              <label className="form-label" htmlFor="login-email">Email Address</label>
+              <div style={{ position: 'relative' }}>
+                <Mail size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                <input
+                  id="login-email"
+                  type="email"
+                  className="form-input"
+                  style={{ paddingLeft: '38px' }}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  required
+                />
+              </div>
             </div>
-            <p className="auth-form-subtitle">
-              Sign in to publish experiences and access your saved vault.
-            </p>
 
-            {errorMsg && <div className="auth-error-banner">{errorMsg}</div>}
-
-            <form onSubmit={handleLogin} className="auth-inputs-form">
-              <div className="form-group">
-                <label htmlFor="login-email">Email Address</label>
-                <div className="input-with-icon">
-                  <Mail size={16} className="field-icon" />
-                  <input
-                    id="login-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@example.com"
-                    className="text-input with-icon"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <div className="label-with-action">
-                  <label htmlFor="login-password">Password</label>
-                  <button
-                    type="button"
-                    className="btn-link-action"
-                    onClick={() => openAuthModal('forgot')}
-                  >
-                    Forgot password?
-                  </button>
-                </div>
-                <div className="input-with-icon">
-                  <Lock size={16} className="field-icon" />
-                  <input
-                    id="login-password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="text-input with-icon"
-                    required
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="btn-primary auth-submit-btn"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Signing in...' : 'Sign In'}
-              </button>
-            </form>
-
-            <div className="auth-footer-switch">
-              <span>Don't have an account yet?</span>
-              <button
-                type="button"
-                className="btn-link-switch"
-                onClick={() => openAuthModal('register')}
-              >
-                Create Account
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ================================================================== */}
-        {/* 3. REGISTER SCREEN                                                 */}
-        {/* ================================================================== */}
-        {authModalMode === 'register' && (
-          <div className="auth-form-view">
-            <div className="auth-header-row">
-              <button
-                type="button"
-                className="btn-text-back"
-                onClick={() => openAuthModal('welcome')}
-              >
-                <ChevronLeft size={16} />
-                <span>Back</span>
-              </button>
-              <h2 className="auth-form-title">Join Lived</h2>
-            </div>
-            <p className="auth-form-subtitle">
-              Create an account to share your journey and save high-yield lessons.
-            </p>
-
-            {errorMsg && <div className="auth-error-banner">{errorMsg}</div>}
-
-            <form onSubmit={handleRegister} className="auth-inputs-form">
-              <div className="form-group">
-                <label htmlFor="reg-name">Full Name</label>
-                <div className="input-with-icon">
-                  <UserIcon size={16} className="field-icon" />
-                  <input
-                    id="reg-name"
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Alex Morgan"
-                    className="text-input with-icon"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="reg-email">Email Address</label>
-                <div className="input-with-icon">
-                  <Mail size={16} className="field-icon" />
-                  <input
-                    id="reg-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="alex@example.com"
-                    className="text-input with-icon"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="reg-pass">Password</label>
-                <div className="input-with-icon">
-                  <Lock size={16} className="field-icon" />
-                  <input
-                    id="reg-pass"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="At least 6 characters"
-                    className="text-input with-icon"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="reg-confirm-pass">Confirm Password</label>
-                <div className="input-with-icon">
-                  <KeyRound size={16} className="field-icon" />
-                  <input
-                    id="reg-confirm-pass"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Repeat password"
-                    className="text-input with-icon"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Optional Fields Toggle */}
-              <div className="optional-fields-accordion">
+            <div className="form-group">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label className="form-label" htmlFor="login-password">Password</label>
                 <button
                   type="button"
-                  className="optional-fields-toggle-btn"
-                  onClick={() => setShowOptionalFields(!showOptionalFields)}
+                  onClick={() => openAuthModal('forgot')}
+                  style={{ fontSize: '0.78rem', color: 'var(--color-primary)', fontWeight: 600 }}
                 >
-                  <span>{showOptionalFields ? '− Hide optional details' : '+ Add optional details (Username, Interests)'}</span>
+                  Forgot password?
                 </button>
-
-                {showOptionalFields && (
-                  <div className="optional-fields-body">
-                    <div className="form-group">
-                      <label htmlFor="reg-username">Username (Optional)</label>
-                      <input
-                        id="reg-username"
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        placeholder="alex_builds"
-                        className="text-input"
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label>Topics you care about</label>
-                      <div className="interests-checkbox-grid">
-                        {CATEGORIES.slice(0, 8).map((cat) => (
-                          <button
-                            key={cat.id}
-                            type="button"
-                            className={`interest-select-pill ${
-                              selectedInterests.includes(cat.id) ? 'selected' : ''
-                            }`}
-                            onClick={() => toggleInterest(cat.id)}
-                          >
-                            {cat.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
+              <div style={{ position: 'relative' }}>
+                <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                <input
+                  id="login-password"
+                  type="password"
+                  className="form-input"
+                  style={{ paddingLeft: '38px' }}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
 
-              <button
-                type="submit"
-                className="btn-primary auth-submit-btn"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Creating Account...' : 'Register'}
-              </button>
-            </form>
+            <button type="submit" className="btn-primary" disabled={isSubmitting}>
+              {isSubmitting ? 'Signing in...' : 'Sign In'}
+            </button>
 
-            <div className="auth-footer-switch">
-              <span>Already have an account?</span>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={handleDemoLogin}
+            >
+              <Sparkles size={14} />
+              <span>Sign In with Demo Account</span>
+            </button>
+
+            <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '0.84rem', color: 'var(--text-secondary)' }}>
+              Don't have an account yet?{' '}
               <button
                 type="button"
-                className="btn-link-switch"
-                onClick={() => openAuthModal('login')}
+                onClick={() => openAuthModal('register')}
+                style={{ color: 'var(--color-primary)', fontWeight: 700 }}
               >
-                Sign In
+                Register here
               </button>
             </div>
-          </div>
+          </form>
         )}
 
-        {/* ================================================================== */}
-        {/* 4. FORGOT PASSWORD SCREEN                                          */}
-        {/* ================================================================== */}
+        {/* 3. Register Mode */}
+        {authModalMode === 'register' && (
+          <form onSubmit={handleRegisterSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div className="form-group">
+              <label className="form-label" htmlFor="reg-name">Your Full Name</label>
+              <div style={{ position: 'relative' }}>
+                <UserIcon size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                <input
+                  id="reg-name"
+                  type="text"
+                  className="form-input"
+                  style={{ paddingLeft: '38px' }}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="e.g. Fatima Tariq"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="reg-email">Email Address</label>
+              <div style={{ position: 'relative' }}>
+                <Mail size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                <input
+                  id="reg-email"
+                  type="email"
+                  className="form-input"
+                  style={{ paddingLeft: '38px' }}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="fatima@example.com"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="reg-password">Password</label>
+              <div style={{ position: 'relative' }}>
+                <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                <input
+                  id="reg-password"
+                  type="password"
+                  className="form-input"
+                  style={{ paddingLeft: '38px' }}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Minimum 6 characters"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="reg-age">Age Bracket</label>
+              <select
+                id="reg-age"
+                className="form-select"
+                value={ageGroup}
+                onChange={(e) => setAgeGroup(e.target.value)}
+              >
+                {AGE_GROUPS.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.label} ({a.sub})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button type="submit" className="btn-primary" disabled={isSubmitting}>
+              {isSubmitting ? 'Creating account...' : 'Create Account & Start Onboarding'}
+            </button>
+
+            <div style={{ textAlign: 'center', marginTop: '10px', fontSize: '0.84rem', color: 'var(--text-secondary)' }}>
+              Already registered?{' '}
+              <button
+                type="button"
+                onClick={() => openAuthModal('login')}
+                style={{ color: 'var(--color-primary)', fontWeight: 700 }}
+              >
+                Sign in
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* 4. Forgot Password Mode */}
         {authModalMode === 'forgot' && (
-          <div className="auth-form-view">
-            <div className="auth-header-row">
-              <button
-                type="button"
-                className="btn-text-back"
-                onClick={() => openAuthModal('login')}
-              >
-                <ChevronLeft size={16} />
-                <span>Back</span>
-              </button>
-              <h2 className="auth-form-title">Reset Password</h2>
-            </div>
-            <p className="auth-form-subtitle">
-              Enter the email associated with your account and we'll send reset instructions.
+          <form onSubmit={handleForgotSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+              Enter your email address and we'll send you simulated instructions to reset your password.
             </p>
 
-            {errorMsg && <div className="auth-error-banner">{errorMsg}</div>}
-
-            <form onSubmit={handleForgot} className="auth-inputs-form">
-              <div className="form-group">
-                <label htmlFor="forgot-email">Account Email</label>
-                <div className="input-with-icon">
-                  <Mail size={16} className="field-icon" />
-                  <input
-                    id="forgot-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@example.com"
-                    className="text-input with-icon"
-                    required
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="btn-primary auth-submit-btn"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Sending Link...' : 'Send Reset Link'}
-              </button>
-            </form>
-
-            <div className="auth-footer-switch">
-              <span>Remembered password?</span>
-              <button
-                type="button"
-                className="btn-link-switch"
-                onClick={() => openAuthModal('login')}
-              >
-                Return to Login
-              </button>
+            <div className="form-group">
+              <label className="form-label" htmlFor="forgot-email">Email Address</label>
+              <input
+                id="forgot-email"
+                type="email"
+                className="form-input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@example.com"
+                required
+              />
             </div>
-          </div>
+
+            <button type="submit" className="btn-primary" disabled={isSubmitting}>
+              {isSubmitting ? 'Sending...' : 'Send Reset Link'}
+            </button>
+
+            <button
+              type="button"
+              className="btn-ghost"
+              onClick={() => openAuthModal('login')}
+            >
+              Back to Sign In
+            </button>
+          </form>
         )}
 
-        {/* ================================================================== */}
-        {/* 5. RESET PASSWORD SCREEN                                           */}
-        {/* ================================================================== */}
+        {/* 5. Reset Password Mode */}
         {authModalMode === 'reset' && (
-          <div className="auth-form-view">
-            <div className="auth-header-row">
-              <button
-                type="button"
-                className="btn-text-back"
-                onClick={() => openAuthModal('login')}
-              >
-                <ChevronLeft size={16} />
-                <span>Back</span>
-              </button>
-              <h2 className="auth-form-title">Set New Password</h2>
+          <form onSubmit={handleResetSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div className="form-group">
+              <label className="form-label" htmlFor="new-pass">New Password</label>
+              <input
+                id="new-pass"
+                type="password"
+                className="form-input"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="At least 6 characters"
+                required
+              />
             </div>
-            <p className="auth-form-subtitle">
-              Choose a secure new password for your account.
-            </p>
 
-            {errorMsg && <div className="auth-error-banner">{errorMsg}</div>}
-
-            <form onSubmit={handleReset} className="auth-inputs-form">
-              <div className="form-group">
-                <label htmlFor="reset-new-pass">New Password</label>
-                <div className="input-with-icon">
-                  <Lock size={16} className="field-icon" />
-                  <input
-                    id="reset-new-pass"
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Enter new password"
-                    className="text-input with-icon"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="reset-confirm-pass">Confirm New Password</label>
-                <div className="input-with-icon">
-                  <KeyRound size={16} className="field-icon" />
-                  <input
-                    id="reset-confirm-pass"
-                    type="password"
-                    value={confirmNewPassword}
-                    onChange={(e) => setConfirmNewPassword(e.target.value)}
-                    placeholder="Repeat new password"
-                    className="text-input with-icon"
-                    required
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="btn-primary auth-submit-btn"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Resetting...' : 'Update Password & Log In'}
-              </button>
-            </form>
-          </div>
+            <button type="submit" className="btn-primary" disabled={isSubmitting}>
+              {isSubmitting ? 'Updating...' : 'Set New Password'}
+            </button>
+          </form>
         )}
       </div>
     </Modal>

@@ -1,263 +1,161 @@
 // ============================================================================
-// LIVED DOMAIN TYPES & DATA CONTRACTS
-// "Real experiences. Real lessons."
+// USTAD ONLINE DOMAIN CONTRACTS
+// Practical Life-Learning Platform — Learn. Decide. Improve.
 // ============================================================================
 
-export type ContentType = 'story' | 'video' | 'pdf' | 'image' | 'guide';
+export type SkillCategory =
+  | 'decision-making'
+  | 'money-management'
+  | 'time-management'
+  | 'communication'
+  | 'problem-solving';
 
-export type ExperienceCategory =
-  | 'Career'
-  | 'Education'
-  | 'Technology'
-  | 'Programming'
-  | 'Freelancing'
-  | 'Business'
-  | 'Money'
-  | 'Personal Growth'
-  | 'Productivity'
-  | 'Motivation'
-  | 'Communication'
-  | 'Health'
-  | 'Relationships'
-  | 'Travel'
-  | 'Student Life';
+export type ChallengeDifficulty = 'Beginner' | 'Intermediate' | 'Advanced';
+
+export type OptionId = 'A' | 'B' | 'C' | 'D';
+
+export interface SkillData {
+  id: SkillCategory;
+  name: string;
+  shortName: string;
+  icon: string;
+  color: string;
+  description: string;
+  score: number; // 0 - 100
+  level: number;
+  levelTitle: string;
+  strengths: string[];
+  areasToImprove: string[];
+  history: Array<{
+    date: string;
+    delta: number;
+    challengeTitle: string;
+  }>;
+}
+
+export interface ChallengeOption {
+  id: OptionId;
+  label: string;
+  description: string;
+  consequence: string;
+  feedback: string;
+  skillImpact: {
+    skill: SkillCategory;
+    delta: number;
+  };
+  isOptimal: boolean;
+}
+
+export interface Challenge {
+  id: string;
+  title: string;
+  category: SkillCategory;
+  difficulty: ChallengeDifficulty;
+  estimatedMinutes: number;
+  xpReward: number;
+  summary: string;
+  scenarioContext: string;
+  dilemma: string;
+  options: ChallengeOption[];
+  allowWrittenResponse?: boolean;
+  recommendedReason?: string;
+  isDaily?: boolean;
+  completed: boolean;
+  completedAt?: string;
+  userChoiceId?: OptionId;
+  userWrittenResponse?: string;
+  tags: string[];
+}
+
+export interface ChallengeAttemptResult {
+  challengeId: string;
+  selectedOption: ChallengeOption;
+  writtenResponse?: string;
+  xpEarned: number;
+  skillDelta: {
+    skill: SkillCategory;
+    delta: number;
+  };
+  newSkillScore: number;
+  newTotalXp: number;
+  newLevel: number;
+  completedAt: string;
+}
 
 export interface User {
   id: string;
   name: string;
-  username: string;
-  email?: string;
+  email: string;
   avatar: string;
-  bio: string;
-  location?: string;
-  role?: string;
-  interests: ExperienceCategory[];
-  currentGoal?: string;
-  followersCount: number;
-  followingCount: number;
-  experiencesCount: number;
-  helpfulCount: number;
+  currentLevel: number;
+  xp: number;
+  nextLevelXp: number;
+  streakDays: number;
+  longestStreak: number;
+  weeklyActivity: Array<{
+    day: string;
+    date: string;
+    active: boolean;
+  }>;
+  ageGroup?: string;
+  learningGoals: string[];
   onboardingCompleted: boolean;
+  notificationPreferences: {
+    dailyReminders: boolean;
+    streakAlerts: boolean;
+    weeklyReport: boolean;
+  };
   createdAt: string;
 }
 
-export interface Lesson {
+export interface Achievement {
   id: string;
-  number: number; // e.g. 1 -> displayed as "01"
   title: string;
   description: string;
-  actionableStep?: string;
+  category: SkillCategory | 'general';
+  icon: string;
+  unlocked: boolean;
+  progress: number;
+  maxProgress: number;
+  unlockedAt?: string;
 }
 
-export interface StructuredStory {
-  content?: string;
-  myStory?: string;
-  whereIStarted?: string;
-  theProblem?: string;
-  whatITried?: string;
-  whatFailed?: string;
-  whatWorked?: string;
-  whatILearned?: string;
-  whatIWouldDoDifferently?: string;
-}
-
-export interface ExperienceMedia {
-  type: 'video' | 'image' | 'pdf';
-  url: string;
-  thumbnailUrl?: string;
-  fileName?: string;
-  fileSizeBytes?: number;
-  durationSeconds?: number;
-}
-
-export interface Experience {
+export interface NotificationItem {
   id: string;
   title: string;
-  description: string; // short summary
-  author: {
-    id: string;
-    name: string;
-    username: string;
-    avatar: string;
-    role?: string;
-    bio?: string;
-  };
-  category: ExperienceCategory;
-  tags: string[];
-  contentType: ContentType;
-  readTimeMinutes: number; // or watch time for video
-  coverImage?: string;
-  
-  // Structured long-form story
-  story: StructuredStory;
-  
-  // High-yield takeaway cards
-  lessons: Lesson[];
-  
-  // Optional attached media (video, PDF, image gallery)
-  media?: ExperienceMedia;
-  
-  // Engagement & Feedback
-  likesCount: number;
-  commentsCount: number;
-  helpfulCount: number;
-  notHelpfulCount: number;
-  isLiked?: boolean;
-  isSaved?: boolean;
-  userHelpfulVote?: 'yes' | 'no' | null;
-  
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Comment {
-  id: string;
-  experienceId: string;
-  author: {
-    id: string;
-    name: string;
-    username: string;
-    avatar: string;
-  };
-  content: string;
-  likesCount: number;
-  isLiked?: boolean;
-  parentId?: string | null; // For threaded replies
-  replies?: Comment[];
-  createdAt: string;
-}
-
-export interface Notification {
-  id: string;
-  userId: string;
-  actor: {
-    id: string;
-    name: string;
-    avatar: string;
-  };
-  type: 'like' | 'comment' | 'reply' | 'follow' | 'helpful';
-  targetId: string; // experienceId or commentId
-  targetTitle?: string;
   message: string;
+  type: 'daily' | 'streak' | 'achievement' | 'skill';
+  targetChallengeId?: string;
   isRead: boolean;
   createdAt: string;
 }
 
-export interface SavedExperience {
-  experienceId: string;
-  savedAt: string;
-  category: ExperienceCategory;
-  contentType: ContentType;
+export interface OnboardingAssessmentQuestion {
+  id: string;
+  category: SkillCategory;
+  title: string;
+  scenario: string;
+  options: Array<{
+    id: string;
+    label: string;
+    description: string;
+    skillImpacts: Partial<Record<SkillCategory, number>>;
+  }>;
 }
 
-export interface Follow {
-  followerId: string;
-  followingId: string;
-  createdAt: string;
+export interface NavigationTab {
+  id: 'home' | 'challenges' | 'skills' | 'progress' | 'profile';
+  label: string;
 }
 
 // ----------------------------------------------------------------------------
-// API & Pagination Contracts (For Backend Developers)
+// API & Generic Contracts
 // ----------------------------------------------------------------------------
-
-export interface Pagination {
-  page: number;
-  limit: number;
-  totalItems: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
-}
-
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
   message?: string;
   error?: string;
-  pagination?: Pagination;
-}
-
-export interface FilterOptions {
-  category?: ExperienceCategory | 'All';
-  contentType?: ContentType | 'All';
-  sortBy?: 'popularity' | 'newest' | 'most_helpful';
-  searchQuery?: string;
-  page?: number;
-  limit?: number;
-}
-
-export interface AuthTokens {
-  accessToken: string;
-  refreshToken?: string;
-  expiresAt?: string;
-}
-
-export interface CreateExperiencePayload {
-  title: string;
-  description?: string;
-  category?: ExperienceCategory;
-  tags?: string[];
-  contentType: ContentType;
-  readTimeMinutes?: number;
-  story: StructuredStory;
-  lessons?: Array<Omit<Lesson, 'id'>>;
-  media?: ExperienceMedia;
-}
-
-// ----------------------------------------------------------------------------
-// Team Profile Models
-// ----------------------------------------------------------------------------
-export interface TeamMember {
-  id: string;
-  name: string; // e.g. "Team Member 01"
-  role: string; // e.g. "Frontend & UI Design"
-  bio: string;
-  avatar?: string;
-  initials: string;
-  github?: string;
-  linkedin?: string;
-}
-
-// ----------------------------------------------------------------------------
-// Curated Video & Knowledge Discovery Models
-// ----------------------------------------------------------------------------
-export interface ExploreVideo {
-  id: string;
-  title: string;
-  description: string;
-  creator: string; // e.g. "Steve Jobs / Stanford", "Ali Abdaal", "CS50"
-  source: 'YouTube' | 'External Resource';
-  category: ExperienceCategory;
-  duration: string; // e.g. "14:20"
-  thumbnailUrl: string;
-  youtubeVideoId: string; // Embeddable ID e.g. "UF8uR6Z6KLc"
-  youtubeUrl: string;
-  whyWatchThis: string;
-  keyTakeaways: string[];
-  viewsCount?: string;
-}
-
-export interface ExploreIdea {
-  id: string;
-  title: string;
-  summary: string;
-  category: ExperienceCategory;
-  readTimeMinutes: number;
-  coreInsight: string;
-  actionSteps: string[];
-}
-
-// ----------------------------------------------------------------------------
-// Authentication API Contracts
-// ----------------------------------------------------------------------------
-export interface RegisterPayload {
-  name: string;
-  email: string;
-  password?: string;
-  confirmPassword?: string;
-  username?: string;
-  avatar?: string;
-  interests?: ExperienceCategory[];
 }
 
 export interface LoginPayload {
@@ -265,13 +163,22 @@ export interface LoginPayload {
   password?: string;
 }
 
-export interface ForgotPasswordPayload {
+export interface RegisterPayload {
+  name: string;
   email: string;
+  password?: string;
+  ageGroup?: string;
+  learningGoals?: string[];
 }
 
 export interface ResetPasswordPayload {
-  email?: string;
+  email: string;
   token?: string;
   newPassword?: string;
-  confirmPassword?: string;
+}
+
+export interface SubmitChallengePayload {
+  challengeId: string;
+  selectedOptionId: OptionId;
+  writtenResponse?: string;
 }

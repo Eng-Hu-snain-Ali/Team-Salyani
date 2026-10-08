@@ -1,32 +1,36 @@
 import React from 'react';
 
-export const SkeletonCard: React.FC = () => {
+export const SkeletonLoader: React.FC<{ height?: number; width?: string; borderRadius?: string }> = ({
+  height = 20,
+  width = '100%',
+  borderRadius = 'var(--radius-md)',
+}) => {
   return (
-    <div className="skeleton-card">
-      <div className="skeleton-line skeleton-header">
-        <div className="skeleton-avatar" />
-        <div className="skeleton-header-text">
-          <div className="skeleton-line line-short" />
-          <div className="skeleton-line line-xshort" />
-        </div>
-      </div>
-      <div className="skeleton-line line-title" />
-      <div className="skeleton-line line-body" />
-      <div className="skeleton-line line-body-short" />
-      <div className="skeleton-footer">
-        <div className="skeleton-line line-badge" />
-        <div className="skeleton-line line-badge" />
-      </div>
-    </div>
+    <div
+      style={{
+        height: `${height}px`,
+        width,
+        borderRadius,
+        backgroundColor: 'var(--bg-surface-elevated)',
+        animation: 'pulse 1.5s infinite ease-in-out',
+      }}
+    />
   );
 };
 
-export const SkeletonList: React.FC<{ count?: number }> = ({ count = 3 }) => {
+export const SkeletonChallengeCard: React.FC = () => {
   return (
-    <div className="skeleton-list-container">
-      {Array.from({ length: count }).map((_, i) => (
-        <SkeletonCard key={i} />
-      ))}
+    <div className="ustad-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <SkeletonLoader height={24} width="35%" borderRadius="var(--radius-pill)" />
+        <SkeletonLoader height={24} width="20%" borderRadius="var(--radius-pill)" />
+      </div>
+      <SkeletonLoader height={22} width="80%" />
+      <SkeletonLoader height={48} width="100%" />
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
+        <SkeletonLoader height={18} width="30%" />
+        <SkeletonLoader height={18} width="25%" />
+      </div>
     </div>
   );
 };

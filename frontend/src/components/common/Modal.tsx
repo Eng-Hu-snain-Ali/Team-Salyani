@@ -41,9 +41,9 @@ export const Modal: React.FC<ModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header">
-          <div className="modal-title-group">
+          <div>
             {title && <h3 className="modal-title">{title}</h3>}
-            {subtitle && <p className="modal-subtitle">{subtitle}</p>}
+            {subtitle && <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '2px' }}>{subtitle}</p>}
           </div>
           <button
             type="button"

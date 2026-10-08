@@ -1,75 +1,34 @@
 import React from 'react';
-import { useApp, type NavigationTab } from '../../context/AppContext';
-import { Home, Compass, Plus, Bookmark, User as UserIcon } from 'lucide-react';
+import { useApp, type TabId } from '../../context/AppContext';
+import { Home, Compass, Award, BarChart3, User } from 'lucide-react';
 
 export const BottomNav: React.FC = () => {
-  const { activeTab, setActiveTab, savedExperiences } = useApp();
+  const { activeTab, setActiveTab } = useApp();
 
-  const navItems: Array<{
-    id: NavigationTab;
-    label: string;
-    icon: React.ReactNode;
-    badge?: number;
-  }> = [
+  const tabs: Array<{ id: TabId; label: string; icon: React.ReactNode }> = [
     { id: 'home', label: 'Home', icon: <Home size={19} /> },
-    { id: 'explore', label: 'Explore', icon: <Compass size={19} /> },
-    {
-      id: 'create',
-      label: 'Share',
-      icon: <Plus size={20} />,
-    },
-    {
-      id: 'saved',
-      label: 'Saved',
-      icon: <Bookmark size={19} />,
-      badge: savedExperiences.length > 0 ? savedExperiences.length : undefined,
-    },
-    { id: 'profile', label: 'Profile', icon: <UserIcon size={19} /> },
+    { id: 'challenges', label: 'Challenges', icon: <Compass size={19} /> },
+    { id: 'skills', label: 'Skills', icon: <Award size={19} /> },
+    { id: 'progress', label: 'Progress', icon: <BarChart3 size={19} /> },
+    { id: 'profile', label: 'Profile', icon: <User size={19} /> },
   ];
 
   return (
-    <nav className="bottom-nav-bar" aria-label="Main Navigation">
-      <div className="bottom-nav-container">
-        {navItems.map((item) => {
-          const isCreate = item.id === 'create';
-          const isActive =
-            activeTab === item.id ||
-            (item.id === 'home' && (activeTab === 'detail' || activeTab === 'video'));
-
-          if (isCreate) {
-            return (
-              <button
-                key={item.id}
-                type="button"
-                className={`nav-item-share ${activeTab === 'create' ? 'active' : ''}`}
-                onClick={() => setActiveTab('create')}
-                aria-label="Share Experience"
-                title="Share Experience"
-              >
-                <div className="share-btn-circle">
-                  {item.icon}
-                </div>
-                <span className="share-btn-text">Share</span>
-              </button>
-            );
-          }
-
+    <nav className="ustad-bottom-nav" aria-label="Main Navigation">
+      <div className="ustad-bottom-nav-inner">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.id;
           return (
             <button
-              key={item.id}
+              key={tab.id}
               type="button"
-              className={`nav-item ${isActive ? 'active' : ''}`}
-              onClick={() => setActiveTab(item.id)}
-              aria-label={item.label}
+              className={`bottom-nav-tab ${isActive ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+              aria-label={tab.label}
               aria-current={isActive ? 'page' : undefined}
             >
-              <div className="nav-icon-wrapper">
-                {item.icon}
-                {item.badge !== undefined && (
-                  <span className="nav-badge-pill">{item.badge}</span>
-                )}
-              </div>
-              <span className="nav-label">{item.label}</span>
+              <div className="tab-icon-wrapper">{tab.icon}</div>
+              <span>{tab.label}</span>
             </button>
           );
         })}

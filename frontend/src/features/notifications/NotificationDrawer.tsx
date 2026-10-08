@@ -2,13 +2,13 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { Modal } from '../../components/common/Modal';
 import {
-  ThumbsUp,
-  Heart,
-  MessageSquare,
-  CornerDownRight,
-  UserPlus,
-  CheckCheck,
   Bell,
+  Sparkles,
+  Flame,
+  Award,
+  CheckCheck,
+  TrendingUp,
+  ChevronRight,
 } from 'lucide-react';
 
 export const NotificationDrawer: React.FC = () => {
@@ -18,51 +18,55 @@ export const NotificationDrawer: React.FC = () => {
     setIsNotificationsOpen,
     markNotificationRead,
     markAllNotificationsRead,
-    openExperience,
+    openChallengePlayer,
+    challenges,
   } = useApp();
 
   const getNotifIcon = (type: string) => {
     switch (type) {
-      case 'helpful':
-        return <ThumbsUp size={14} className="notif-icon helpful" />;
-      case 'like':
-        return <Heart size={14} className="notif-icon like" />;
-      case 'comment':
-        return <MessageSquare size={14} className="notif-icon comment" />;
-      case 'reply':
-        return <CornerDownRight size={14} className="notif-icon reply" />;
-      case 'follow':
-        return <UserPlus size={14} className="notif-icon follow" />;
+      case 'daily':
+        return <Sparkles size={16} color="var(--color-primary)" />;
+      case 'streak':
+        return <Flame size={16} color="var(--color-warning)" fill="currentColor" />;
+      case 'achievement':
+        return <Award size={16} color="var(--color-success)" />;
       default:
-        return <Bell size={14} className="notif-icon default" />;
+        return <TrendingUp size={16} color="var(--color-purple)" />;
     }
   };
 
   const handleNotificationClick = (item: (typeof notifications)[0]) => {
     markNotificationRead(item.id);
-    if (item.targetId && item.targetId.startsWith('exp_')) {
-      setIsNotificationsOpen(false);
-      openExperience(item.targetId);
+    if (item.targetChallengeId) {
+      const target = challenges.find((c) => c.id === item.targetChallengeId);
+      if (target) {
+        setIsNotificationsOpen(false);
+        openChallengePlayer(target);
+      }
     }
   };
+
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   return (
     <Modal
       isOpen={isNotificationsOpen}
       onClose={() => setIsNotificationsOpen(false)}
       title="Notifications & Activity"
-      subtitle="Interactions with your experiences and lessons"
+      subtitle={`${unreadCount} unread learning updates`}
       maxWidth="md"
     >
-      <div className="notifications-modal-container">
-        <div className="notifications-top-bar">
-          <span className="notifs-count-text">
-            {notifications.filter((n) => !n.isRead).length} unread updates
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        {/* Top Action Bar */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.84rem', color: 'var(--text-secondary)' }}>
+            Daily scenarios, streak alerts & achievements
           </span>
-          {notifications.some((n) => !n.isRead) && (
+          {unreadCount > 0 && (
             <button
               type="button"
-              className="mark-all-read-btn"
+              className="btn-ghost"
+              style={{ fontSize: '0.78rem', color: 'var(--color-primary)' }}
               onClick={markAllNotificationsRead}
             >
               <CheckCheck size={14} />
@@ -71,52 +75,65 @@ export const NotificationDrawer: React.FC = () => {
           )}
         </div>
 
-        <div className="notifications-list">
-          {notifications.length === 0 ? (
-            <div className="no-notifications-box">
-              <Bell size={28} className="empty-bell-icon" />
-              <p>No activity yet. Share an experience to start receiving feedback!</p>
-            </div>
-          ) : (
-            notifications.map((item) => (
+        {/* Notifications List */}
+        {notifications.length > 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {notifications.map((item) => (
               <div
                 key={item.id}
-                className={`notification-item-card ${!item.isRead ? 'unread' : ''}`}
                 onClick={() => handleNotificationClick(item)}
-                role="button"
-                tabIndex={0}
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '12px',
+                  padding: '12px 14px',
+                  backgroundColor: !item.isRead ? 'var(--color-primary-light)' : 'var(--bg-surface-elevated)',
+                  borderRadius: 'var(--radius-md)',
+                  cursor: 'pointer',
+                  border: !item.isRead ? '1px solid var(--color-primary)' : '1px solid transparent',
+                  transition: 'all 0.15s ease',
+                }}
               >
-                <div className="notif-actor-col">
-                  <img
-                    src={item.actor.avatar}
-                    alt={item.actor.name}
-                    className="notif-actor-avatar"
-                  />
-                  <div className="notif-badge-bubble">{getNotifIcon(item.type)}</div>
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    backgroundColor: 'var(--bg-surface)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    marginTop: '2px',
+                  }}
+                >
+                  {getNotifIcon(item.type)}
                 </div>
 
-                <div className="notif-text-col">
-                  <p className="notif-message-text">
-                    <strong>{item.actor.name}</strong> {item.message}
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-main)' }}>
+                      {item.title}
+                    </h4>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                      {item.createdAt}
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '3px', lineHeight: 1.4 }}>
+                    {item.message}
                   </p>
-                  {item.targetTitle && (
-                    <span className="notif-target-title">"{item.targetTitle}"</span>
-                  )}
-                  <span className="notif-time-text">
-                    {new Date(item.createdAt).toLocaleDateString([], {
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </span>
                 </div>
 
-                {!item.isRead && <div className="unread-dot-indicator" />}
+                <ChevronRight size={16} color="var(--text-muted)" style={{ marginTop: '8px' }} />
               </div>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '36px 16px', color: 'var(--text-muted)' }}>
+            <Bell size={28} style={{ margin: '0 auto 8px', display: 'block' }} />
+            <p style={{ fontSize: '0.88rem' }}>No notifications right now. Check back tomorrow for today's challenge!</p>
+          </div>
+        )}
       </div>
     </Modal>
   );
