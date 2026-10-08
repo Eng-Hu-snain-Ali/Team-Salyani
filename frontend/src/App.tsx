@@ -1,0 +1,85 @@
+import React from 'react';
+import { AppProvider, useApp } from './context/AppContext';
+import { Header } from './components/common/Header';
+import { BottomNav } from './components/common/BottomNav';
+import { UnlockModal } from './components/common/UnlockModal';
+import { HomeDashboard } from './components/home/HomeDashboard';
+import { ScenarioPlayer } from './components/scenario/ScenarioPlayer';
+import { ChallengesExplorer } from './components/challenges/ChallengesExplorer';
+import { SkillsAnalytics } from './components/skills/SkillsAnalytics';
+import { ProgressView } from './components/progress/ProgressView';
+import { ProfileSettings } from './components/profile/ProfileSettings';
+import { OnboardingFlow } from './components/onboarding/OnboardingFlow';
+
+const MainAppLayout: React.FC = () => {
+  const { user, activeTab, deviceViewMode } = useApp();
+
+  // If user hasn't completed onboarding, show onboarding
+  if (!user.onboardingCompleted) {
+    return (
+      <div className="app-viewport-wrapper">
+        <Header />
+        <main className="main-content-area">
+          <OnboardingFlow />
+        </main>
+        <UnlockModal />
+      </div>
+    );
+  }
+
+  const renderActiveScreen = () => {
+    switch (activeTab) {
+      case 'home':
+        return <HomeDashboard />;
+      case 'challenges':
+        return <ChallengesExplorer />;
+      case 'scenario':
+        return <ScenarioPlayer />;
+      case 'skills':
+        return <SkillsAnalytics />;
+      case 'progress':
+        return <ProgressView />;
+      case 'profile':
+        return <ProfileSettings />;
+      default:
+        return <HomeDashboard />;
+    }
+  };
+
+  if (deviceViewMode === 'mobile') {
+    return (
+      <div className="app-viewport-wrapper mode-mobile">
+        <div className="mobile-frame-device">
+          <div className="mobile-dynamic-island" />
+          <Header />
+          <main className="main-content-area">
+            {renderActiveScreen()}
+          </main>
+          <BottomNav />
+          <UnlockModal />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="app-viewport-wrapper">
+      <Header />
+      <main className="main-content-area">
+        {renderActiveScreen()}
+      </main>
+      <BottomNav />
+      <UnlockModal />
+    </div>
+  );
+};
+
+export function App() {
+  return (
+    <AppProvider>
+      <MainAppLayout />
+    </AppProvider>
+  );
+}
+
+export default App;
