@@ -196,6 +196,20 @@ export const AdminUstadManagementView: React.FC = () => {
           >
             Blocked ({blockedCount})
           </button>
+          <select
+            className="filter-select-pill"
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value as any)}
+            aria-label="Filter by Trade Skill"
+          >
+            <option value="all">All Trade Skills</option>
+            <option value="electrician">Electrician</option>
+            <option value="plumber">Plumber</option>
+            <option value="ac-technician">AC Technician</option>
+            <option value="bike-mechanic">Bike Mechanic</option>
+            <option value="car-mechanic">Car Mechanic</option>
+            <option value="carpenter">Carpenter</option>
+          </select>
         </div>
       </div>
 

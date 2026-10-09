@@ -107,9 +107,8 @@ const COMMON_FAISALABAD_LANDMARKS: Record<string, string[]> = {
   ],
 };
 
-export const CreateBookingModal: React.FC = () => {
+const CreateBookingModalContent: React.FC = () => {
   const {
-    isCreateBookingOpen,
     setIsCreateBookingOpen,
     selectedService,
     setSelectedService,
@@ -126,17 +125,27 @@ export const CreateBookingModal: React.FC = () => {
     showToast,
   } = useApp();
 
+  const initialCategory: ServiceCategoryType =
+    selectedService?.categoryId ||
+    (selectedUstad && selectedUstad.skillCategories.length > 0 ? selectedUstad.skillCategories[0] : 'electrician');
+
+  const initialServiceId: string =
+    selectedService?.id ||
+    (services.find((s) => s.categoryId === initialCategory)?.id || (services[0]?.id || ''));
+
   const [step, setStep] = useState<number>(1);
   const [createdBooking, setCreatedBooking] = useState<Booking | null>(null);
 
   // Form Fields
-  const [selectedCategoryId, setSelectedCategoryId] = useState<ServiceCategoryType>('electrician');
+  const [selectedCategoryId, setSelectedCategoryId] = useState<ServiceCategoryType>(initialCategory);
   const [serviceSearch, setServiceSearch] = useState<string>('');
-  const [chosenServiceId, setChosenServiceId] = useState<string>('');
+  const [chosenServiceId, setChosenServiceId] = useState<string>(initialServiceId);
   const [problemDescription, setProblemDescription] = useState<string>('');
   const [problemImageUrl, setProblemImageUrl] = useState<string>('');
-  const [address, setAddress] = useState<string>('');
-  const [areaName, setAreaName] = useState<string>('');
+  const [address, setAddress] = useState<string>(
+    user?.address || 'House 42, Street 3, Block B, Peoples Colony No. 1, Faisalabad'
+  );
+  const [areaName, setAreaName] = useState<string>(selectedArea?.name || 'D-Ground, Peoples Colony No. 1');
   const [scheduleType, setScheduleType] = useState<'now' | 'scheduled'>('now');
   const [scheduledTime, setScheduledTime] = useState<string>('Today, 2:00 PM - 4:00 PM');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
@@ -145,27 +154,6 @@ export const CreateBookingModal: React.FC = () => {
   // Voice note simulation
   const [isRecordingVoice, setIsRecordingVoice] = useState(false);
   const [voiceNoteRecorded, setVoiceNoteRecorded] = useState(false);
-
-  // Initialize or pre-fill from selectedService or user
-  useEffect(() => {
-    if (selectedService) {
-      setSelectedCategoryId(selectedService.categoryId);
-      setChosenServiceId(selectedService.id);
-    } else if (services.length > 0) {
-      const first = services.find((s) => s.categoryId === selectedCategoryId) || services[0];
-      setChosenServiceId(first.id);
-    }
-
-    if (user?.address) {
-      setAddress(user.address);
-    } else {
-      setAddress('House 42, Street 3, Block B, Peoples Colony No. 1, Faisalabad');
-    }
-
-    setAreaName(selectedArea.name);
-  }, [selectedService, selectedCategoryId, services, user, selectedArea]);
-
-  if (!isCreateBookingOpen) return null;
 
   const currentService = services.find((s) => s.id === chosenServiceId) || services[0];
 
@@ -789,4 +777,11 @@ export const CreateBookingModal: React.FC = () => {
       </div>
     </div>
   );
+};
+
+export const CreateBookingModal: React.FC = () => {
+  const { isCreateBookingOpen, selectedService, selectedUstad } = useApp();
+  if (!isCreateBookingOpen) return null;
+  const modalKey = `${selectedService?.id || 'default'}-${selectedUstad?.id || 'none'}`;
+  return <CreateBookingModalContent key={modalKey} />;
 };

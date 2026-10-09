@@ -38,7 +38,6 @@ export const AdminComplaintsView: React.FC = () => {
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<ComplaintStatus | 'all'>('all');
-  const [priorityFilter, setPriorityFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
 
   // Complaint triage modal
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);

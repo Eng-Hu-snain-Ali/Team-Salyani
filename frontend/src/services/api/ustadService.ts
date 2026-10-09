@@ -252,12 +252,23 @@ class UstadService {
     const index = list.findIndex((w) => w.id === withdrawalId);
     if (index === -1) return null;
 
+    const prevStatus = list[index].status;
     list[index] = {
       ...list[index],
       status,
       notes,
       processedAt: new Date().toISOString(),
     };
+
+    // If rejected from pending, refund wallet balance back to Ustad
+    if (status === 'rejected' && prevStatus === 'pending') {
+      const ustads = this.getStoredUstads();
+      const uIndex = ustads.findIndex((u) => u.id === list[index].ustadId);
+      if (uIndex !== -1) {
+        ustads[uIndex].walletBalance += list[index].amount;
+        this.saveUstads(ustads);
+      }
+    }
 
     this.saveWithdrawals(list);
     return list[index];

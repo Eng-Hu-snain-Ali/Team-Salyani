@@ -37,24 +37,27 @@ export const CommunicationModal: React.FC = () => {
 
   // Call timer effect
   useEffect(() => {
-    let interval: any;
-    if (isCallModalOpen) {
-      setCallStatus('ringing');
-      setCallSeconds(0);
-      const ringTimeout = setTimeout(() => {
-        setCallStatus('connected');
-      }, 2000);
+    if (!isCallModalOpen) return;
 
-      interval = setInterval(() => {
-        setCallSeconds((s) => s + 1);
-      }, 1000);
+    const ringTimeout = setTimeout(() => {
+      setCallStatus('connected');
+    }, 2000);
 
-      return () => {
-        clearTimeout(ringTimeout);
-        clearInterval(interval);
-      };
-    }
+    const interval = setInterval(() => {
+      setCallSeconds((s) => s + 1);
+    }, 1000);
+
+    return () => {
+      clearTimeout(ringTimeout);
+      clearInterval(interval);
+    };
   }, [isCallModalOpen]);
+
+  const handleEndCall = () => {
+    setCallStatus('ringing');
+    setCallSeconds(0);
+    endCallModal();
+  };
 
   const handleSendMessage = (textToSend?: string) => {
     const text = textToSend || inputMessage;
@@ -232,7 +235,7 @@ export const CommunicationModal: React.FC = () => {
 
                 <button
                   className="call-ctrl-btn end-call-btn"
-                  onClick={endCallModal}
+                  onClick={handleEndCall}
                   title="End Call"
                 >
                   <PhoneOff size={28} />

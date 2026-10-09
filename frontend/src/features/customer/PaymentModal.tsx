@@ -25,6 +25,7 @@ export const PaymentModal: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isReceiptView, setIsReceiptView] = useState(false);
   const [txnReceiptId, setTxnReceiptId] = useState('');
+  const [paidTimestamp, setPaidTimestamp] = useState('');
 
   if (!isPaymentModalOpen || !paymentBooking) return null;
 
@@ -35,6 +36,7 @@ export const PaymentModal: React.FC = () => {
     setTimeout(async () => {
       await processPayment(paymentBooking.id, selectedMethod);
       setTxnReceiptId(`TXN-${Math.floor(100000 + Math.random() * 900000)}`);
+      setPaidTimestamp(new Date().toLocaleString());
       setIsProcessing(false);
       setIsReceiptView(true);
     }, 1200);
@@ -104,7 +106,7 @@ export const PaymentModal: React.FC = () => {
               </div>
               <div className="slip-row">
                 <span>Paid At:</span>
-                <span>{new Date().toLocaleString()}</span>
+                <span>{paidTimestamp || 'Completed'}</span>
               </div>
               <div className="slip-divider" />
               <div className="slip-total-row">

@@ -418,9 +418,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setCommissionRateState(adminService.getCommissionRate());
 
       // Set default current Ustad if none selected
-      if (!currentUstad && ustadList.length > 0) {
-        setCurrentUstad(ustadList[0]);
-      }
+      setCurrentUstad((prev) => prev || (ustadList.length > 0 ? ustadList[0] : null));
 
       // Check active tracking booking
       const active = bookingList.find(
@@ -432,10 +430,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } catch (err) {
       console.error('Error initializing Ustad Online data:', err);
     }
-  }, [currentUstad]);
+  }, []);
 
   useEffect(() => {
-    refreshAllData();
+    let cancelled = false;
+    const initData = async () => {
+      try {
+        await refreshAllData();
+      } catch (err) {
+        if (!cancelled) console.error(err);
+      }
+    };
+    void initData();
+    return () => {
+      cancelled = true;
+    };
   }, [refreshAllData]);
 
   // Auth Operations

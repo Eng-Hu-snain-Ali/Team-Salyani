@@ -20,7 +20,6 @@ export const AdminMetricsView: React.FC = () => {
     ustads,
     bookings,
     complaints,
-    transactions,
     commissionRate,
     setAdminTab,
   } = useApp();
@@ -29,7 +28,6 @@ export const AdminMetricsView: React.FC = () => {
   const totalRegisteredUstads = ustads.length;
   const verifiedUstads = ustads.filter((u) => u.verificationStatus === 'approved').length;
   const pendingVerifications = ustads.filter((u) => u.verificationStatus === 'pending').length;
-  const blockedUstads = ustads.filter((u) => u.verificationStatus === 'blocked').length;
 
   const totalCustomers = 428; // Faisalabad pilot registered users
 
@@ -170,6 +168,19 @@ export const AdminMetricsView: React.FC = () => {
           </div>
           <h2 className="kpi-number text-success">Rs. {platformCommissionEarned.toLocaleString()}</h2>
           <span className="kpi-subtext">Net platform collected revenue</span>
+        </div>
+
+        {/* Ustad Net Payouts */}
+        <div
+          className="kpi-card clickable"
+          onClick={() => setAdminTab('commission')}
+        >
+          <div className="kpi-header">
+            <span className="kpi-label">Ustad Net Payouts</span>
+            <DollarSign size={18} className="kpi-icon text-primary" />
+          </div>
+          <h2 className="kpi-number text-primary">Rs. {ustadNetPayouts.toLocaleString()}</h2>
+          <span className="kpi-subtext">Total technician disbursements</span>
         </div>
 
         {/* Open Complaints */}
