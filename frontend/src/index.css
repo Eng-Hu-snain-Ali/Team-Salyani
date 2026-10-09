@@ -5664,3 +5664,553 @@ select option {
   margin-top: 0.5rem;
 }
 
+/* ==========================================================================
+   EXECUTIVE TEAM SAYLANI PROFILE & ENGINEERING SHOWCASE
+   ========================================================================== */
+.team-profile-showcase {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.institutional-crest-bar {
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.12) 0%, rgba(22, 163, 74, 0.12) 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.crest-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.crest-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.crest-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  background-color: var(--bg-card);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-pill);
+}
+
+.executive-team-hero-card {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-surface-elevated) 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-emblem-cluster {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.executive-avatar-emblem {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.verified-institute-seal {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg-card);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.executive-title-block {
+  flex: 1;
+}
+
+.team-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.4rem;
+}
+
+.executive-team-name {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.project-badge-pill {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+}
+
+.engineers-count-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+}
+
+.executive-platform-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin-bottom: 0.45rem;
+}
+
+.executive-tagline {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.executive-meta-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.exec-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-pill);
+  color: var(--text-main);
+}
+
+/* 3. ARCHITECTURE KPI GRID */
+.team-architecture-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.arch-kpi-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.15rem 1rem;
+  box-shadow: var(--shadow-xs);
+  transition: transform 0.15s ease;
+}
+
+.arch-kpi-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-primary);
+}
+
+.arch-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.arch-icon-box.blue { background-color: var(--color-primary-light); color: var(--color-primary); }
+.arch-icon-box.green { background-color: var(--color-success-light); color: var(--color-success); }
+.arch-icon-box.amber { background-color: var(--color-warning-light); color: var(--color-warning); }
+.arch-icon-box.purple { background-color: rgba(124, 58, 237, 0.12); color: #7C3AED; }
+
+.arch-kpi-text strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.arch-kpi-text span {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+/* 4. ROSTER GRID */
+.team-section-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.section-title-header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.header-icon-seal {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.section-title-header h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.section-title-header p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.team-roster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.member-dossier-card {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.member-dossier-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.member-dossier-card.border-blue { border-top: 3px solid #2563EB; }
+.member-dossier-card.border-purple { border-top: 3px solid #7C3AED; }
+.member-dossier-card.border-amber { border-top: 3px solid #D97706; }
+.member-dossier-card.border-green { border-top: 3px solid #16A34A; }
+.member-dossier-card.border-red { border-top: 3px solid #DC2626; }
+
+.member-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.member-avatar-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-weight: 900;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.member-avatar-circle.bg-blue { background: linear-gradient(135deg, #2563EB, #1D4ED8); }
+.member-avatar-circle.bg-purple { background: linear-gradient(135deg, #7C3AED, #6D28D9); }
+.member-avatar-circle.bg-amber { background: linear-gradient(135deg, #D97706, #B45309); }
+.member-avatar-circle.bg-green { background: linear-gradient(135deg, #16A34A, #15803D); }
+.member-avatar-circle.bg-red { background: linear-gradient(135deg, #DC2626, #B91C1C); }
+
+.member-title-col {
+  flex: 1;
+}
+
+.member-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.member-name-row h4 {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.member-role-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge-blue { background-color: rgba(37, 99, 235, 0.15); color: #2563EB; }
+.badge-purple { background-color: rgba(124, 58, 237, 0.15); color: #7C3AED; }
+.badge-amber { background-color: rgba(217, 119, 6, 0.15); color: #D97706; }
+.badge-green { background-color: rgba(22, 163, 74, 0.15); color: #16A34A; }
+.badge-red { background-color: rgba(220, 38, 38, 0.15); color: #DC2626; }
+
+.member-role-title {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-top: 0.15rem;
+}
+
+.member-tasks-list {
+  flex: 1;
+  margin-bottom: 0.85rem;
+}
+
+.tasks-heading {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.35rem;
+}
+
+.member-tasks-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.member-tasks-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+  color: var(--text-main);
+  margin-bottom: 0.3rem;
+  line-height: 1.4;
+}
+
+.task-check {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.member-card-footer {
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.status-live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-success);
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color-success);
+  display: inline-block;
+}
+
+/* 5. REPOSITORY & TECHNICAL SPECS TABLE */
+.specs-items-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.spec-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem;
+  background-color: var(--bg-surface-elevated);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+
+.spec-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.spec-value {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-main);
+  text-align: right;
+}
+
+.repo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.repo-link:hover {
+  text-decoration: underline;
+}
+
+.git-branch-code {
+  font-family: var(--font-mono);
+  background-color: var(--bg-card);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-subtle);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* 6. SANDBOX GRID THREE */
+.sandbox-grid-three {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.sandbox-role-box {
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sandbox-role-box:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.sandbox-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.sandbox-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-pill);
+}
+
+.sandbox-badge.blue { background-color: var(--color-primary-light); color: var(--color-primary); }
+.sandbox-badge.amber { background-color: var(--color-warning-light); color: var(--color-warning); }
+.sandbox-badge.red { background-color: var(--color-danger-light); color: var(--color-danger); }
+
+.sandbox-role-box h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.35rem;
+}
+
+.sandbox-role-box p {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-bottom: 1rem;
+  flex: 1;
+}
+
+.sandbox-launch-btn {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-pill);
+  text-align: center;
+  transition: all 0.15s;
+}
+
+.sandbox-role-box:hover .sandbox-launch-btn {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+}
+
+.sandbox-launch-btn.admin-launch {
+  color: var(--color-danger);
+}
+
+.sandbox-role-box:hover .sandbox-launch-btn.admin-launch {
+  background-color: var(--color-danger);
+  color: #FFFFFF;
+  border-color: var(--color-danger);
+}
+
