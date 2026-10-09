@@ -5219,3 +5219,448 @@ select option {
   margin-top: 2px;
 }
 
+/* ==========================================================================
+   CUSTOMER BOOKING UPGRADE: QUICK TAGS, VOICE NOTE & SUCCESS SCREEN
+   ========================================================================== */
+.service-search-box {
+  margin-top: 0.5rem;
+}
+
+.service-search-box input {
+  padding: 0.5rem 0.75rem 0.5rem 2.25rem !important;
+  font-size: 0.82rem !important;
+}
+
+.no-srv-msg {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  padding: 1rem;
+  text-align: center;
+}
+
+.assigned-ustad-notice.auto-dispatch {
+  background-color: var(--color-primary-light);
+  border: 1px solid var(--color-primary-glow);
+}
+
+.quick-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+}
+
+.issue-tag-chip {
+  font-size: 0.73rem;
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-main);
+  transition: all 0.15s;
+}
+
+.issue-tag-chip:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.issue-tag-chip.active {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+}
+
+.voice-recorder-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1rem;
+  margin: 1rem 0;
+}
+
+.voice-recorder-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.voice-recorder-info strong {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-main);
+}
+
+.voice-recorder-info small {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.mic-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.mic-circle.recording {
+  background-color: var(--color-danger);
+  color: #FFFFFF;
+  animation: pulse-ring 1s infinite;
+}
+
+.mic-circle.recorded {
+  background-color: var(--color-success);
+  color: #FFFFFF;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+.voice-record-btn {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-pill);
+  background-color: var(--bg-card);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  white-space: nowrap;
+}
+
+.voice-record-btn.active {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.label-with-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.quick-gps-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary-light);
+}
+
+.landmarks-suggestion-box {
+  margin-top: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  background-color: var(--bg-surface-elevated);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-subtle);
+}
+
+.landmark-title {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 0.35rem;
+}
+
+.landmark-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.landmark-chip {
+  font-size: 0.72rem;
+  padding: 0.25rem 0.55rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-main);
+  transition: all 0.12s;
+}
+
+.landmark-chip:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.booking-success-view {
+  text-align: center;
+  padding: 1.5rem 0.5rem;
+  animation: modal-enter 0.3s ease;
+}
+
+.success-icon-seal {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background-color: var(--color-success-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.25);
+}
+
+.success-title-box {
+  margin-bottom: 1.25rem;
+}
+
+.order-id-pill {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  margin-bottom: 0.5rem;
+}
+
+.success-title-box h2 {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--text-main);
+  margin-bottom: 0.35rem;
+}
+
+.success-title-box p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.dispatch-eta-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  max-width: 440px;
+  margin: 0 auto 1.5rem;
+  text-align: left;
+}
+
+.dispatch-eta-card strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--text-main);
+}
+
+.dispatch-eta-card span {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+}
+
+.success-action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.btn-track-live-now {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 0.92rem;
+  padding: 0.85rem;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 4px 14px var(--color-primary-glow);
+}
+
+.btn-open-chat-now {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--bg-surface-elevated);
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.75rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+}
+
+.btn-view-bookings-now {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 0.5rem;
+}
+
+/* ==========================================================================
+   USTAD PROFESSIONAL PROFILE & ACCREDITATION STYLES
+   ========================================================================== */
+.ustad-pro-card {
+  position: relative;
+}
+
+.avatar-verified-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  color: var(--color-primary);
+  background-color: var(--bg-card);
+  border-radius: 50%;
+}
+
+.profile-switcher {
+  margin-bottom: 1.25rem;
+}
+
+.trust-seals-box {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.15rem;
+  margin-bottom: 1.25rem;
+}
+
+.trust-seals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.seal-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background-color: var(--bg-surface-elevated);
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.seal-item strong {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-main);
+}
+
+.seal-item span {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.cred-header-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.edit-area-link {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.edit-area-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.save-mini-btn {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+}
+
+.toolkit-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.tool-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+}
+
+.vehicle-details-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background-color: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1rem;
+  margin-top: 0.75rem;
+}
+
+.vehicle-details-card strong {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-main);
+}
+
+.vehicle-details-card span {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+}
+
+.bio-quote {
+  font-style: italic;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-main);
+  background-color: var(--bg-surface-elevated);
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-primary);
+  margin-top: 0.5rem;
+}
+

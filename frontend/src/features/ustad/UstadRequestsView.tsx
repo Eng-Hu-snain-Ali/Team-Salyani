@@ -133,9 +133,12 @@ export const UstadRequestsView: React.FC = () => {
                 <button
                   className="accept-job-btn"
                   disabled={!isApproved}
-                  onClick={() => acceptJobRequest(req.id)}
+                  onClick={async () => {
+                    await acceptJobRequest(req.id);
+                    setUstadTab('active_jobs');
+                  }}
                 >
-                  <CheckCircle2 size={16} /> Accept & Start Navigation
+                  <CheckCircle2 size={16} /> Accept & Start Navigation →
                 </button>
               </div>
             </div>
