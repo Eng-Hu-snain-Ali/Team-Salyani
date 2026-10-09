@@ -1,101 +1,196 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Flame, Zap, Bell, Sun, Moon, Compass } from 'lucide-react';
+import {
+  MapPin,
+  Bell,
+  Sun,
+  Moon,
+  ShieldCheck,
+  ChevronDown,
+  User as UserIcon,
+  Wrench,
+  Smartphone,
+  LayoutDashboard,
+} from 'lucide-react';
+import { FAISALABAD_AREAS } from '../../constants';
+import type { UserRole } from '../../types';
 
 export const Header: React.FC = () => {
   const {
+    activeRole,
+    setActiveRole,
+    selectedArea,
+    setSelectedArea,
     theme,
     toggleTheme,
-    setActiveTab,
     unreadNotifsCount,
     setIsNotificationsOpen,
+    setIsAuthModalOpen,
     user,
-    isAuthenticated,
-    openAuthModal,
+    currentUstad,
   } = useApp();
+
+  const [isAreaDropdownOpen, setIsAreaDropdownOpen] = useState(false);
 
   return (
     <header className="ustad-header">
-      <div className="ustad-header-inner">
-        {/* Brand: USTAD ONLINE */}
-        <div
-          className="header-brand"
-          onClick={() => setActiveTab('home')}
-          role="button"
-          tabIndex={0}
-        >
-          <div className="brand-icon-emblem">
-            <Compass size={22} strokeWidth={2.4} />
+      {/* Top Banner Notice */}
+      <div className="ustad-top-announcement">
+        <div className="announcement-content">
+          <span className="announcement-pill">FAISALABAD PILOT</span>
+          <span className="announcement-text">
+            ⚡ 100% NADRA & Police Verified Ustads now live in D-Ground, Kohinoor & Madina Town.
+          </span>
+          <span className="announcement-hotline">
+            Helpline: <strong>041-8782300</strong>
+          </span>
+        </div>
+      </div>
+
+      <div className="header-main-bar">
+        {/* Left: Brand & Tagline */}
+        <div className="brand-section">
+          <div className="brand-logo-container" onClick={() => setActiveRole('customer')}>
+            <div className="brand-icon-box">
+              <Wrench className="brand-icon" size={20} />
+            </div>
+            <div className="brand-text-group">
+              <div className="brand-title-row">
+                <span className="brand-name">USTAD</span>
+                <span className="brand-name-accent">ONLINE</span>
+                <span className="brand-badge-pk">PK</span>
+              </div>
+              <span className="brand-tagline">Reliable Ustads. Transparent Prices.</span>
+            </div>
           </div>
-          <div className="brand-text-col">
-            <span className="brand-title">USTAD ONLINE</span>
-            <span className="brand-tagline">Learn. Decide. Improve.</span>
+
+          {/* Faisalabad Location Selector */}
+          <div className="location-selector-wrap">
+            <button
+              className="location-pill-btn"
+              onClick={() => setIsAreaDropdownOpen(!isAreaDropdownOpen)}
+              title="Change Faisalabad service sector"
+              aria-label="Select Faisalabad service area"
+            >
+              <MapPin size={15} className="location-pin-icon" />
+              <div className="location-info">
+                <span className="location-label">Service Area:</span>
+                <span className="location-value">{selectedArea.name.split(',')[0]}</span>
+              </div>
+              <ChevronDown size={14} className="location-arrow" />
+            </button>
+
+            {isAreaDropdownOpen && (
+              <div className="area-dropdown-menu">
+                <div className="dropdown-header">
+                  <span>Select Faisalabad Sector</span>
+                  <small>Ustads nearby are filtered by sector</small>
+                </div>
+                <div className="area-list-scroll">
+                  {FAISALABAD_AREAS.map((area) => (
+                    <button
+                      key={area.id}
+                      className={`area-option-btn ${area.id === selectedArea.id ? 'active' : ''}`}
+                      onClick={() => {
+                        setSelectedArea(area);
+                        setIsAreaDropdownOpen(false);
+                      }}
+                    >
+                      <div className="area-text">
+                        <strong>{area.name}</strong>
+                        <span>{area.urduName} • {area.popularFor}</span>
+                      </div>
+                      {area.id === selectedArea.id && (
+                        <ShieldCheck size={16} className="area-active-check" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Right Navigation & Status Metrics */}
-        <div className="header-actions">
-          {/* Streak Indicator */}
-          <button
-            type="button"
-            className="streak-pill-btn"
-            onClick={() => setActiveTab('progress')}
-            title="Current Streak"
-          >
-            <Flame size={16} fill="currentColor" />
-            <span>{user.streakDays}d</span>
-          </button>
-
-          {/* XP Pill */}
-          <div className="xp-pill-badge" title="Total Accumulated XP">
-            <Zap size={15} fill="currentColor" />
-            <span>{user.xp} XP</span>
+        {/* Center: Persona / Role Switcher Tabs */}
+        <div className="role-switcher-container">
+          <div className="role-switcher-track">
+            <button
+              className={`role-tab-btn ${activeRole === 'customer' ? 'active' : ''}`}
+              onClick={() => setActiveRole('customer')}
+              title="Customer Booking App"
+            >
+              <Smartphone size={15} />
+              <span>Customer App</span>
+            </button>
+            <button
+              className={`role-tab-btn ${activeRole === 'ustad' ? 'active' : ''}`}
+              onClick={() => setActiveRole('ustad')}
+              title="Ustad Mechanic Portal"
+            >
+              <Wrench size={15} />
+              <span>Ustad Portal</span>
+              {currentUstad?.isAvailable && <span className="online-dot" title="Online" />}
+            </button>
+            <button
+              className={`role-tab-btn ${activeRole === 'admin' ? 'active' : ''}`}
+              onClick={() => setActiveRole('admin')}
+              title="Admin Web Panel"
+            >
+              <LayoutDashboard size={15} />
+              <span>Admin Panel</span>
+            </button>
           </div>
+        </div>
 
-          {/* Theme Switcher */}
+        {/* Right: Actions (Theme, Notification, Profile) */}
+        <div className="header-actions">
+          {/* Notification Button */}
           <button
-            type="button"
-            className="icon-action-btn"
-            onClick={toggleTheme}
-            title={theme === 'dark' ? 'Switch to Light' : 'Switch to Dark'}
-            aria-label="Toggle theme"
-          >
-            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
-          </button>
-
-          {/* Notifications Drawer Toggle */}
-          <button
-            type="button"
-            className="icon-action-btn"
+            className="action-icon-btn notification-btn"
             onClick={() => setIsNotificationsOpen(true)}
-            title="Notifications & Alerts"
-            aria-label="Notifications"
+            aria-label="View notifications"
           >
-            <Bell size={17} />
-            {unreadNotifsCount > 0 && <span className="badge-unread-count" />}
+            <Bell size={18} />
+            {unreadNotifsCount > 0 && (
+              <span className="notif-badge">{unreadNotifsCount}</span>
+            )}
           </button>
 
-          {/* Profile / Auth Avatar */}
-          {isAuthenticated ? (
-            <button
-              type="button"
-              className="header-avatar-btn"
-              onClick={() => setActiveTab('profile')}
-              title={`Profile (${user.name})`}
-              aria-label="Profile"
-            >
-              <img src={user.avatar} alt={user.name} />
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn-primary"
-              style={{ padding: '6px 14px', fontSize: '0.84rem' }}
-              onClick={() => openAuthModal('welcome')}
-            >
-              Sign In
-            </button>
-          )}
+          {/* Theme Toggle */}
+          <button
+            className="action-icon-btn theme-toggle-btn"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          >
+            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
+
+          {/* User Account / Auth Modal Trigger */}
+          <button
+            className="user-profile-btn"
+            onClick={() => setIsAuthModalOpen(true)}
+            title="Account & Demo Login"
+          >
+            <div className="user-avatar-mini">
+              {activeRole === 'ustad' && currentUstad ? (
+                <img src={currentUstad.avatar} alt={currentUstad.name} />
+              ) : user?.avatar ? (
+                <img src={user.avatar} alt={user.name} />
+              ) : (
+                <UserIcon size={16} />
+              )}
+            </div>
+            <div className="user-meta-label">
+              <span className="user-display-name">
+                {activeRole === 'ustad'
+                  ? currentUstad?.name?.split(' ')[0] || 'Ustad'
+                  : activeRole === 'admin'
+                  ? 'Faisalabad Admin'
+                  : user?.name?.split(' ')[0] || 'Hamza'}
+              </span>
+              <span className="role-tag">{activeRole.toUpperCase()}</span>
+            </div>
+          </button>
         </div>
       </div>
     </header>

@@ -1,39 +1,68 @@
-import { apiClient } from './apiClient';
-import type { NotificationItem, ApiResponse } from '../../types';
+import type { NotificationItem } from '../../types';
 import { INITIAL_NOTIFICATIONS } from '../../data/mockData';
 
+const NOTIFICATIONS_KEY = 'ustad_online_notifications_v1';
+
 class NotificationService {
-  private localNotifications: NotificationItem[] = [...INITIAL_NOTIFICATIONS];
-
-  async getNotifications(): Promise<ApiResponse<NotificationItem[]>> {
-    if (apiClient.isRemoteConfigured()) {
-      return apiClient.get<ApiResponse<NotificationItem[]>>('/notifications');
+  private getStoredNotifications(): NotificationItem[] {
+    try {
+      const stored = localStorage.getItem(NOTIFICATIONS_KEY);
+      if (stored) return JSON.parse(stored);
+    } catch {
+      // Fallback
     }
+    this.saveNotifications(INITIAL_NOTIFICATIONS);
+    return INITIAL_NOTIFICATIONS;
+  }
 
-    return {
-      success: true,
-      data: [...this.localNotifications],
+  private saveNotifications(items: NotificationItem[]): void {
+    try {
+      localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(items));
+    } catch {
+      // Storage error
+    }
+  }
+
+  public async getNotifications(role?: 'customer' | 'ustad' | 'admin'): Promise<NotificationItem[]> {
+    const list = this.getStoredNotifications();
+    if (!role || role === 'admin') return list;
+    return list.filter((n) => n.targetRole === 'all' || n.targetRole === role);
+  }
+
+  public async markAsRead(id: string): Promise<void> {
+    const list = this.getStoredNotifications();
+    const updated = list.map((item) => (item.id === id ? { ...item, isRead: true } : item));
+    this.saveNotifications(updated);
+  }
+
+  public async markAllAsRead(): Promise<void> {
+    const list = this.getStoredNotifications();
+    const updated = list.map((item) => ({ ...item, isRead: true }));
+    this.saveNotifications(updated);
+  }
+
+  public async createNotification(payload: {
+    title: string;
+    message: string;
+    type: 'booking' | 'system' | 'payment' | 'verification';
+    targetRole: 'customer' | 'ustad' | 'all';
+    relatedBookingId?: string;
+  }): Promise<NotificationItem> {
+    const list = this.getStoredNotifications();
+    const newNotif: NotificationItem = {
+      id: `notif-${Date.now()}`,
+      title: payload.title,
+      message: payload.message,
+      type: payload.type,
+      targetRole: payload.targetRole,
+      isRead: false,
+      relatedBookingId: payload.relatedBookingId,
+      createdAt: new Date().toISOString(),
     };
-  }
 
-  async markAsRead(id: string): Promise<ApiResponse<null>> {
-    if (apiClient.isRemoteConfigured()) {
-      return apiClient.patch<ApiResponse<null>>(`/notifications/${id}/read`);
-    }
-
-    const item = this.localNotifications.find((n) => n.id === id);
-    if (item) item.isRead = true;
-
-    return { success: true, data: null };
-  }
-
-  async markAllAsRead(): Promise<ApiResponse<null>> {
-    if (apiClient.isRemoteConfigured()) {
-      return apiClient.post<ApiResponse<null>>('/notifications/read-all');
-    }
-
-    this.localNotifications.forEach((n) => (n.isRead = true));
-    return { success: true, data: null };
+    list.unshift(newNotif);
+    this.saveNotifications(list);
+    return newNotif;
   }
 }
 

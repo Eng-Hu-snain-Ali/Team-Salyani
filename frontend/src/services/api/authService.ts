@@ -1,98 +1,85 @@
-import { apiClient } from './apiClient';
-import type {
-  User,
-  LoginPayload,
-  RegisterPayload,
-  ResetPasswordPayload,
-  ApiResponse,
-} from '../../types';
+import type { User, UserRole } from '../../types';
 import { INITIAL_USER } from '../../data/mockData';
 
+const USER_KEY = 'ustad_online_current_user_v1';
+const ROLE_KEY = 'ustad_online_active_role_v1';
+
 class AuthService {
-  async login(payload: LoginPayload): Promise<ApiResponse<{ user: User; token: string }>> {
-    if (apiClient.isRemoteConfigured()) {
-      const res = await apiClient.post<ApiResponse<{ user: User; token: string }>>('/auth/login', payload);
-      if (res.data?.token) {
-        apiClient.setToken(res.data.token);
+  public getCurrentUser(): User {
+    try {
+      const stored = localStorage.getItem(USER_KEY);
+      if (stored) return JSON.parse(stored);
+    } catch {
+      // Fallback
+    }
+    return INITIAL_USER;
+  }
+
+  public saveCurrentUser(user: User): void {
+    try {
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+    } catch {
+      // Storage error
+    }
+  }
+
+  public getActiveRole(): UserRole {
+    try {
+      const stored = localStorage.getItem(ROLE_KEY);
+      if (stored === 'customer' || stored === 'ustad' || stored === 'admin') {
+        return stored;
       }
-      return res;
+    } catch {
+      // Fallback
     }
+    return 'customer';
+  }
 
-    // Demo/Mock authentication
-    const demoToken = `ustad_demo_token_${Date.now()}`;
-    apiClient.setToken(demoToken);
+  public setActiveRole(role: UserRole): void {
+    try {
+      localStorage.setItem(ROLE_KEY, role);
+    } catch {
+      // Storage error
+    }
+  }
 
-    const user: User = {
-      ...INITIAL_USER,
-      email: payload.email || INITIAL_USER.email,
-    };
-
+  // Demo Phone OTP Login
+  public async requestDemoOtp(phoneNumber: string): Promise<{ success: boolean; demoOtp: string }> {
+    // In production, this would call Firebase Auth verifyPhoneNumber
     return {
       success: true,
-      data: { user, token: demoToken },
-      message: 'Signed in successfully to USTAD ONLINE',
+      demoOtp: '1234',
     };
   }
 
-  async register(payload: RegisterPayload): Promise<ApiResponse<{ user: User; token: string }>> {
-    if (apiClient.isRemoteConfigured()) {
-      const res = await apiClient.post<ApiResponse<{ user: User; token: string }>>('/auth/register', payload);
-      if (res.data?.token) {
-        apiClient.setToken(res.data.token);
-      }
-      return res;
+  public async verifyDemoOtp(
+    phoneNumber: string,
+    otpCode: string,
+    role: UserRole = 'customer'
+  ): Promise<User> {
+    if (otpCode !== '1234' && otpCode.length !== 4) {
+      throw new Error('Invalid OTP code. Use demo code 1234 to proceed.');
     }
 
-    const demoToken = `ustad_demo_token_${Date.now()}`;
-    apiClient.setToken(demoToken);
-
-    const user: User = {
-      ...INITIAL_USER,
-      id: `usr_${Date.now()}`,
-      name: payload.name,
-      email: payload.email,
-      ageGroup: payload.ageGroup,
-      learningGoals: payload.learningGoals || [],
-      onboardingCompleted: false, // will complete during onboarding modal
-      currentLevel: 1,
-      xp: 0,
-      nextLevelXp: 200,
-      streakDays: 1,
+    const current = this.getCurrentUser();
+    const updatedUser: User = {
+      ...current,
+      phone: phoneNumber,
+      role,
     };
 
-    return {
-      success: true,
-      data: { user, token: demoToken },
-      message: 'Account created successfully! Welcome to USTAD ONLINE.',
-    };
+    this.saveCurrentUser(updatedUser);
+    this.setActiveRole(role);
+    return updatedUser;
   }
 
-  async forgotPassword(email: string): Promise<ApiResponse<null>> {
-    if (apiClient.isRemoteConfigured()) {
-      return apiClient.post<ApiResponse<null>>('/auth/forgot-password', { email });
+  public async logout(): Promise<void> {
+    try {
+      localStorage.removeItem(USER_KEY);
+      this.setActiveRole('customer');
+    } catch {
+      // Safe fallback
     }
-
-    return {
-      success: true,
-      data: null,
-      message: `Password reset instructions sent to ${email}`,
-    };
-  }
-
-  async resetPassword(payload: ResetPasswordPayload): Promise<ApiResponse<null>> {
-    if (apiClient.isRemoteConfigured()) {
-      return apiClient.post<ApiResponse<null>>('/auth/reset-password', payload);
-    }
-
-    return {
-      success: true,
-      data: null,
-      message: 'Your password has been reset. Please sign in.',
-    };
-  }
-
-  async logout(): Promise<void> {
-    apiClient.clearToken();
   }
 }
 

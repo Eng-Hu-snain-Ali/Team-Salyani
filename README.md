@@ -1,133 +1,150 @@
-# USTAD ONLINE — Learn. Decide. Improve.
+# USTAD ONLINE — On-Demand Mechanic & Handyman Service Platform
 
-> **Practical Life-Learning Platform Based on Interactive Real-World Scenarios**  
-> *"Master critical life choices before you face them for real."*
-
----
-
-## 🌟 Product Concept & Vision
-
-**USTAD ONLINE** is an educational life-learning web platform that helps users improve their real-life decision-making skills through interactive scenarios, consequences, feedback, and progress tracking.
-
-Traditional education often neglects the everyday choices that determine health, financial stability, and career trajectories. USTAD ONLINE provides a safe, interactive flight simulator for reality:
-
-```
-SCENARIO ──► DECISION ──► CONSEQUENCE ──► FEEDBACK ──► SKILL IMPROVEMENT ──► NEXT CHALLENGE
-```
-
-### The Five Core Life Skills
-
-1. **Decision Making**: Trade-offs, priorities, peer pressure, everyday choices, and avoiding cognitive biases.
-2. **Money Management**: Budgeting with limited funds, separating needs vs. wants, emergency buffers, and avoiding debt traps.
-3. **Time Management**: Ruthless prioritization, deep focus scheduling, setting boundaries, and conquering procrastination.
-4. **Communication**: Workplace conflict, diplomatic de-escalation, clear requests, active listening, and difficult conversations.
-5. **Problem Solving**: Breaking chaotic problems into structured steps, identifying root causes, and testing high-leverage solutions under pressure.
+> **"Reliable Ustads. Transparent Prices."**  
+> *Pakistan's premier on-demand skilled labor and technician network, piloting in Faisalabad.*
 
 ---
 
-## 🎨 Visual Identity & Design System
+## 🌟 Executive Overview
 
-- **Brand Name**: USTAD ONLINE
-- **Tagline**: *"Learn. Decide. Improve."*
-- **Theme**: Seamless Light & Dark mode support with obsidian dark palette and crisp educational light mode.
-- **Color Palette**:
-  - Primary Blue: `#2563EB`
-  - Dark Blue: `#1D4ED8`
-  - Background: `#F8FAFC`
-  - Cards & Surfaces: `#FFFFFF`
-  - Main Text: `#0F172A`
-  - Secondary Text: `#64748B`
-  - Success Green: `#16A34A`
-  - Warning Orange: `#F59E0B`
-  - Danger Red: `#DC2626`
-  - Accent Purple: `#7C3AED`
+**USTAD ONLINE** is an on-demand multi-sided platform connecting households and businesses across Pakistan with vetted, verified local handymen and mechanics ("Ustads"). The platform eliminates predatory pricing, untraceable workmanship, and safety risks by offering:
+
+1. **Vetted Professionals**: Identity-verified technicians with secure CNIC and skill checks.
+2. **Transparent Rate Cards**: Standardized starting prices in Pakistani Rupees (`PKR / Rs.`), with clear distinction between fixed fees and diagnostic inspection estimates.
+3. **End-to-End Tracking**: Real-time simulated status progression from dispatch to completion.
+4. **Local Payment Flexibility**: Cash on Delivery (COD), Easypaisa, and JazzCash.
+5. **Fair 10% Platform Commission**: Ustads retain 90% of eligible completed earnings.
 
 ---
 
-## 🏗️ Architecture & Technology Stack
+## 🚀 Three Integrated Portals
 
-The application is built using **React 19 + TypeScript + Vite**, structured for mobile-first responsiveness and complete decoupling from backend logic.
+USTAD ONLINE provides three dedicated, purpose-built portals switchable via the top navigation bar:
 
-```
-lived_project/
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   └── common/             # Header, BottomNav, Modals, Toasts, Skeletons, ProgressBars
-│   │   ├── features/
-│   │   │   ├── auth/               # Splash Screen, Welcome, Login, Register, Onboarding
-│   │   │   ├── home/               # Dashboard, Streak, Level, 5 Core Skills, Daily Challenge
-│   │   │   ├── challenges/         # Scenario Player, Decision Choices, Consequence Reveal, Feedback
-│   │   │   ├── skills/             # 5 Core Skills Diagnostics, Strengths, Growth Opportunities
-│   │   │   ├── progress/           # Learning Analytics, Mastery Distribution, Achievements, Decision Journal
-│   │   │   ├── profile/            # User Profile, Learning Goals, Notifications, Theme Mode, Settings
-│   │   │   └── notifications/      # Real-time alerts drawer (daily challenges, streak warnings)
-│   │   ├── services/
-│   │   │   └── api/                # REST API Client & domain service abstractions
-│   │   │       ├── apiClient.ts    # Centralized HTTP fetch client (JWT bearer token & headers)
-│   │   │       ├── authService.ts  # Auth, login, registration, password reset
-│   │   │       ├── challengeService.ts # Scenarios, daily challenges, decisions & feedback
-│   │   │       ├── skillService.ts # 5 Skills diagnostics, mastery levels & scores
-│   │   │       ├── userService.ts  # Profiles, age groups, learning goals
-│   │   │       └── notificationService.ts # Daily scenario & streak alerts
-│   │   ├── context/
-│   │   │   └── AppContext.tsx      # Global state (theme, active tab, user, skills, challenges, toasts)
-│   │   ├── types/
-│   │   │   └── index.ts            # Strict domain TypeScript contracts & API schemas
-│   │   ├── constants/              # Categories, difficulty tiers, age groups, learning goals
-│   │   ├── data/
-│   │   │   └── mockData.ts         # High-yield seed scenarios, initial skills, achievements
-│   │   ├── App.tsx                 # Viewport shell & routing manager
-│   │   ├── main.tsx                # Entry point
-│   │   └── index.css               # Comprehensive USTAD ONLINE design system tokens
-│   ├── package.json
-│   └── vite.config.ts
-└── docs/
-    └── PRD.md
-```
+### 1. 👤 Customer Mobile Application
+- **Phone Authentication**: Clean phone entry with simulated OTP verification (`1234`).
+- **Location Selector**: Native Faisalabad sector switching (`D-Ground`, `Kohinoor City`, `Madina Town`, `Peoples Colony`, `Canal Road`, `Ghanta Ghar`, `Gulberg`, `Samanabad`, etc.).
+- **6 Core Categories**:
+  - ⚡ **Electrician** (Switchboard repair, ceiling fan installation, short circuit diagnosis)
+  - 🔧 **Plumber** (Tap repair, pipe leakage, water motor installation)
+  - ❄️ **AC Technician** (AC inspection/service, gas refill, inverter troubleshooting)
+  - 🏍️ **Bike Mechanic** (Puncture repair, tuning/oil change, brake servicing)
+  - 🚗 **Car Mechanic** (Car general inspection, battery jumpstart, brake pad replacement)
+  - 🪚 **Carpenter** (Door hinge repair, lock installation, furniture assembly)
+- **Service Rate Cards**: Interactive catalog with clear fixed vs. estimated diagnostic pricing.
+- **Booking Flow**: Multi-step booking with category selection, issue description, problem photo selector, map pin selection, and urgent vs. scheduled time slots.
+- **Live Dispatch Map**: Visualized interactive SVG map of Faisalabad highlighting customer location, nearby ustads, and simulated technician route navigation.
+- **Booking Status Stepper**: Synchronized lifecycle: `Pending` ➔ `Accepted` ➔ `On the Way` ➔ `Arrived` ➔ `In Progress` ➔ `Completed`.
+- **In-App Communication**: Simulated direct phone call modal and live chat messenger with pre-configured quick replies.
+- **Payment Gateway**: Simulated checkout supporting Cash on Delivery, Easypaisa mobile account, and JazzCash wallet.
+- **Reviews & Complaints**: Post-job 1–5 star rating with verified feedback, plus formal dispute/complaint filing.
 
 ---
 
-## 🔌 Backend Integration Guide
-
-The frontend is **100% API-ready** with clean service abstractions and typed data models:
-
-1. **Configure API Base URL**:
-   Create a `.env` file inside the `frontend/` directory:
-   ```env
-   VITE_API_BASE_URL=http://localhost:8000/api/v1
-   ```
-2. **Centralized Client**:
-   All HTTP communication flows through [`src/services/api/apiClient.ts`](file:///frontend/src/services/api/apiClient.ts).
-   - Automatically attaches `Authorization: Bearer <token>` from localStorage (`ustad_online_auth_token`).
-   - Normalizes HTTP error responses into typed `ApiError` objects.
-   - If `VITE_API_BASE_URL` is empty, it safely uses the rich in-memory provider so frontend teammates can develop and review UI immediately.
-
-3. **Domain Contracts**:
-   Inspect [`src/types/index.ts`](file:///frontend/src/types/index.ts) for full TypeScript definitions of `Challenge`, `ChallengeOption`, `SkillData`, `User`, `Achievement`, `NotificationItem`, and `ApiResponse<T>`.
+### 2. 🧰 Ustad / Mechanic Mobile Application
+- **Registration & Verification**: Onboarding flow with photo upload, CNIC details, skill category selection, experience, and trade certification uploads.
+- **Document Protection**: Sensitive CNIC and credentials are fully shielded from public customer records.
+- **Status Lifecycle**: `Pending` ➔ `Approved` ➔ `Rejected` ➔ `Blocked`. Only verified and approved Ustads can accept jobs.
+- **Availability Radar**: Real-time Online/Offline toggle to manage dispatch visibility.
+- **Job Request Feed**: Incoming work orders displaying customer problem photos, Faisalabad sector address, estimated price, and Accept/Reject buttons.
+- **Active Jobs Stepper**: Complete execution lifecycle for accepted jobs (`Mark Arrived` ➔ `Start Work` ➔ `Mark Completed` with final invoice adjustment).
+- **Earnings & Wallet Ledger**:
+  - Consistent **10% platform commission calculation** (e.g., Gross Rs. 1,000 = Platform Rs. 100, Net Ustad Rs. 900).
+  - Daily, weekly, and monthly net income analytics.
+  - Transparent payout withdrawal requests (Easypaisa / JazzCash / Bank transfer).
 
 ---
 
-## 💻 Running the Frontend Locally
+### 3. 🛡️ Admin Web Panel
+- **Executive KPI Dashboard**: Live counts for total customers, registered ustads, verified ustads, active/completed bookings, gross booking volume, platform commission, and open disputes.
+- **Ustad Verification Audit**: Detailed technician roster with search, status filters, and a secure document modal to inspect CNICs and issue instant Approvals, Rejections, or Account Blocks.
+- **Service Catalog & Rate Card Manager**: Add, edit, enable/disable services, and adjust base rates and pricing models (Fixed vs. Inspection Estimate).
+- **Bookings Audit Ledger**: Unified log of all historical and active bookings across Faisalabad with complete customer, ustad, financial, and status details.
+- **Commission Management**: Real-time platform fee tracking, configurable commission percentage (defaults to 10%), and net payout breakdown.
+- **Complaints & Dispute Resolution**: Formal case triage for customer dissatisfaction with status updates (`Investigating`, `Resolved`) and admin resolution notes.
+- **Broadcast Notification Composer**: Push announcements directly to customers and ustads across Faisalabad.
+
+---
+
+## 🎨 Design System & Visual Identity
+
+- **Primary Blue**: `#2563EB` (Professional, trustworthy service color)
+- **Dark Navy**: `#0F172A` (Header, primary text, high-contrast surfaces)
+- **Background**: `#F8FAFC` (Ultra-clean modern slate backdrop)
+- **Surface Cards**: `#FFFFFF` (Crisp floating cards with subtle border shadows)
+- **Success Green**: `#16A34A` (Active badges, approved statuses, completed jobs)
+- **Warning Amber**: `#F59E0B` (Pending verifications, scheduled bookings)
+- **Error Red**: `#DC2626` (Cancelled jobs, rejections, blocked ustads)
+- **Secondary Slate**: `#64748B` (Subtext, metadata labels)
+
+---
+
+## 🏗️ Technical Stack & Architecture
+
+- **Core**: React 19 + TypeScript + Vite
+- **Icons**: Lucide React
+- **Celebrations**: Canvas Confetti
+- **Styling**: Vanilla CSS (`src/index.css`) optimized for high-performance responsive layout without bloated third-party CSS frameworks.
+- **Architecture**:
+  ```
+  Team-Salyani/
+  ├── src/
+  │   ├── components/
+  │   │   ├── admin/           # Metrics, Ustad audit, Services CRUD, Bookings, Commission, Complaints
+  │   │   ├── auth/            # Phone login, Demo OTP (1234), Splash screen
+  │   │   ├── common/          # Header, BottomNav, Interactive FaisalabadMap SVG
+  │   │   ├── customer/        # CustomerHome, RateCard, NearbyUstads, Bookings, Tracking, Chat, Payment
+  │   │   └── ustad/           # UstadDashboard, RequestsRadar, ActiveJobs, Wallet, RegistrationModal
+  │   ├── context/
+  │   │   └── AppContext.tsx   # Global reactive state, role switcher, booking state machine, 10% commission
+  │   ├── services/
+  │   │   └── api/             # Firestore-ready decoupled service layer (auth, bookings, ustads, catalog, etc.)
+  │   ├── types/
+  │   │   └── index.ts         # Cloud Firestore-aligned typed models
+  │   ├── constants/           # 6 categories, Faisalabad sectors, demo rate cards
+  │   ├── data/
+  │   │   └── mockData.ts      # Seed Ustads, services, initial bookings, and Faisalabad landmarks
+  │   ├── App.tsx              # Role router and modal manager
+  │   ├── main.tsx             # React DOM entry
+  │   └── index.css            # USTAD ONLINE design tokens and responsive utility classes
+  ├── docs/
+  │   ├── PRD.md               # Product Requirement Document
+  │   ├── FIREBASE_SETUP.md    # Production Firebase & Google Maps setup instructions
+  │   └── SECURITY_RULES.md    # Production Cloud Firestore security rules
+  ├── package.json
+  ├── tsconfig.json
+  └── vite.config.ts
+  ```
+
+---
+
+## 🛡️ Simulation & Transparency Notice
+
+To ensure security and local operability without requiring private production credentials:
+- **Phone OTP**: Simulated in-app. Use code `1234` or click "Auto-fill Demo OTP". Real SMS gateways (Twilio / Firebase Auth) are not triggered.
+- **Live Maps**: Uses a custom vector-accurate interactive SVG map of Faisalabad. Google Maps API keys are decoupled and documented in `docs/FIREBASE_SETUP.md`.
+- **Payments**: Transactions via Cash, Easypaisa, and JazzCash are fully simulated and clearly labeled. No real financial accounts are debited.
+- **Chat & Calls**: Operational in-memory interactive modals designed for end-to-end user flow demonstration.
+
+---
+
+## 💻 Running Locally
 
 ```bash
-# 1. Navigate to the frontend directory
-cd frontend
-
-# 2. Install dependencies
+# 1. Install dependencies
 npm install
 
-# 3. Start development server
+# 2. Start Vite development server
 npm run dev
+
+# 3. Production build check (TypeScript strict verification + Vite bundle)
+npm run build
 ```
 
-Open **`http://localhost:5173`** in your browser.
+Open **`http://localhost:5173`** in your browser. Use the top navigation role switcher to toggle between **Customer**, **Ustad**, and **Admin** personas.
 
 ---
 
-## ✅ Quality & Build Check
+## 📄 License & Attribution
 
-```bash
-npm run build
-```
-*(Runs TypeScript strict type-checking `tsc -b` and Vite production bundling with 0 errors).*
+Developed for **USTAD ONLINE** (Pakistan). All rights reserved.

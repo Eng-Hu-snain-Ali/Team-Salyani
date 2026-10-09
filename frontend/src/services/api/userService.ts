@@ -1,57 +1,42 @@
-import { apiClient } from './apiClient';
-import type { User, ApiResponse } from '../../types';
-import { INITIAL_USER } from '../../data/mockData';
+import type { User } from '../../types';
+import { authService } from './authService';
 
 class UserService {
-  private localUser: User = { ...INITIAL_USER };
-
-  async getCurrentUser(): Promise<ApiResponse<User>> {
-    if (apiClient.isRemoteConfigured()) {
-      return apiClient.get<ApiResponse<User>>('/users/me');
-    }
-
-    return {
-      success: true,
-      data: { ...this.localUser },
-    };
+  public async getUserProfile(): Promise<User> {
+    return authService.getCurrentUser();
   }
 
-  async updateProfile(updates: Partial<User>): Promise<ApiResponse<User>> {
-    if (apiClient.isRemoteConfigured()) {
-      return apiClient.patch<ApiResponse<User>>('/users/me', updates);
-    }
-
-    this.localUser = {
-      ...this.localUser,
+  public async updateUserProfile(updates: Partial<User>): Promise<User> {
+    const current = authService.getCurrentUser();
+    const updated: User = {
+      ...current,
       ...updates,
     };
-
-    return {
-      success: true,
-      data: { ...this.localUser },
-      message: 'Profile updated successfully',
-    };
+    authService.saveCurrentUser(updated);
+    return updated;
   }
 
-  async saveOnboarding(
-    ageGroup: string,
-    learningGoals: string[]
-  ): Promise<ApiResponse<User>> {
-    if (apiClient.isRemoteConfigured()) {
-      return apiClient.post<ApiResponse<User>>('/onboarding/complete', {
-        ageGroup,
-        learningGoals,
-      });
-    }
+  public async addSavedAddress(address: {
+    label: string;
+    address: string;
+    area: string;
+  }): Promise<User> {
+    const current = authService.getCurrentUser();
+    const newAddresses = [
+      ...(current.savedAddresses || []),
+      {
+        id: `addr-${Date.now()}`,
+        ...address,
+      },
+    ];
 
-    this.localUser.ageGroup = ageGroup;
-    this.localUser.learningGoals = learningGoals;
-    this.localUser.onboardingCompleted = true;
-
-    return {
-      success: true,
-      data: { ...this.localUser },
+    const updated: User = {
+      ...current,
+      savedAddresses: newAddresses,
     };
+
+    authService.saveCurrentUser(updated);
+    return updated;
   }
 }
 
