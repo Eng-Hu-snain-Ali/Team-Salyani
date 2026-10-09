@@ -12,6 +12,7 @@ import {
   Smartphone,
   LayoutDashboard,
   Lock,
+  Users,
 } from 'lucide-react';
 import { FAISALABAD_AREAS } from '../../constants';
 import type { UserRole } from '../../types';
@@ -188,12 +189,12 @@ export const Header: React.FC = () => {
             title="Account & Demo Login"
           >
             <div className="user-avatar-mini">
-              {activeRole === 'ustad' && currentUstad ? (
+              {activeRole === 'ustad' && currentUstad?.avatar ? (
                 <img src={currentUstad.avatar} alt={currentUstad.name} />
-              ) : user?.avatar ? (
-                <img src={user.avatar} alt={user.name} />
+              ) : activeRole === 'admin' ? (
+                <ShieldCheck size={16} className="text-danger" />
               ) : (
-                <UserIcon size={16} />
+                <Users size={15} className="text-primary" />
               )}
             </div>
             <div className="user-meta-label">

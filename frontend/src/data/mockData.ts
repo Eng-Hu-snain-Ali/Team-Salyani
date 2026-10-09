@@ -18,7 +18,7 @@ export const INITIAL_USER: User = {
   name: 'Team Saylani',
   phone: '+92 300 8645123',
   email: 'team.saylani@ustadonline.pk',
-  avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=200&auto=format&fit=crop&q=80',
+  avatar: '',
   role: 'customer',
   address: 'House 42, Street 3, Block B, Peoples Colony No. 1, Faisalabad',
   area: 'D-Ground, Peoples Colony No. 1',
