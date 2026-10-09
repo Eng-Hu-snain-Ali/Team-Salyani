@@ -13,11 +13,20 @@ import {
   CalendarCheck,
   Percent,
   ShieldAlert,
+  Lock,
+  ShieldCheck,
 } from 'lucide-react';
 import type { AdminTabId } from '../../types';
 
 export const AdminPanelView: React.FC = () => {
-  const { adminTab, setAdminTab, complaints } = useApp();
+  const {
+    adminTab,
+    setAdminTab,
+    complaints,
+    isAdminAuthenticated,
+    setIsAdminAuthModalOpen,
+    lockAdminSession,
+  } = useApp();
 
   const openComplaintsCount = complaints.filter(
     (c) => c.status === 'open' || c.status === 'investigating'
@@ -56,6 +65,30 @@ export const AdminPanelView: React.FC = () => {
     },
   ];
 
+  if (!isAdminAuthenticated) {
+    return (
+      <div className="admin-locked-container">
+        <div className="admin-locked-card">
+          <div className="lock-icon-circle">
+            <Lock size={36} className="text-warning" />
+          </div>
+          <h2>Admin Console Locked</h2>
+          <p>
+            This portal is restricted to authorized operations managers. Please enter your administrator master passcode to access Ustad records, rate management, and financial ledgers.
+          </p>
+          <div className="locked-card-actions">
+            <button
+              className="unlock-gate-btn"
+              onClick={() => setIsAdminAuthModalOpen(true)}
+            >
+              Enter Admin Passcode
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="admin-panel-layout">
       {/* Desktop Admin Secondary Nav Bar */}
@@ -64,6 +97,9 @@ export const AdminPanelView: React.FC = () => {
           <div className="admin-nav-brand-title">
             <span className="brand-dot" />
             <span>Faisalabad Operations Console</span>
+            <span className="admin-verified-tag">
+              <ShieldCheck size={12} /> Saylani Admin
+            </span>
           </div>
 
           <div className="admin-nav-tabs">
@@ -82,6 +118,17 @@ export const AdminPanelView: React.FC = () => {
                 </button>
               );
             })}
+          </div>
+
+          <div className="admin-nav-right-actions">
+            <button
+              className="lock-console-btn"
+              onClick={lockAdminSession}
+              title="Lock & Exit Admin Console"
+            >
+              <Lock size={14} />
+              <span>Lock Console</span>
+            </button>
           </div>
         </div>
       </div>

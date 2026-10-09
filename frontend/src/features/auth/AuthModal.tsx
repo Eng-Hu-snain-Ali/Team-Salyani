@@ -34,7 +34,7 @@ export const AuthModal: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState('+92 300 8645123');
   const [otpCode, setOtpCode] = useState('');
   const [selectedRole, setSelectedRole] = useState<UserRole>('customer');
-  const [name, setName] = useState('Hamza Tariq');
+  const [name, setName] = useState('Team Saylani User');
   const [area, setArea] = useState('D-Ground, Peoples Colony No. 1');
   const [errorMsg, setErrorMsg] = useState('');
 

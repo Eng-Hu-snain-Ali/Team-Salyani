@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import {
-  User,
-  Phone,
+  Users,
   MapPin,
-  Plus,
   ShieldCheck,
   CalendarCheck,
-  CreditCard,
-  HelpCircle,
   LogOut,
-  Smartphone,
   Wrench,
   LayoutDashboard,
+  Code2,
   CheckCircle2,
+  GitBranch,
+  Layers,
+  Sparkles,
+  Lock,
 } from 'lucide-react';
 import { FAISALABAD_AREAS } from '../../constants';
 
@@ -21,12 +21,12 @@ export const ProfileView: React.FC = () => {
   const {
     user,
     updateUserProfile,
-    setCustomerTab,
     setActiveRole,
     logoutUser,
     bookings,
-    setIsAuthModalOpen,
     showToast,
+    isAdminAuthenticated,
+    setIsAdminAuthModalOpen,
   } = useApp();
 
   const [isEditingAddress, setIsEditingAddress] = useState(false);
@@ -40,33 +40,80 @@ export const ProfileView: React.FC = () => {
       area: newArea,
     });
     setIsEditingAddress(false);
+    showToast('Service address updated', 'success');
   };
 
   const completedJobsCount = bookings.filter((b) => b.status === 'completed').length;
 
   return (
     <div className="customer-profile-container">
-      {/* User Hero Banner */}
-      <div className="profile-hero-card">
-        <div className="profile-avatar-wrapper">
-          <img src={user.avatar} alt={user.name} className="profile-img" />
-          <button
-            className="change-avatar-badge"
-            onClick={() => showToast('Avatar update simulated', 'info')}
-            title="Change photo"
-          >
-            ✓
-          </button>
+      {/* Team Project Hero Banner */}
+      <div className="profile-hero-card team-hero-card">
+        <div className="team-avatar-emblem">
+          <Users size={36} className="text-white" />
         </div>
 
         <div className="profile-title-col">
-          <h2 className="user-name">{user.name}</h2>
+          <div className="team-title-row">
+            <h2 className="user-name">Team Saylani</h2>
+            <span className="team-badge">Team Project</span>
+          </div>
           <span className="user-phone-tag">
-            <Phone size={13} /> {user.phone}
+            USTAD ONLINE — Collaborative Platform
           </span>
-          <span className="customer-verified-pill">
-            <ShieldCheck size={13} className="text-success" /> Faisalabad Verified Citizen
-          </span>
+          <div className="team-meta-pills">
+            <span className="customer-verified-pill">
+              <ShieldCheck size={13} className="text-success" /> 4–5 Developers Collaboration
+            </span>
+            <span className="customer-verified-pill">
+              <Sparkles size={13} className="text-warning" /> Faisalabad Pilot Launch
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Team Contributors & Project Credits Card */}
+      <div className="profile-section-card team-credits-card">
+        <div className="credits-header">
+          <Code2 size={20} className="text-primary" />
+          <div>
+            <h3>Project Architecture & Contributors</h3>
+            <p>Collaborative multi-role engineering team specifications</p>
+          </div>
+        </div>
+
+        <div className="credits-grid">
+          <div className="credit-pill-item">
+            <GitBranch size={16} className="text-primary" />
+            <div>
+              <strong>Engineering Repository</strong>
+              <span>Eng-Hu-snain-Ali / Team-Salyani</span>
+            </div>
+          </div>
+
+          <div className="credit-pill-item">
+            <Users size={16} className="text-success" />
+            <div>
+              <strong>Lead & Collaborators</strong>
+              <span>Engr. Husnain Ali & 4–5 Team Members</span>
+            </div>
+          </div>
+
+          <div className="credit-pill-item">
+            <Layers size={16} className="text-warning" />
+            <div>
+              <strong>Platform Scope</strong>
+              <span>Customer App • Ustad App • Admin Web Panel</span>
+            </div>
+          </div>
+
+          <div className="credit-pill-item">
+            <CheckCircle2 size={16} className="text-primary" />
+            <div>
+              <strong>Target Region</strong>
+              <span>Faisalabad City (D-Ground, Kohinoor, Madina Town)</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -74,7 +121,7 @@ export const ProfileView: React.FC = () => {
       <div className="profile-section-card">
         <div className="section-header-line">
           <div>
-            <h3>Primary Service Address</h3>
+            <h3>Primary Test Service Address</h3>
             <p>Used for automatic 25-minute Ustad dispatch in Faisalabad</p>
           </div>
           <button
@@ -96,7 +143,7 @@ export const ProfileView: React.FC = () => {
               >
                 {FAISALABAD_AREAS.map((a) => (
                   <option key={a.id} value={a.name}>
-                    {a.name}
+                    {a.name} ({a.urduName})
                   </option>
                 ))}
               </select>
@@ -129,7 +176,7 @@ export const ProfileView: React.FC = () => {
 
       {/* Saved Favorite Locations */}
       <div className="profile-section-card">
-        <h3>Saved Places</h3>
+        <h3>Saved Places in Faisalabad</h3>
         <div className="saved-places-list">
           {user.savedAddresses?.map((addr) => (
             <div key={addr.id} className="place-item-card">
@@ -157,7 +204,7 @@ export const ProfileView: React.FC = () => {
           <ShieldCheck size={18} className="text-success" />
           <div>
             <strong>100%</strong>
-            <span>Satisfaction Rate</span>
+            <span>Verified Ustads</span>
           </div>
         </div>
       </div>
@@ -185,13 +232,20 @@ export const ProfileView: React.FC = () => {
           <button
             className="sandbox-btn"
             onClick={() => {
-              setActiveRole('admin');
-              showToast('Switched to Admin Web Panel', 'info');
+              if (isAdminAuthenticated) {
+                setActiveRole('admin');
+                showToast('Switched to Admin Web Panel', 'info');
+              } else {
+                setIsAdminAuthModalOpen(true);
+              }
             }}
           >
-            <LayoutDashboard size={18} />
+            <div className="sandbox-admin-btn-icon">
+              <LayoutDashboard size={18} />
+              {!isAdminAuthenticated && <Lock size={12} className="lock-sub-icon" />}
+            </div>
             <div>
-              <strong>Open Admin Web Panel</strong>
+              <strong>Open Admin Web Panel {!isAdminAuthenticated && '(Password Required)'}</strong>
               <small>Document review, rates, bookings & 10% commission</small>
             </div>
           </button>
@@ -204,7 +258,7 @@ export const ProfileView: React.FC = () => {
           className="logout-action-btn"
           onClick={logoutUser}
         >
-          <LogOut size={16} /> Sign Out
+          <LogOut size={16} /> Sign Out Demo Session
         </button>
       </div>
     </div>

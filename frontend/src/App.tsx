@@ -24,6 +24,7 @@ import { UstadRegistrationModal } from './features/ustad/UstadRegistrationModal'
 
 // Admin Views
 import { AdminPanelView } from './features/admin/AdminPanelView';
+import { AdminAuthModal } from './features/admin/AdminAuthModal';
 
 // Auth & Shared Overlays
 import { AuthModal } from './features/auth/AuthModal';
@@ -86,6 +87,7 @@ const MainAppLayout: React.FC = () => {
       <PaymentModal />
       <ReviewComplaintModal />
       <UstadRegistrationModal />
+      <AdminAuthModal />
       <ToastContainer />
     </div>
   );

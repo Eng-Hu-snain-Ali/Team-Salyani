@@ -11,6 +11,7 @@ import {
   Wrench,
   Smartphone,
   LayoutDashboard,
+  Lock,
 } from 'lucide-react';
 import { FAISALABAD_AREAS } from '../../constants';
 import type { UserRole } from '../../types';
@@ -19,6 +20,8 @@ export const Header: React.FC = () => {
   const {
     activeRole,
     setActiveRole,
+    isAdminAuthenticated,
+    lockAdminSession,
     selectedArea,
     setSelectedArea,
     theme,
@@ -134,16 +137,29 @@ export const Header: React.FC = () => {
             <button
               className={`role-tab-btn ${activeRole === 'admin' ? 'active' : ''}`}
               onClick={() => setActiveRole('admin')}
-              title="Admin Web Panel"
+              title={isAdminAuthenticated ? 'Admin Web Panel' : 'Admin Web Panel (Password Required)'}
             >
               <LayoutDashboard size={15} />
               <span>Admin Panel</span>
+              {!isAdminAuthenticated && <Lock size={12} className="role-lock-badge" />}
             </button>
           </div>
         </div>
 
         {/* Right: Actions (Theme, Notification, Profile) */}
         <div className="header-actions">
+          {/* Admin Lock Session Quick Action */}
+          {activeRole === 'admin' && (
+            <button
+              className="action-icon-btn lock-session-btn"
+              onClick={lockAdminSession}
+              title="Lock Admin Session"
+              aria-label="Lock Admin Session"
+            >
+              <Lock size={17} className="text-warning" />
+            </button>
+          )}
+
           {/* Notification Button */}
           <button
             className="action-icon-btn notification-btn"
@@ -186,7 +202,7 @@ export const Header: React.FC = () => {
                   ? currentUstad?.name?.split(' ')[0] || 'Ustad'
                   : activeRole === 'admin'
                   ? 'Faisalabad Admin'
-                  : user?.name?.split(' ')[0] || 'Hamza'}
+                  : user?.name || 'Team Saylani'}
               </span>
               <span className="role-tag">{activeRole.toUpperCase()}</span>
             </div>

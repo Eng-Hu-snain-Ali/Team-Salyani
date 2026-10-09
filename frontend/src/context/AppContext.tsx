@@ -60,6 +60,13 @@ interface AppContextType {
   adminTab: AdminTabId;
   setAdminTab: (tab: AdminTabId) => void;
 
+  // Admin Authentication Gate
+  isAdminAuthenticated: boolean;
+  verifyAdminPasscode: (passcode: string) => boolean;
+  lockAdminSession: () => void;
+  isAdminAuthModalOpen: boolean;
+  setIsAdminAuthModalOpen: (open: boolean) => void;
+
   // Location / Faisalabad Sector
   selectedArea: FaisalabadArea;
   setSelectedArea: (area: FaisalabadArea) => void;
@@ -248,6 +255,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [ustadTab, setUstadTab] = useState<UstadTabId>('dashboard');
   const [adminTab, setAdminTab] = useState<AdminTabId>('overview');
 
+  // Admin passcode authentication state
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem('ustad_admin_authenticated') === 'true';
+  });
+  const [isAdminAuthModalOpen, setIsAdminAuthModalOpen] = useState(false);
+
   // Faisalabad selected area
   const [selectedArea, setSelectedArea] = useState<FaisalabadArea>(FAISALABAD_AREAS[0]);
 
@@ -335,11 +348,38 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   }, []);
 
-  // Set active role and persist
+  const verifyAdminPasscode = useCallback((passcode: string): boolean => {
+    const validCodes = ['admin123', 'saylani2026', '7860', 'ustadadmin'];
+    if (validCodes.includes(passcode.trim())) {
+      setIsAdminAuthenticated(true);
+      localStorage.setItem('ustad_admin_authenticated', 'true');
+      authService.setActiveRole('admin');
+      setActiveRoleState('admin');
+      setIsAdminAuthModalOpen(false);
+      showToast('Admin access granted. Welcome to Management Console.', 'success');
+      return true;
+    }
+    showToast('Invalid admin passcode. Access denied.', 'error');
+    return false;
+  }, [showToast]);
+
+  const lockAdminSession = useCallback(() => {
+    setIsAdminAuthenticated(false);
+    localStorage.removeItem('ustad_admin_authenticated');
+    authService.setActiveRole('customer');
+    setActiveRoleState('customer');
+    showToast('Admin session locked.', 'info');
+  }, [showToast]);
+
+  // Set active role with admin passcode gate
   const setActiveRole = useCallback((role: UserRole) => {
+    if (role === 'admin' && !isAdminAuthenticated) {
+      setIsAdminAuthModalOpen(true);
+      return;
+    }
     authService.setActiveRole(role);
     setActiveRoleState(role);
-  }, []);
+  }, [isAdminAuthenticated]);
 
   // Load all data on mount
   const refreshAllData = useCallback(async () => {
@@ -889,6 +929,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setUstadTab,
         adminTab,
         setAdminTab,
+        isAdminAuthenticated,
+        verifyAdminPasscode,
+        lockAdminSession,
+        isAdminAuthModalOpen,
+        setIsAdminAuthModalOpen,
         selectedArea,
         setSelectedArea,
         user,
