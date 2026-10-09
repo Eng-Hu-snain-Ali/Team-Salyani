@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# USTAD ONLINE — On-Demand Mechanic & Handyman Service Platform
 
-## Getting Started
+> **"Reliable Ustads. Transparent Prices."**  
+> *Pakistan's premier on-demand skilled labor and technician network, piloting in Faisalabad.*
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🌟 Executive Overview
+
+**USTAD ONLINE** is an on-demand multi-sided platform connecting households and businesses across Pakistan with vetted, verified local handymen and mechanics ("Ustads"). The platform eliminates predatory pricing, untraceable workmanship, and safety risks by offering:
+
+1. **Vetted Professionals**: Identity-verified technicians with secure NADRA CNIC and skill checks.
+2. **Transparent Rate Cards**: Standardized starting prices in Pakistani Rupees (`PKR / Rs.`), with clear distinction between fixed fees and diagnostic inspection estimates.
+3. **End-to-End Tracking**: Real-time simulated status progression from dispatch to completion.
+4. **Local Payment Flexibility**: Cash on Delivery (COD), Easypaisa, and JazzCash.
+5. **Fair 10% Platform Commission**: Ustads retain 90% of eligible completed earnings.
+
+---
+
+## 🏗️ Project Architecture (Monorepo)
+
+```
+Team-Salyani/
+├── frontend/                     # Next.js 16 (React 19, Turbopack, Tailwind CSS) Web Application
+│   ├── src/
+│   │   ├── app/                  # Next.js App Router (page.tsx, layout.tsx, globals.css)
+│   │   ├── components/           # CustomerApp, UstadApp, AdminPanel, FaisalabadMap, Presentation
+│   │   ├── data/                 # Faisalabad locations, mock rate cards, seeds
+│   │   └── utils/                # Audio synthesizer & helpers
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── flutter_ustad_online/         # Flutter Mobile Application (Android/iOS)
+│   ├── lib/
+│   │   ├── screens/              # CustomerHomeScreen
+│   │   ├── models/               # BookingModel, UstadModel
+│   │   └── services/             # FirebaseService
+│   └── pubspec.yaml
+│
+├── src/                          # Express.js REST API Backend
+│   ├── modules/                  # Auth, Booking, Ustad, Admin, Chat, Payment modules
+│   ├── config/                   # Database, Cloudinary
+│   ├── middleware/               # Auth, Upload, Rate Limiter, Error Handler
+│   └── socket/                   # Socket.IO Real-time tracking & chat
+│
+├── database/                     # PostgreSQL Migrations & Seed data
+├── docs/                         # Architecture, API endpoints, PRD, Firebase setup
+└── server.js                     # Backend Server Entry Point
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Running the Applications
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Next.js Web Application (`frontend/`)
 
-## Learn More
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open [http://localhost:3000](http://localhost:3000) with your browser.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2. Express Backend Server (Root)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm install
+npm run dev
+# or: node server.js
+```
 
-## Deploy on Vercel
+### 3. Flutter Mobile Application (`flutter_ustad_online/`)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+cd flutter_ustad_online
+flutter pub get
+flutter run
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 📄 License & Attribution
+
+Developed for **USTAD ONLINE** (Pakistan). All rights reserved.
